@@ -1,0 +1,41 @@
+require 'date'
+require 'fileutils'
+require '..\script\jake.rb'
+
+namespace "test" do
+  def compareFolder(folder1, folder2)
+    fldOneFiles = Dir.entries(folder1)
+    fldTwoFiles = Dir.entries(folder2)
+    isComplete = true
+
+    if fldOneFiles.length != fldTwoFiles.length
+      puts "Folder " + folder1.to_s + " is not equal " + folder2.to_s 
+      isComplete = false
+    else
+      fldTwoFiles.each { |file| 
+        puts "file " + file.to_s + " index " + fldOneFiles.index(file).to_s
+
+        if fldOneFiles.index(file).nil?
+          puts "File " + file.to_s + "in folder " + folder1.to_s + " is not found"
+          isComplete = false
+        end     
+      }
+    end 
+
+
+    if isComplete == false
+      puts folder1.to_s + " compare with " + folder2.to_s + ". Test is FAIL"
+    else
+      puts folder1.to_s + " compare with " + folder2.to_s + ". Test is SUCCESS"
+    end
+  end
+
+  task :all do
+    $config = Jake.config(File.open("testcase.yml"))
+
+    $config["tests"].each { |testcase|
+      compareFolder(testcase["dir1"].to_s, testcase["dir2"].to_s)
+    }
+
+  end
+end

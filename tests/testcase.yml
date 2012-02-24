@@ -1,0 +1,4 @@
+tests:
+-
+  dir1: "C:\Android\Motorola-Extensions\libs"
+  dir2: "C:\Android\installer\package\ruby\lib\ruby\gems\1.8\gems\rhoelements-2.0.0.beta.8\libs"
