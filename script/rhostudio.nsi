@@ -3,7 +3,7 @@
  
   !include "MUI.nsh"
   !include "LogicLib.nsh"
-  !include "EnvVarUpdate.nsh"
+  !include "%NSIS_SCRIPT_PATH%\EnvVarUpdate.nsh"
  
 ;======================================================
 ; Installer Information
@@ -47,7 +47,7 @@
 ;======================================================
 ; Reserve Files
  
-  ReserveFile "configUi.ini"
+  ReserveFile "%NSIS_SCRIPT_PATH%\configUi.ini"
   !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 ;======================================================
@@ -312,37 +312,11 @@ SectionEnd
 ;Functions
  
 Function .onInit
-    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "configUi.ini"
+    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "%NSIS_SCRIPT_PATH%\configUi.ini"
 FunctionEnd 
 
 LangString TEXT_IO_TITLE ${LANG_ENGLISH} "Configuration page"
 LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "This page will update application files based on your system configuration."
-
-/*
-Function customerConfig
-   !insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
-   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "configUi.ini"
-   !insertmacro MUI_INSTALLOPTIONS_READ $varApacheEmail "configUi.ini" "Field 3" "State"
-   !insertmacro MUI_INSTALLOPTIONS_READ $varApachePort "configUi.ini" "Field 4" "State"
-
-   Push SERVERADMIN
-   Push $varApacheEmail
-   Push all
-   Push all
-   Push $INSTDIR\apache2\conf\httpd.conf
-   Call AdvReplaceInFile
- 
-   Push SERVERPORT
-   Push $varApachePort
-   Push all
-   Push all
-   Push $INSTDIR\apache2\conf\httpd.conf
-   Call AdvReplaceInFile
-
-   ExecWait '"$INSTDIR\apache2\bin\httpd.exe" -k install'
-   ExecWait 'net start Apache2.2'
-FunctionEnd
-*/
 
 Function FixScriptFilesInDir
 Exch $R0 #path

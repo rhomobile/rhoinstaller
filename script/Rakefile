@@ -9,9 +9,9 @@ $minorVer = "0"
 $miniVer  = "0"
 $betaVer  = "6"
 
-$isRhodesBeta = true
-$isConnBeta = false
-$isAdapterBeta = false
+$isRhodesBeta   = true
+$isConnBeta     = false
+$isAdapterBeta  = false
 $isElementsBeta = true
 
 $isMotorolaBeta = true
@@ -25,8 +25,29 @@ $installMotoScript = "rhostudio-moto.nsi"
 $commonName        = "RhoStudioInstaller"
 $extWinExe         = '.exe'
 $extOsxExe         = '.dmg'
+$config            = Jake.config(File.open("installer.yml"))
 
 namespace "installer" do
+
+    def prepareNsisScript(installDir)
+       FileUtils.cp_r $installScript, installDir
+       script_name = File.join(installDir, $installScript)
+       install_script = File.read(script_name)
+       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, File.expand_path("./").gsub("\/","\\"))
+       File.open(script_name, "w") { |file| file.puts install_script }
+
+       # script for motorola
+       FileUtils.cp_r $installMotoScript, installDir
+       script_name = File.join(installDir, $installMotoScript)
+       install_script = File.read(script_name)
+       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, File.expand_path("./").gsub("\/","\\"))
+       File.open(script_name, "w") { |file| file.puts install_script }
+    end
+
+    def runNsisScript(installScript)
+       prepareNsisScript("../package")
+       Jake.run2 $nsisPath, [installScript], {:nowait => false}
+    end
 
     def renameInstaller(installerPrefix)
        puts 'add version to build file'
@@ -44,8 +65,8 @@ namespace "installer" do
         #copy ruby folder
         puts 'start change ruby folder'
         FileUtils.rm_rf "./eclipse/configuration/.setting"
-        FileUtils.rm_rf $rubyInstallPath      
-        FileUtils.cp_r $rubyPath, $rubyInstallPath
+        #FileUtils.rm_rf $rubyInstallPath      
+        #FileUtils.cp_r $rubyPath, $rubyInstallPath
     end
 
     def installMotoGems(isElementsBeta)
@@ -87,7 +108,7 @@ namespace "installer" do
         else
           Jake.run2 "gem", ["install", "rhoconnect-adapters", "--pre"], {:nowait => false} 
         end
-    end
+    end  
 
     namespace "release" do
       task :gems do
@@ -98,12 +119,7 @@ namespace "installer" do
 
       task :nsis => "gems" do 
         puts 'release - start build nsis script: ' +  $installScript
-        Jake.run2 $nsisPath, [$installScript], {:nowait => false}
-      end
-
-      task :nsisr do 
-        puts 'release - start build nsis script: ' +  $installScript
-        Jake.run2 $nsisPath, [$installScript], {:nowait => false}
+        runNsisScript($installScript)
       end
 
       task :rename => "nsis" do
@@ -121,7 +137,7 @@ namespace "installer" do
 
       task :nsis => "gems" do 
         puts 'start build nsis script: ' +  $installScript
-        Jake.run2 $nsisPath, [$installScript], {:nowait => false}
+        runNsisScript($installScript)
       end
 
       task :rename => "nsis" do
@@ -138,7 +154,7 @@ namespace "installer" do
 
       task :nsis => "gems" do 
         puts 'start build nsis script: ' +  $installScript
-        Jake.run2 $nsisPath, [$installScript], {:nowait => false}
+        runNsisScript($installScript)
       end
 
       task :rename => "nsis" do
@@ -157,7 +173,7 @@ namespace "installer" do
 
       task :nsis => "gems" do 
         puts 'release - start build nsis script: ' +  $installScript
-        Jake.run2 $nsisPath, [$installMotoScript], {:nowait => false}
+        runNsisScript($installMotoScript)
       end
 
       task :rename => "nsis" do
@@ -185,9 +201,7 @@ namespace "installer" do
     task :motorola => "motorola:rename" do
     end
 
-    task :makensis do 
-      puts 'start build nsis script: ' +  $installScript
-      Jake.run2 $nsisPath, [$installScript], {:nowait => false}
+    task :test do
     end
 
 end
