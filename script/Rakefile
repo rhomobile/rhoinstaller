@@ -133,6 +133,7 @@ namespace "installer" do
         puts 'release - reinstall gems task'
         installGems(false, false, false)
         changeRubyFolder()
+        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -151,6 +152,7 @@ namespace "installer" do
       task :gems do
         installGems(true, true, true)
         changeRubyFolder()
+        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -168,6 +170,7 @@ namespace "installer" do
       task :gems do
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
         changeRubyFolder()
+        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -187,6 +190,7 @@ namespace "installer" do
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
         installMotoGems($isElementsBeta)
         changeRubyFolder()
+        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
