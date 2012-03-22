@@ -7,7 +7,7 @@ load 'jake.rb'
 $majorVer = "2"
 $minorVer = "0"
 $miniVer  = "0"
-$betaVer  = "6"
+$betaVer  = "3"
 
 $isRhodesBeta   = true
 $isConnBeta     = false
@@ -16,7 +16,7 @@ $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhoelemetsgem     = "C:/Android/Motorola-Extensions/rhoelements-2.0.0.beta.8.gem"
+$rhoelemetsgem     = "C:/Android/installer/script/rhoelements-2.0.0.beta.9.gem"
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $rubyPath          = "C:/Android/rhosync/ruby"
 $rubyInstallPath   = "C:/Android/Installer/package/ruby"
@@ -26,8 +26,23 @@ $commonName        = "RhoStudioInstaller"
 $extWinExe         = '.exe'
 $extOsxExe         = '.dmg'
 $config            = Jake.config(File.open("installer.yml"))
+$package_dir       = "../package"
 
 namespace "installer" do
+
+    def deployRhoElements2App
+      $app_config = Hash.new
+      $app_config["extpaths"] = Array.new
+
+      chdir $package_dir
+      rho_elements_dst_dir = "RhoElements2"
+      rm_rf rho_elements_dst_dir
+      require "rhoelements"
+      rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
+      puts "source Rhoelements2 directory: " + rho_elements_src_dir
+      cp_r rho_elements_src_dir, rho_elements_dst_dir
+      chdir File.dirname(__FILE__)
+    end
 
     def prepareNsisScript(installDir)
        FileUtils.cp_r $installScript, installDir
@@ -45,8 +60,10 @@ namespace "installer" do
     end
 
     def runNsisScript(installScript)
-       prepareNsisScript("../package")
+       prepareNsisScript($package_dir)
+       chdir $package_dir
        Jake.run2 $nsisPath, [installScript], {:nowait => false}
+       chdir File.dirname(__FILE__)
     end
 
     def renameInstaller(installerPrefix)
@@ -70,7 +87,6 @@ namespace "installer" do
     end
 
     def installMotoGems(isElementsBeta)
-
         if File.exist? $rhoelemetsgem
           Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
           Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
@@ -87,17 +103,19 @@ namespace "installer" do
         Jake.run2 "gem", ["uninstall", "rhoconnect-adapters", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhodes-translator", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
+        Jake.run2 "gem", ["uninstall", "mspec", "-a"], {:nowait => false} 
 
         Jake.run2 "gem", ["install", "rhomobile-debug"], {:nowait => false} 
         Jake.run2 "gem", ["install", "rhodes-translator"], {:nowait => false} 
+        Jake.run2 "gem", ["install", "mspec"], {:nowait => false} 
 
-	if isRhodesBeta == false
+        if isRhodesBeta == false
           Jake.run2 "gem", ["install", "rhodes"], {:nowait => false} 
         else
           Jake.run2 "gem", ["install", "rhodes", "--pre"], {:nowait => false} 
         end
 
-	if isConnBeta == false
+	      if isConnBeta == false
           Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
         else
           Jake.run2 "gem", ["install", "rhoconnect", "--pre"], {:nowait => false}       
@@ -172,7 +190,7 @@ namespace "installer" do
       end
 
       task :nsis => "gems" do 
-        puts 'release - start build nsis script: ' +  $installScript
+        puts 'release - start build nsis script: ' +  $installMotoScript
         runNsisScript($installMotoScript)
       end
 
@@ -202,6 +220,7 @@ namespace "installer" do
     end
 
     task :test do
+      deployRhoElements2App
     end
 
 end

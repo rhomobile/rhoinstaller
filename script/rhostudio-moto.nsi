@@ -3,7 +3,7 @@
  
   !include "MUI.nsh"
   !include "LogicLib.nsh"
-  !include "EnvVarUpdate.nsh"
+  !include "%NSIS_SCRIPT_PATH%\EnvVarUpdate.nsh"
  
 ;======================================================
 ; Installer Information
@@ -48,8 +48,8 @@
 ;======================================================
 ; Reserve Files
  
-  ReserveFile "configUi.ini"
-  !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
+  ;ReserveFile "%NSIS_SCRIPT_PATH%\configUi.ini"
+  ;!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 ;======================================================
 ; Variables
@@ -314,12 +314,12 @@ SectionEnd
 ;======================================================
 ;Functions
  
-Function .onInit
-    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "configUi.ini"
-FunctionEnd 
+;Function .onInit
+;    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "%NSIS_SCRIPT_PATH%\configUi.ini"
+;FunctionEnd 
 
-LangString TEXT_IO_TITLE ${LANG_ENGLISH} "Configuration page"
-LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "This page will update application files based on your system configuration."
+;LangString TEXT_IO_TITLE ${LANG_ENGLISH} "Configuration page"
+;LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "This page will update application files based on your system configuration."
 
 /*
 Function customerConfig
