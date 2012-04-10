@@ -8,9 +8,9 @@
 ;======================================================
 ; Installer Information
  
-  Name "RhoStudio Installer"
-  OutFile "RhoStudioInstaller.exe"
-  InstallDir C:\RhoStudio
+  Name "RhoMobile Suite Installer"
+  OutFile "RhoMobileSuiteInstaller.exe"
+  InstallDir "$PROGRAMFILES\RhoMobile Suite"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -30,10 +30,10 @@
 ; Pages
  
   !insertmacro MUI_PAGE_WELCOME
-  !define MUI_PAGE_HEADER_TEXT "RhoStudio License Agreement"
-  !define MUI_PAGE_HEADER_SUBTEXT "Please review the RhoStudio license terms before installing."
-  !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
+  !define MUI_PAGE_HEADER_TEXT "RhoMobile Suite License Agreement"
+  !define MUI_PAGE_HEADER_SUBTEXT "Please review the RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
+  !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
@@ -70,19 +70,19 @@ section
     # create the uninstaller
     writeUninstaller "$INSTDIR\uninstall.exe"
  
-    SetOutPath "$SMPROGRAMS\RhoStudio"
+    SetOutPath "$SMPROGRAMS\RhoMobile Suite"
     
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
-    createShortCut "$SMPROGRAMS\RhoStudio\Uninstall RhoStudio.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\RhoStudio\RhoStudio.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoStudio.lnk" "$INSTDIR\uninstall.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
 
     # added information in 'unistall programs' in contorol panel
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoStudio" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayName" "RhoStudio - RAD tool for develop and debug rhodes/rhoconnect applications"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoStudio" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoStudio" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     
     Goto okFinishSection
@@ -97,13 +97,15 @@ sectionEnd
 # uninstaller section start
 section "uninstall"
  
+    MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall RhoMobile Suite" IDNO "Continue"    
+
     # first, delete the uninstaller
     delete "$INSTDIR\uninstall.exe"
  
     # second, remove the link from the start menu    
-    delete "$SMPROGRAMS\RhoStudio\Uninstall RhoStudio.lnk"
-    delete "$SMPROGRAMS\RhoStudio\RhoStudio.lnk"
-    delete "$SMPROGRAMS\RhoStudio"
+    delete "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\RhoStudio.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite"
 
     ExecWait 'net stop redis'
     ExecWait 'sc delete redis'
@@ -145,10 +147,13 @@ section "uninstall"
     Pop $R0
 
     DeleteRegValue HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" REDIS_HOME
-    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoStudio"
+    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite"
 
     # remove $INSTDIR
     RMDir /r /REBOOTOK $INSTDIR
+
+    Continue: 
+      Quit
 
 # uninstaller section end
 sectionEnd
@@ -292,7 +297,7 @@ SectionEnd
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for rhodes."
-  LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs samples for rhodes."  
+  LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   #LangString DESC_InstallJava ${LANG_ENGLISH} "This installs Java SE Runtime Environment."  
   
   ;Assign language strings to sections
