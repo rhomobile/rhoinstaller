@@ -29,7 +29,13 @@ $config            = Jake.config(File.open("installer.yml"))
 $package_dir       = "../package"
 
 namespace "installer" do
-  
+
+    def updateSas 
+      chdir File.dirname(__FILE__)     
+      chdir File.join($package_dir, "samples", "rhodes-system-api-samples")
+      `git pull`
+    end
+
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name)
       puts 'start build RhoElements for ' + cfg_name.to_s + " WM configuration"
       chdir File.dirname(__FILE__)     
@@ -92,12 +98,12 @@ namespace "installer" do
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
       cp_r rho_elements_src_dir, rho_elements_dst_dir
+
       chdir File.dirname(__FILE__)
     end
 
     def prepareNsisScript(installDir)
        chdir File.dirname(__FILE__)
-       #chdir File.join($package_dir)
 
        FileUtils.cp_r $installScript, installDir
        script_name = File.join(installDir, $installScript)
@@ -196,6 +202,7 @@ namespace "installer" do
       task :gems do
         puts 'release - reinstall gems task'
         installGems(false, false, false)
+        updateSas()
         changeRubyFolder()
       end
 
@@ -214,6 +221,7 @@ namespace "installer" do
     namespace "beta" do
       task :gems do
         installGems(true, true, true)
+        updateSas()
         changeRubyFolder()
       end
 
@@ -231,6 +239,7 @@ namespace "installer" do
     namespace "user" do
       task :gems do
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
+        updateSas()
         changeRubyFolder()
       end
 
@@ -252,6 +261,7 @@ namespace "installer" do
 
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
         installMotoGems($isElementsBeta)
+        updateSas()
         changeRubyFolder()
         deployRhoElements2App()
         buildRhoElements2App()
@@ -290,8 +300,7 @@ namespace "installer" do
     end
 
     task :test do
-      deployRhoElements2App
-      buildRhoElements2App
+      updateSas 
     end
 
 end

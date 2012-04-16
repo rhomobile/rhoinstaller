@@ -79,8 +79,8 @@ section
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Launches RhoStudio IDE.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
     # added information in 'unistall programs' in contorol panel
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
@@ -181,7 +181,7 @@ Section "GNU Make" gnumakeSection
 
 SectionEnd
 
-Section "RhoStudio" studioSection
+Section "RhoStudio IDE" studioSection
  
   SetOutPath $INSTDIR
  
@@ -219,7 +219,7 @@ Section "DevKit" devkitSection
   
 SectionEnd
 
-Section "Ruby, Rubygems, Rhodes, Rhoconnect and adapters" rubySection
+Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
  
   SetOutPath $INSTDIR
  
