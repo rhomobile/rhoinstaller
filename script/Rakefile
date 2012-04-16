@@ -16,7 +16,7 @@ $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhoelemetsgem     = "C:/Android/installer/script/rhoelements-2.0.0.beta.9.gem"
+$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.5.gem"
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $rubyPath          = "C:/Android/rhosync/ruby"
 $rubyInstallPath   = "C:/Android/Installer/package/ruby"
@@ -29,12 +29,63 @@ $config            = Jake.config(File.open("installer.yml"))
 $package_dir       = "../package"
 
 namespace "installer" do
+  
+    def buildRhoElementsWmCfg(cfg_name, bin_dir_name)
+      puts 'start build RhoElements for ' + cfg_name.to_s + " WM configuration"
+      chdir File.dirname(__FILE__)     
+      chdir File.join($package_dir, "RhoElements2")
+
+      $re_config = Jake.config(File.open("build.yml"))
+      $re_config["sdk"] = nil
+      $re_config["wm"]["sdk"] = cfg_name
+
+      output = File.new('build.yml', 'w+')
+      output.puts YAML.dump($re_config)
+      output.close
+      
+      `rake clean:wm`
+      `rake device:wm:production`
+      
+      chdir File.dirname(__FILE__)
+      chdir File.join($package_dir, "RhoElements2 Shared Runtime")
+      rm_rf bin_dir_name
+      mkdir bin_dir_name
+ 
+      chdir File.dirname(__FILE__)
+      cp_r File.join($package_dir, "RhoElements2", "bin", "target", bin_dir_name, "RhoElements.cab"), File.join($package_dir, "RhoElements2 Shared Runtime", bin_dir_name, "RhoElements.cab")
+            
+    end
+
+    def buildRhoElementsAndroidCfg()
+      puts 'start build RhoElements for Android configuration'        
+      chdir File.dirname(__FILE__)     
+      chdir File.join($package_dir, "RhoElements2")
+
+      $re_config = Jake.config(File.open("build.yml"))
+      $re_config["sdk"] = nil
+    
+      #`rake clean:android`
+      `rake device:android:production`
+    end
+        
+    def buildRhoElements2App()
+      buildRhoElementsWmCfg("MC3000c50b (ARMV4I)", "MC3000c50b (ARMV4I)")
+      buildRhoElementsWmCfg("Windows Mobile 6 Professional SDK (ARMV4I)", "wm6p")
+      #buildRhoElementsAndroidCfg()
+
+      chdir File.join($package_dir, "RhoElements2")
+      rm_rf "bin"
+    end
 
     def deployRhoElements2App
+      chdir File.dirname(__FILE__)     
+      chdir File.join($package_dir)
+
       $app_config = Hash.new
       $app_config["extpaths"] = Array.new
 
       chdir $package_dir
+      rm_rf "RhoElements2"
       rho_elements_dst_dir = "RhoElements2"
       rm_rf rho_elements_dst_dir
       require "rhoelements"
@@ -45,6 +96,9 @@ namespace "installer" do
     end
 
     def prepareNsisScript(installDir)
+       chdir File.dirname(__FILE__)
+       #chdir File.join($package_dir)
+
        FileUtils.cp_r $installScript, installDir
        script_name = File.join(installDir, $installScript)
        install_script = File.read(script_name)
@@ -60,6 +114,9 @@ namespace "installer" do
     end
 
     def runNsisScript(installScript)
+       chdir File.dirname(__FILE__)
+       chdir File.join($package_dir)
+
        prepareNsisScript($package_dir)
        chdir $package_dir
        Jake.run2 $nsisPath, [installScript], {:nowait => false}
@@ -67,6 +124,9 @@ namespace "installer" do
     end
 
     def renameInstaller(installerPrefix)
+       chdir File.dirname(__FILE__)
+       chdir File.join($package_dir)
+
        puts 'add version to build file'
        installerName = ""
        currTime = Time.now
@@ -87,6 +147,8 @@ namespace "installer" do
     end
 
     def installMotoGems(isElementsBeta)
+        return 
+
         if File.exist? $rhoelemetsgem
           Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
           Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
@@ -97,8 +159,10 @@ namespace "installer" do
     end
 
     def installGems(isRhodesBeta, isConnBeta, isAdapterBeta)
+        return
+
         Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "rhodes", "-a"], {:nowait => false} 
+        #Jake.run2 "gem", ["uninstall", "rhodes", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhoconnect", "-a"], {:nowait => false}       
         Jake.run2 "gem", ["uninstall", "rhoconnect-adapters", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhodes-translator", "-a"], {:nowait => false} 
@@ -109,11 +173,11 @@ namespace "installer" do
         Jake.run2 "gem", ["install", "rhodes-translator"], {:nowait => false} 
         Jake.run2 "gem", ["install", "mspec"], {:nowait => false} 
 
-        if isRhodesBeta == false
-          Jake.run2 "gem", ["install", "rhodes"], {:nowait => false} 
-        else
-          Jake.run2 "gem", ["install", "rhodes", "--pre"], {:nowait => false} 
-        end
+        #if isRhodesBeta == false
+        #  Jake.run2 "gem", ["install", "rhodes"], {:nowait => false} 
+        #else
+        #  Jake.run2 "gem", ["install", "rhodes", "--pre"], {:nowait => false} 
+        #end
 
 	      if isConnBeta == false
           Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
@@ -133,7 +197,6 @@ namespace "installer" do
         puts 'release - reinstall gems task'
         installGems(false, false, false)
         changeRubyFolder()
-        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -152,7 +215,6 @@ namespace "installer" do
       task :gems do
         installGems(true, true, true)
         changeRubyFolder()
-        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -170,7 +232,6 @@ namespace "installer" do
       task :gems do
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
         changeRubyFolder()
-        deployRhoElements2App()
       end
 
       task :nsis => "gems" do 
@@ -187,10 +248,15 @@ namespace "installer" do
     namespace "motorola" do
       task :gems do
         puts 'release - reinstall gems task'        
+        $commonName = "MotorolaRhoMobileSuite"
+
         installGems($isRhodesBeta, $isConnBeta, $isAdapterBeta)
         installMotoGems($isElementsBeta)
         changeRubyFolder()
         deployRhoElements2App()
+        buildRhoElements2App()
+        deployRhoElements2App
+        buildRhoElements2App
       end
 
       task :nsis => "gems" do 
@@ -225,6 +291,7 @@ namespace "installer" do
 
     task :test do
       deployRhoElements2App
+      buildRhoElements2App
     end
 
 end

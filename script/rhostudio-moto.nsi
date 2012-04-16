@@ -8,9 +8,9 @@
 ;======================================================
 ; Installer Information
  
-  Name "RhoMobile Suite Installer"
-  OutFile "RhoMobileSuiteInstaller.exe"
-  InstallDir "$PROGRAMFILES\RhoMobile Suite"
+  Name "Motorola RhoMobile Suite"
+  OutFile "MotorolaRhoMobileSuite.exe"
+  InstallDir "$PROGRAMFILES\Motorola RhoMobile Suite"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -20,18 +20,20 @@
   !define MUI_HEADERIMAGE
   !define MUI_ABORTWARNING
   !define MUI_COMPONENTSPAGE_SMALLDESC
-  !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
   !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\README.html
   !define MUI_FINISHPAGE
-  !define MUI_FINISHPAGE_TEXT "Thank you for installing Rhodes, Rhoconnect and RhoStudio. \r\n\n\n"
- 
+  !define MUI_FINISHPAGE_TEXT "Thank you for installing Rhodes, RhoConnect and RhoStudio. \r\n\n\n"
+  !define MUI_WELCOMEFINISHPAGE_BITMAP "..\script\images\arrow.bmp"   
+  !define MUI_HEADERIMAGE_BITMAP  "..\script\images\header.bmp"   
+  !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
  
 ;======================================================
 ; Pages
  
+  !define MUI_WELCOMEPAGE_TEXT "© 2012 Motorola Solutions, Inc. All rights reserved.\r\n\r\n$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
   !insertmacro MUI_PAGE_WELCOME
-  !define MUI_PAGE_HEADER_TEXT "RhoMobile Suite License Agreement"
-  !define MUI_PAGE_HEADER_SUBTEXT "Please review the RhoMobile Suite license terms before installing."
+  !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
+  !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
   !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
@@ -74,15 +76,18 @@ section
     
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoStudio.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Launches RhoStudio IDE.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/"
 
     # added information in 'unistall programs' in contorol panel
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
-                 "DisplayName" "RhoStudio - RAD tool for develop and debug rhodes/rhoconnect applications"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+                 "DisplayName" "Motorola RhoMobile Suite - RAD tool for develop and debug rhodes/rhoconnect applications"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     
     Goto okFinishSection
@@ -97,15 +102,18 @@ sectionEnd
 # uninstaller section start
 section "uninstall"
  
-    MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall RhoMobile Suite" IDNO "Continue"    
+    MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall Motorola RhoMobile Suite" IDNO "Continue"    
 
     # first, delete the uninstaller
     delete "$INSTDIR\uninstall.exe"
  
     # second, remove the link from the start menu    
     delete "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk"
-    delete "$SMPROGRAMS\RhoMobile Suite\RhoStudio.lnk"
-    delete "$SMPROGRAMS\RhoMobile Suite"
+    delete "$SMPROGRAMS\RhoMobile Suite\Launches RhoStudio IDE.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Readme.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\"
 
     ExecWait 'net stop redis'
     ExecWait 'sc delete redis'
@@ -147,7 +155,7 @@ section "uninstall"
     Pop $R0
 
     DeleteRegValue HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" REDIS_HOME
-    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite"
+    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite"
 
     # remove $INSTDIR
     RMDir /r /REBOOTOK $INSTDIR
@@ -218,6 +226,7 @@ Section "Ruby, Rubygems, Rhodes, Rhoconnect and adapters" rubySection
   File /r "ruby"
   File /r "make-3.81"
   File /r "RhoElements2"
+  File /r "RhoElements2 Shared Runtime"
 
   File "README.html"
   File "RHOSTUDIO-LICENSE.txt"
@@ -290,13 +299,13 @@ SectionEnd
 ;Descriptions
  
   ;Language strings
-  LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio."
+  LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio IDE."
   #LangString DESC_InstallApache ${LANG_ENGLISH} "This installs the Apache 2.2 webserver"
-  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, Rhoconnect and adapters"
-  LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run Rhoconnect)."
+  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, RhoConnect and adapters"
+  LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
-  LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for rhodes."
+  LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   #LangString DESC_InstallJava ${LANG_ENGLISH} "This installs Java SE Runtime Environment."  
   
