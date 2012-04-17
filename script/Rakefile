@@ -26,21 +26,21 @@ $commonName        = "RhoStudioInstaller"
 $extWinExe         = '.exe'
 $extOsxExe         = '.dmg'
 $config            = Jake.config(File.open("installer.yml"))
-$package_dir       = "../package"
+$installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')     
+$package_dir       = File.join($installer_dir, 'package')
+$feature_dir       = File.join($installer_dir, 'feature')
+$studio_dir        = '/Users/sv/rhomobile/rhostudio'
 $eclipseLauncherJar = '/Users/sv/rhomobile/eclipse/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
-$pluginExport = '/Users/sv/rhomobile/rhostudio/rhogen-wizard/plugin_export.xml'
 
 namespace "installer" do
 
     def updateSas 
-      chdir File.dirname(__FILE__)     
       chdir File.join($package_dir, "samples", "rhodes-system-api-samples")
       `git pull`
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name)
       puts 'start build RhoElements for ' + cfg_name.to_s + " WM configuration"
-      chdir File.dirname(__FILE__)     
       chdir File.join($package_dir, "RhoElements2")
 
       $re_config = Jake.config(File.open("build.yml"))
@@ -54,7 +54,6 @@ namespace "installer" do
       `rake clean:wm`
       `rake device:wm:production`
       
-      chdir File.dirname(__FILE__)
       chdir File.join($package_dir, "RhoElements2 Shared Runtime")
       rm_rf bin_dir_name
       mkdir bin_dir_name
@@ -66,7 +65,6 @@ namespace "installer" do
 
     def buildRhoElementsAndroidCfg()
       puts 'start build RhoElements for Android configuration'        
-      chdir File.dirname(__FILE__)     
       chdir File.join($package_dir, "RhoElements2")
 
       $re_config = Jake.config(File.open("build.yml"))
@@ -86,8 +84,7 @@ namespace "installer" do
     end
 
     def deployRhoElements2App
-      chdir File.dirname(__FILE__)     
-      chdir File.join($package_dir)
+      chdir $package_dir
 
       $app_config = Hash.new
       $app_config["extpaths"] = Array.new
@@ -107,8 +104,18 @@ namespace "installer" do
     def exportPlugin
         destination = File.expand_path File.join($package_dir, 'eclipse')
         destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
+        pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
+
         FileUtils.rm Dir.glob(destinationJarGlob)
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{$pluginExport} -Ddestination=#{destination}`
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}`
+    end
+
+    def exportFeature
+        destination = File.expand_path File.join($installer_dir, 'feature')
+        featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
+
+        FileUtils.rm_rf destination
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}`
     end
 
     def prepareNsisScript(installDir)
@@ -129,8 +136,7 @@ namespace "installer" do
     end
 
     def runNsisScript(installScript)
-       chdir File.dirname(__FILE__)
-       chdir File.join($package_dir)
+       chdir $package_dir
 
        prepareNsisScript($package_dir)
        chdir $package_dir
@@ -139,8 +145,7 @@ namespace "installer" do
     end
 
     def renameInstaller(installerPrefix)
-       chdir File.dirname(__FILE__)
-       chdir File.join($package_dir)
+       chdir $package_dir
 
        puts 'add version to build file'
        installerName = ""
@@ -309,7 +314,7 @@ namespace "installer" do
     end
 
     task :test do
-      exportPlugin
+      exportFeature
     end
 
 end
