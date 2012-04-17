@@ -299,6 +299,15 @@ namespace "installer" do
       end
     end
 
+    namespace "rhostudio" do
+        task :plugin do
+            exportPlugin
+        end
+        task :feature do
+            exportFeature
+        end
+    end
+
     ########################################################
 
     task :release => "release:rename" do
