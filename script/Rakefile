@@ -108,7 +108,7 @@ namespace "installer" do
         destination = File.expand_path File.join($package_dir, 'eclipse')
         destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
         FileUtils.rm Dir.glob(destinationJarGlob)
-        system "java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{$pluginExport} -Ddestination=#{destination}"
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{$pluginExport} -Ddestination=#{destination}`
     end
 
     def prepareNsisScript(installDir)
