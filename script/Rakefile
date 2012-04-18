@@ -29,10 +29,28 @@ $config            = Jake.config(File.open("installer.yml"))
 $installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')     
 $package_dir       = File.join($installer_dir, 'package')
 $feature_dir       = File.join($installer_dir, 'feature')
-$studio_dir        = '/Users/sv/rhomobile/rhostudio'
-$eclipseLauncherJar = '/Users/sv/rhomobile/eclipse/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
+$studio_dir        = 'C:\Android\rhodes-plugins' #'/Users/sv/rhomobile/rhostudio'
+$eclipseLauncherJar = 'C:\Android\installer\package\eclipse\plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
 
 namespace "installer" do
+
+    def exportPlugin
+        destination = File.expand_path File.join($package_dir, 'eclipse')
+        destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
+        pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
+
+        rm Dir.glob(destinationJarGlob)
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}`
+    end
+
+    def exportFeature
+        destination = File.expand_path File.join($installer_dir, 'feature')
+        featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
+
+        #rm_rf destination
+        #puts "java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}"
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}`
+    end
 
     def updateSas 
       chdir File.join($package_dir, "samples", "rhodes-system-api-samples")
@@ -45,7 +63,8 @@ namespace "installer" do
 
       $re_config = Jake.config(File.open("build.yml"))
       $re_config["sdk"] = nil
-      $re_config["wm"]["sdk"] = cfg_name
+      $re_config["wm"] = {:sdk => cfg_name}
+#      $re_config["wm"]["sdk"] = 
 
       output = File.new('build.yml', 'w+')
       output.puts YAML.dump($re_config)
@@ -69,15 +88,38 @@ namespace "installer" do
 
       $re_config = Jake.config(File.open("build.yml"))
       $re_config["sdk"] = nil
+
+      output = File.new('build.yml', 'w+')
+      output.puts YAML.dump($re_config)
+      output.close
     
       #`rake clean:android`
       `rake device:android:production`
+
+      chdir File.join($package_dir, "RhoElements2 Shared Runtime")
+      rm_rf "android"
+      mkdir "android"
+
+      cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
         
     def buildRhoElements2App()
+      #change rhobuild.yml 
+      rhodesDir = ""
+      begin
+        rhodesDir = Jake.run2("get-rhodes-info", ['--rhodes-path'], {:hide_output => true})
+      rescue Exception => e
+        puts 'Install the rhodes gem'
+        exit 
+      end 
+
+      rhodesDir = rhodesDir.chomp
+
+      cp_r "rhobuild.yml", File.join(rhodesDir, "rhobuild.yml")
+
       buildRhoElementsWmCfg("MC3000c50b (ARMV4I)", "MC3000c50b (ARMV4I)")
       buildRhoElementsWmCfg("Windows Mobile 6 Professional SDK (ARMV4I)", "wm6p")
-      #buildRhoElementsAndroidCfg()
+      buildRhoElementsAndroidCfg()
 
       chdir File.join($package_dir, "RhoElements2")
       rm_rf "bin"
@@ -99,23 +141,6 @@ namespace "installer" do
       cp_r rho_elements_src_dir, rho_elements_dst_dir
 
       chdir File.dirname(__FILE__)
-    end
-
-    def exportPlugin
-        destination = File.expand_path File.join($package_dir, 'eclipse')
-        destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
-        pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
-
-        FileUtils.rm Dir.glob(destinationJarGlob)
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}`
-    end
-
-    def exportFeature
-        destination = File.expand_path File.join($installer_dir, 'feature')
-        featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
-
-        FileUtils.rm_rf destination
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}`
     end
 
     def prepareNsisScript(installDir)
@@ -193,13 +218,13 @@ namespace "installer" do
         Jake.run2 "gem", ["install", "rhodes-translator"], {:nowait => false} 
         Jake.run2 "gem", ["install", "mspec"], {:nowait => false} 
 
-        #if isRhodesBeta == false
-        #  Jake.run2 "gem", ["install", "rhodes"], {:nowait => false} 
-        #else
-        #  Jake.run2 "gem", ["install", "rhodes", "--pre"], {:nowait => false} 
-        #end
+        if isRhodesBeta == false
+          Jake.run2 "gem", ["install", "rhodes"], {:nowait => false} 
+        else
+          Jake.run2 "gem", ["install", "rhodes", "--pre"], {:nowait => false} 
+        end
 
-	      if isConnBeta == false
+        if isConnBeta == false
           Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
         else
           Jake.run2 "gem", ["install", "rhoconnect", "--pre"], {:nowait => false}       
@@ -303,6 +328,7 @@ namespace "installer" do
         task :plugin do
             exportPlugin
         end
+
         task :feature do
             exportFeature
         end
@@ -323,7 +349,7 @@ namespace "installer" do
     end
 
     task :test do
-      exportFeature
+      buildRhoElementsAndroidCfg()
     end
 
 end
