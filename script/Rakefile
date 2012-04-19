@@ -115,7 +115,7 @@ namespace "installer" do
 
       rhodesDir = rhodesDir.chomp
 
-      cp_r "rhobuild.yml", File.join(rhodesDir, "rhobuild.yml")
+      #cp_r "rhobuild.yml", File.join(rhodesDir, "rhobuild.yml")
 
       buildRhoElementsWmCfg("MC3000c50b (ARMV4I)", "MC3000c50b (ARMV4I)")
       buildRhoElementsWmCfg("Windows Mobile 6 Professional SDK (ARMV4I)", "wm6p")

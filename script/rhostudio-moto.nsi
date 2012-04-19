@@ -78,6 +78,7 @@ section
     # point the new shortcut at the program uninstaller
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Launches RhoStudio IDE.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Shared Runtime binaries.lnk" "$INSTDIR\RhoElements2 Shared Runtime" "" "SHELL32.dll" 5
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
@@ -113,6 +114,7 @@ section "uninstall"
     delete "$SMPROGRAMS\RhoMobile Suite\Readme.lnk"
     delete "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk"
     delete "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Shared Runtime binaries.lnk" 
     delete "$SMPROGRAMS\RhoMobile Suite\"
 
     ExecWait 'net stop redis'
