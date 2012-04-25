@@ -31,18 +31,17 @@ How to build in first time:
 Need software:
 
 NSIS installer (link - http://rhostudio.s3.amazonaws.com/instant/work/RhoStudioDMG.dmg)
-NSIS large string path (link - http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
-Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/installer-win.rar)
+NSIS large string patch (link - http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
+Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
 
-For windows maked rake script for build installer
+For windows maked rake script for build installer. Script for build place in 'script' subfolder.
+Before use the script need add in PATH env. var. path to ruby bin folder which places in installer package 
+(.../installer/package/ruby/bin)
 
 settings:
 
 $majorVer, $minorVer, $miniVer, $betaVer
 Version number. $betaVer use only in beta and user configurations.
-
-$isRhodesBeta, $isConnBeta, $isAdapterBeta
-Settings for configure 'user' task. If parameter is true then download beta version of gem.
 
 $nsisPath
 Path to NSIS compiler (with file name)
@@ -53,19 +52,18 @@ Path to ruby installation directory
 $rubyInstallPath
 Path to ruby directory what use in ianstaller
 
+$rhodesgem 
+Path to rhodes gem file
+   
+$rhoelemetsgem 
+Path to rhoelements gem file
+
 commands:
 
-rake installer:user
-download and install versions rhodes, rhoconnect, rhoconnect-adapters from beta flags in rake script
-after it, build installer with name 'RhoStudioInstaller#.#.#.beta#.exe'
-
-rake installer:beta
-download and install latest beta versions rhodes, rhoconnect, rhoconnect-adapters
-after it, build installer with name 'RhoStudioInstaller#.#.#.beta#.exe'
-
-rake installer:release 
+rake installer:motorola
 download and install latest release versions rhodes, rhoconnect, rhoconnect-adapters
-after it, build installer with name 'RhoStudioInstaller#.#.#.exe'
+after it, build installer with name 'MotorolaRhoMobileSuite#.#.#.exe'. 
+The file is placed in package folder after build finished.
 
 *** OSX installer ***
 
