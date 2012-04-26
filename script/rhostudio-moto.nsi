@@ -81,13 +81,13 @@ section
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk" "$INSTDIR\eclipse\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio.lnk" "$INSTDIR\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
-    ShellLink::SetRunAsAdministrator "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk"
+    #ShellLink::SetRunAsAdministrator "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk"
  
     # added information in 'unistall programs' in contorol panel
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
@@ -118,7 +118,7 @@ section "uninstall"
  
     # second, remove the link from the start menu    
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk"
+    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk"
