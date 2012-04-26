@@ -1,5 +1,9 @@
 How to build in first time:
 
+*** RhoStudio plugin ***
+
+*** RhoStudio feature ***
+
 *** Eclipse product ***
 
 1. Download Eclipse 3.6 for RPC developer config
@@ -11,8 +15,7 @@ How to build in first time:
    3.1 Goto File/Import menu item 
    3.2 Select General/Existing Project into Workspace
    3.3 Select repository directory 
-   3.4 Finish
-   
+   3.4 Finish   
    3.5 Import 
 
 4. After import RhoStudio project you should see RhoStudio product item in project tree
@@ -37,6 +40,8 @@ Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/install
 For windows maked rake script for build installer. Script for build place in 'script' subfolder.
 Before use the script need add in PATH env. var. path to ruby bin folder which places in installer package 
 (.../installer/package/ruby/bin)
+
+Before use installer build script need update it from git.
 
 settings:
 
