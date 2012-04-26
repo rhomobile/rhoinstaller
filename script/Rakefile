@@ -130,7 +130,10 @@ namespace "installer" do
       require "rhoelements"
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
-      cp_r rho_elements_src_dir, rho_elements_dst_dir
+
+      if File.exists? rho_elements_src_dir
+        cp_r rho_elements_src_dir, rho_elements_dst_dir
+      end
 
       chdir File.dirname(__FILE__)
     end
@@ -240,7 +243,7 @@ namespace "installer" do
     end
 
     namespace "motorola" do
-      task :gems do
+      task :gems => "installer:rhostudio:plugin" do
         puts 'release - reinstall gems task'        
         $commonName = "MotorolaRhoMobileSuite"
 
