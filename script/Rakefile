@@ -29,8 +29,12 @@ $config            = Jake.config(File.open("installer.yml"))
 $installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')     
 $package_dir       = File.join($installer_dir, 'package')
 $feature_dir       = File.join($installer_dir, 'feature')
-$studio_dir        = 'C:\Android\rhodes-plugins' #'/Users/sv/rhomobile/rhostudio'
+$workspace_dir     = 'C:\Android\rhodes-plugins-ws'
+# $workspace_dir     = '/Users/sv/rhomobile/workspace/'
+$studio_dir        = 'C:\Android\rhodes-plugins'
+# $studio_dir        = '/Users/sv/rhomobile/rhostudio'
 $eclipseLauncherJar = 'C:\Android\installer\package\eclipse\plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
+# $eclipseLauncherJar = '/Users/sv/rhomobile/eclipse/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
 
 namespace "installer" do
 
@@ -40,16 +44,16 @@ namespace "installer" do
         pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
 
         rm Dir.glob(destinationJarGlob)
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}`
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=#{destination}`
     end
 
     def exportFeature
         destination = File.expand_path File.join($installer_dir, 'feature')
         featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
 
-        #rm_rf destination
-        #puts "java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}"
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{featureExport} -Ddestination=#{destination}`
+        rm_r destination
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}`
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -sources #{destination} -compress -append -publishArtifacts`
     end
 
     def updateSas 
