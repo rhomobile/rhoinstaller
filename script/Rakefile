@@ -7,16 +7,16 @@ load 'jake.rb'
 $majorVer = "2"
 $minorVer = "0"
 $miniVer  = "0"
-$betaVer  = "3"
+$betaVer  = "5"
 
-$isConnBeta     = false
+$isConnBeta     = true
 $isAdapterBeta  = false
 $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.14.gem"
-$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.14.gem"
+$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.16.gem"
+$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.16.gem"
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $rubyPath          = "C:/Android/rhosync/ruby"
 $rubyInstallPath   = "C:/Android/Installer/package/ruby"
@@ -29,8 +29,8 @@ $config            = Jake.config(File.open("installer.yml"))
 $installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')     
 $package_dir       = File.join($installer_dir, 'package')
 $feature_dir       = File.join($installer_dir, 'feature')
-$studio_dir        = 'C:/Android/rhodes-plugins' #'/Users/sv/rhomobile/rhostudio'
-$eclipseLauncherJar = 'C:/eclipse/plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar'
+$studio_dir        = 'C:\Android\rhodes-plugins' 
+$eclipseLauncherJar = 'C:\eclipse\plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
 
 namespace "installer" do
 
@@ -39,7 +39,8 @@ namespace "installer" do
         destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
         pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
 
-        #rm Dir.glob(destinationJarGlob)
+        rm Dir.glob(destinationJarGlob)
+        puts "java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}"
         `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -buildfile #{pluginExport} -Ddestination=#{destination}`
     end
 
@@ -101,24 +102,17 @@ namespace "installer" do
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
         
-    def buildRhoElements2App()
-      #change rhobuild.yml 
-      rhodesDir = ""
-      begin
-        rhodesDir = Jake.run2("get-rhodes-info", ['--rhodes-path'], {:hide_output => true})
-      rescue Exception => e
-        puts 'Install the rhodes gem'
-        exit 
-      end 
+    def deployRhoElementsBinaries
+      $app_config = Hash.new
+      $app_config["extpaths"] = Array.new
 
-      rhodesDir = rhodesDir.chomp
-      puts 'rhodesDir - ' + rhodesDir
-
-      cp_r "rhobuild.yml", File.join(rhodesDir, "rhobuild.yml")
-
-      buildRhoElementsWmCfg("MC3000c50b (ARMV4I)", "MC3000c50b (ARMV4I)", "Windows CE")
-      buildRhoElementsWmCfg("Windows Mobile 6 Professional SDK (ARMV4I)", "wm6p", "Windows Mobile")
-      buildRhoElementsAndroidCfg()
+      rho_elements_dst_dir = File.join($package_dir, "RhoElements2 Shared Runtime")
+      rm_rf rho_elements_dst_dir
+      require "rhoelements"
+      rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2", "Runtime"))
+      puts "source Rhoelements2 directory: " + rho_elements_src_dir
+      cp_r rho_elements_src_dir, rho_elements_dst_dir
+      rm_rf rho_elements_src_dir
     end
 
     def deployRhoElements2App
@@ -187,8 +181,7 @@ namespace "installer" do
         #FileUtils.cp_r $rubyPath, $rubyInstallPath
     end
 
-    def installMotoGems(isElementsBeta)
-        return
+    def installMotoGems(isElementsBeta)        
         if File.exist? $rhoelemetsgem
           Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
           Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
@@ -198,8 +191,7 @@ namespace "installer" do
        end
     end
 
-    def installGems(isConnBeta, isAdapterBeta)
-        return
+    def installGems(isConnBeta, isAdapterBeta)        
         Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhodes", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhoconnect", "-a"], {:nowait => false}       
@@ -250,17 +242,13 @@ namespace "installer" do
         puts 'release - reinstall gems task'        
         $commonName = "MotorolaRhoMobileSuite"
 
-        #installGems($isConnBeta, $isAdapterBeta)
-        #installMotoGems($isElementsBeta)
+        installGems($isConnBeta, $isAdapterBeta)
+        installMotoGems($isElementsBeta)
+
         updateSas()
         changeRubyFolder()
+        deployRhoElementsBinaries
         deployRhoElements2App()
-        buildRhoElements2App()
-        deployRhoElements2App
-        buildRhoElements2App
-
-        rm_rf File.join($package_dir, "RhoElements2")
-        deployRhoElements2App
       end
 
       task :nsis => "gems" do 
@@ -300,7 +288,7 @@ namespace "installer" do
     end
 
     task :test do
-      buildRhoElements2App()
+
     end
 
 end
