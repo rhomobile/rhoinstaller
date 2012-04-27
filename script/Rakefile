@@ -117,7 +117,7 @@ namespace "installer" do
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2", "Runtime"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
 
-      if File.exists? File.join(rho_elements_src_dir, "Runtime")
+      if File.exists? File.join(rho_elements_src_dir)
         cp_r rho_elements_src_dir, rho_elements_dst_dir
         rm_rf rho_elements_src_dir
       end
