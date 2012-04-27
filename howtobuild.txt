@@ -7,6 +7,8 @@ How to build in first time:
 *** Eclipse product ***
 
 1. Download Eclipse 3.6 for RPC developer config
+1.1 dltk
+1.2 egit
 
 2. clone Rhostudio repositary (git clone git@github.com:rhomobile/rhostudio.git)
   
@@ -27,7 +29,7 @@ How to build in first time:
    5.3 Uncheck 'Generate metadata repositary' item 
    5.4 Place destination directory 
 
-6. Copy product files in directory with eclipse assambly
+6. Copy product files in directory with eclipse assambly <!!!>
 
 *** Windows installer ***
 
@@ -37,11 +39,25 @@ NSIS installer (link - http://rhostudio.s3.amazonaws.com/instant/work/RhoStudioD
 NSIS large string patch (link - http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
 Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
 
-For windows maked rake script for build installer. Script for build place in 'script' subfolder.
-Before use the script need add in PATH env. var. path to ruby bin folder which places in installer package 
-(.../installer/package/ruby/bin)
+steps:
 
-Before use installer build script need update it from git.
+1. Install eclipse 3.6 for RPC and RAP developers
+
+2. Downdload package archive, unpack it and update from installer repo
+
+2. Clone rhostudio repo and doing steps from README.MD file, 'Steps to build RhoStudio' section
+
+3. Install NSIS and patch for large strings
+
+4. Add ruby path from installer package (.../installer/package/ruby/bin) to PATH env. variable 
+
+5. Change settings for you computer (see 'settings' section below)
+
+6. Try to run rake command for build installer (see 'commands' section)
+
+7. In build process you do see invite for remove gems in command line. Need enter 'y' for all gems 
+
+8. After script finish working you can find installer in package directory 
 
 settings:
 
@@ -51,17 +67,17 @@ Version number. $betaVer use only in beta and user configurations.
 $nsisPath
 Path to NSIS compiler (with file name)
 
-$rubyPath
-Path to ruby installation directory 
-
-$rubyInstallPath
-Path to ruby directory what use in ianstaller
-
 $rhodesgem 
 Path to rhodes gem file
    
 $rhoelemetsgem 
 Path to rhoelements gem file
+
+$workspace_dir 
+Path to eclipse workspace with imported pluign for build rhostudio plugin
+
+$studio_dir 
+Path to rhostudio repositary
 
 commands:
 

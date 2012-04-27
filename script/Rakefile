@@ -31,7 +31,7 @@ $package_dir       = File.join($installer_dir, 'package')
 $feature_dir       = File.join($installer_dir, 'feature')
 $workspace_dir     = 'C:\Android\rhodes-plugins-ws'
 $studio_dir        = 'C:\Android\rhodes-plugins'
-$eclipseLauncherJar = 'C:\Android\installer\package\eclipse\plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar'
+$eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar")
 
 
 namespace "installer" do
@@ -247,7 +247,7 @@ namespace "installer" do
     end
 
     namespace "motorola" do
-      task :gems => "installer:rhostudio:plugin" do
+      task :gems do #=> "installer:rhostudio:plugin" do
         puts 'release - reinstall gems task'        
         $commonName = "MotorolaRhoMobileSuite"
 
