@@ -15,8 +15,8 @@ $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.16.gem"
-$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.16.gem"
+$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.17.gem"
+$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.17.gem"
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $rubyPath          = "C:/Android/rhosync/ruby"
 $rubyInstallPath   = "C:/Android/Installer/package/ruby"
@@ -40,9 +40,12 @@ namespace "installer" do
         destination = File.expand_path File.join($package_dir, 'eclipse')
         destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
         pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
+        rhoStudioExe = File.join(destination, "RhoStudio.exe")
 
         rm Dir.glob(destinationJarGlob)
         `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=#{destination}`
+
+        `#{rhoStudioExe}`
     end
 
     def exportFeature
@@ -113,8 +116,11 @@ namespace "installer" do
       require "rhoelements"
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2", "Runtime"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
-      cp_r rho_elements_src_dir, rho_elements_dst_dir
-      rm_rf rho_elements_src_dir
+
+      if File.exists? File.join(rho_elements_src_dir, "Runtime")
+        cp_r rho_elements_src_dir, rho_elements_dst_dir
+        rm_rf rho_elements_src_dir
+      end
     end
 
     def deployRhoElements2App
@@ -130,11 +136,7 @@ namespace "installer" do
       require "rhoelements"
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
-
-      if File.exists? rho_elements_src_dir
-        cp_r rho_elements_src_dir, rho_elements_dst_dir
-      end
-
+      cp_r rho_elements_src_dir, rho_elements_dst_dir
       chdir File.dirname(__FILE__)
     end
 
@@ -186,7 +188,7 @@ namespace "installer" do
         #FileUtils.cp_r $rubyPath, $rubyInstallPath
     end
 
-    def installMotoGems(isElementsBeta)        
+    def installMotoGems(isElementsBeta)
         if File.exist? $rhoelemetsgem
           Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
           Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
@@ -273,13 +275,13 @@ namespace "installer" do
     end
 
     namespace "rhostudio" do
-        task :plugin do
-            exportPlugin
-        end
+      task :plugin do
+        exportPlugin
+      end
 
-        task :feature do
-            exportFeature
-        end
+      task :feature do
+        exportFeature
+      end
     end
 
     ########################################################
