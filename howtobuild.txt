@@ -45,7 +45,7 @@ steps:
 
 2. Downdload package archive, unpack it and update from installer repo
 
-2. Clone rhostudio repo and doing steps from README.MD file, 'Steps to build RhoStudio' section
+2. Clone rhostudio repo and doing steps from README.MD file, 'Steps to build RhoStudio' section # don't need
 
 3. Install NSIS and patch for large strings
 
@@ -73,10 +73,10 @@ Path to rhodes gem file
 $rhoelemetsgem 
 Path to rhoelements gem file
 
-$workspace_dir 
+$workspace_dir # don't need
 Path to eclipse workspace with imported pluign for build rhostudio plugin
 
-$studio_dir 
+$studio_dir # don't need
 Path to rhostudio repositary
 
 commands:
