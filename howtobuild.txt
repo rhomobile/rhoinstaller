@@ -35,7 +35,7 @@ How to build in first time:
 
 Need software:
 
-NSIS installer (link - http://rhostudio.s3.amazonaws.com/instant/work/RhoStudioDMG.dmg)
+NSIS installer (link - http://nsis.sourceforge.net/Download)
 NSIS large string patch (link - http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
 Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
 
