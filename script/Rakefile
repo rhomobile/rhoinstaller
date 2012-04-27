@@ -181,11 +181,13 @@ namespace "installer" do
     end
 
     def changeRubyFolder()
+        chdir $package_dir
         #copy ruby folder
         puts 'start change ruby folder'
         FileUtils.rm_rf "./eclipse/configuration/.setting"
         #FileUtils.rm_rf $rubyInstallPath      
         #FileUtils.cp_r $rubyPath, $rubyInstallPath
+        chdir File.dirname(__FILE__)
     end
 
     def installMotoGems(isElementsBeta)
