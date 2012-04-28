@@ -56,7 +56,7 @@ namespace "installer" do
 
         rm_rf destination
         `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}`
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -sources #{destination} -compress -append -publishArtifacts`
+        `java -jar #{$eclipseLauncherJar} -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -source #{destination} -compress -append -publishArtifacts`
     end
 
     def updateSas 
@@ -145,17 +145,19 @@ namespace "installer" do
     def prepareNsisScript(installDir)
        chdir File.dirname(__FILE__)
 
+       replacement = Regexp.escape File.expand_path("./").gsub("\/","\\")
+
        FileUtils.cp_r $installScript, installDir
        script_name = File.join(installDir, $installScript)
        install_script = File.read(script_name)
-       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, File.expand_path("./").gsub("\/","\\"))
+       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, replacement)
        File.open(script_name, "w") { |file| file.puts install_script }
 
        # script for motorola
        FileUtils.cp_r $installMotoScript, installDir
        script_name = File.join(installDir, $installMotoScript)
        install_script = File.read(script_name)
-       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, File.expand_path("./").gsub("\/","\\"))
+       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, replacement)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
 
