@@ -10,7 +10,7 @@
  
   Name "Motorola RhoMobile Suite"
   OutFile "MotorolaRhoMobileSuite.exe"
-  InstallDir "$PROGRAMFILES\Motorola RhoMobile Suite"
+  InstallDir "C:\MotorolaRhoMobileSuite"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -66,10 +66,20 @@ section
 
     SetShellVarContext all
 
+    # check install JRE or not, if not show message box and exit from installer
     ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\javaws.exe" "Path"
               
     StrCmp $0 "" jreInstallFail   
-     
+
+    # check spaces in install path, if path contain spaces show message box and exit from installer
+    ${StrStr} $0 $INSTDIR " "
+
+    StrLen $1 $0
+
+    ${If} $1 != 0
+      Goto spacesInInstallPath
+    ${EndIf}
+
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
  
@@ -98,6 +108,10 @@ section
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     
     Goto okFinishSection
+
+    spacesInInstallPath:
+        MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces.  Ruby will not work properly in a path with spaces."
+        Quit 
     
     jreInstallFail:
         MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Java Runtime Environment could not be found on your computer. Please install Java Runtime Environment before RhoStudio."
