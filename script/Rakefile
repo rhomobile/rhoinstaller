@@ -15,8 +15,8 @@ $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.17.gem"
-$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.17.gem"
+$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.18.gem"
+$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.18.gem"
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $rubyPath          = "C:/Android/rhosync/ruby"
 $rubyInstallPath   = "C:/Android/Installer/package/ruby"
@@ -112,12 +112,12 @@ namespace "installer" do
       $app_config["extpaths"] = Array.new
 
       rho_elements_dst_dir = File.join($package_dir, "RhoElements2 Shared Runtime")
-      rm_rf rho_elements_dst_dir
       require "rhoelements"
       rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2", "Runtime"))
       puts "source Rhoelements2 directory: " + rho_elements_src_dir
 
       if File.exists? File.join(rho_elements_src_dir)
+        rm_rf rho_elements_dst_dir
         cp_r rho_elements_src_dir, rho_elements_dst_dir
         rm_rf rho_elements_src_dir
       end
@@ -191,7 +191,8 @@ namespace "installer" do
     end
 
     def installMotoGems(isElementsBeta)
-        if File.exist? $rhoelemetsgem
+       return 
+       if File.exist? $rhoelemetsgem
           Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
           Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
        else
@@ -201,6 +202,7 @@ namespace "installer" do
     end
 
     def installGems(isConnBeta, isAdapterBeta)        
+        return
         Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhodes", "-a"], {:nowait => false} 
         Jake.run2 "gem", ["uninstall", "rhoconnect", "-a"], {:nowait => false}       
