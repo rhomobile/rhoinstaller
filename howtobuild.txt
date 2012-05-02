@@ -31,41 +31,67 @@ How to build in first time:
 
 6. Copy product files in directory with eclipse assambly <!!!>
 
+
 *** Windows installer ***
 
-Need software:
+Download:
 
-NSIS installer (link - http://nsis.sourceforge.net/Download)
-NSIS large string patch (link - http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
-Installer package (link - http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
+1. JDK (32-bit) (http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-windows-i586.exe)
 
-steps:
+2. NSIS installer (http://nsis.sourceforge.net/Download).
+    NSIS large string patch (http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
 
-1. Install eclipse 3.6 for RPC and RAP developers # don't need
+3. Eclipse for RCP and RAP Developers (http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/R/eclipse-rcp-helios-win32-x86_64.zip)
 
-2. Downdload package archive, unpack it and update from installer repo
+4. Installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
 
-3. Clone rhostudio repo and doing steps from README.MD file, 'Steps to build RhoStudio' section # don't need
+5. RhoStudio repository (git clone http://github.com/rhomobile/rhostudio.git)
 
-4. Install NSIS and patch for large strings
+6. Rhodes and RhoElements gems.
 
-5. Add ruby path from installer package (.../installer/package/ruby/bin) to PATH env. variable 
 
-6. Change settings for you computer (see 'settings' section below)
+Install:
 
-7. Try to run rake command for build installer (see 'commands' section)
+1. Install JDK.
 
-8. In build process you do see invite for remove gems in command line. Need enter 'y' for all gems 
+2. Install NSIS. Unpack NSIS large string patch and copy patch content into NSIS installation.
 
-9. After script finish working you can find installer in package directory 
+3. Unpack Eclipse for RCP and RAP Developers.
+   Run Eclipse, select new workspace and remeber path to it.
+   Install DLTK 2.0 from http://download.eclipse.org/technology/dltk/updates/.
+   Import rhostudio projects into workspace.
+   Close Eclipse.
 
-settings:
+4. Unpack installer package archive. Update from installer repository (git checkout ., git pull).
+
+
+Build:
+
+1. Copy Rhodes and RhoElements gems to installer package at path 'installer\installer\package\rhoelements gems'.
+
+2. Change settings in installer\script\Rakefile (see 'Settings' section below).
+
+3. Run new console (cmd.exe), change PATH to include Ruby in installer package (installer\package\ruby\bin).
+
+4. In console change directory to installer\script.
+
+5. Run 'rake installer:rhostudio:plugin' command.
+    When RhoStudio starts select workspace, load it and exit.
+    Check for new plugin with 'dir /b ..\package\eclipse\plugins\com.rhomobile.rhostudio_*.jar' command.
+    Check line 'com.rhomobile.rhostudio,...' in ..\package\eclipse\configuration\org.eclipse.equinox.simpleconfigurator\bundles.info file.
+
+6. Run 'rake installer:motorola' command
+    (At the begining of build process you will see invitation to remove gems. Enter 'y' for all requests.
+    After script finishes working check ..\package directory fot new installer). 
+
+
+Settings:
 
 $majorVer, $minorVer, $miniVer, $betaVer
 Version number. $betaVer use only in beta and user configurations.
 
 $nsisPath
-Path to NSIS compiler (with file name)
+Path to NSIS compiler with file name ('C:/Program Files (x86)/NSIS/makensis.exe')
 
 $rhodesgem 
 Path to rhodes gem file
@@ -73,10 +99,10 @@ Path to rhodes gem file
 $rhoelemetsgem 
 Path to rhoelements gem file
 
-$workspace_dir # don't need
-Path to eclipse workspace with imported pluign for build rhostudio plugin
+$workspace_dir
+Path to eclipse workspace with imported plugin for build rhostudio plugin
 
-$studio_dir # don't need
+$studio_dir
 Path to rhostudio repositary
 
 commands:
