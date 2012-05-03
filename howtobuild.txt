@@ -60,6 +60,7 @@ Install:
    Run Eclipse, select new workspace and remeber path to it.
    Install DLTK 2.0 from http://download.eclipse.org/technology/dltk/updates/.
    Import rhostudio projects into workspace.
+   Quick fix build problems.
    Close Eclipse.
 
 4. Unpack installer package archive. Update from installer repository (git checkout ., git pull).
