@@ -76,7 +76,7 @@ Build:
 
 4. In console change directory to installer\script.
 
-5. Run 'rake installer:rhostudio:plugin' command.
+5. Export plugin from Eclipse GUI (was: Run 'rake installer:rhostudio:plugin' command).
     When RhoStudio starts select workspace, load it and exit.
     Check for new plugin with 'dir /b ..\package\eclipse\plugins\com.rhomobile.rhostudio_*.jar' command.
     Check line 'com.rhomobile.rhostudio,...' in ..\package\eclipse\configuration\org.eclipse.equinox.simpleconfigurator\bundles.info file.
