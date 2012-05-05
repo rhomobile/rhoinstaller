@@ -7,7 +7,7 @@ load 'jake.rb'
 $majorVer = "2"
 $minorVer = "0"
 $miniVer  = "0"
-$betaVer  = "5"
+$betaVer  = "5.20"
 
 $isConnBeta     = true
 $isAdapterBeta  = false
@@ -15,28 +15,38 @@ $isElementsBeta = true
 
 $isMotorolaBeta = true
 
-$rhodesgem         = "C:/Android/installer/package/rhoelements gems/Beta5/rhodes-3.3.3.beta.5.18.gem"
-$rhoelemetsgem     = "C:/Android/installer/package/rhoelements gems/Beta5/rhoelements-2.0.0.beta.5.18.gem"
+$installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')
+$package_dir       = File.join($installer_dir, 'package')
+$gems_dir          = File.join($package_dir, 'rhoelements gems')
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
-$rubyPath          = "C:/Android/rhosync/ruby"
-$rubyInstallPath   = "C:/Android/Installer/package/ruby"
 $installScript     = "rhostudio.nsi"
 $installMotoScript = "rhostudio-moto.nsi"
 $commonName        = "RhoStudioInstaller"
 $extWinExe         = '.exe'
 $extOsxExe         = '.dmg'
 $config            = Jake.config(File.open("installer.yml"))
-$installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')     
-$package_dir       = File.join($installer_dir, 'package')
-$feature_dir       = File.join($installer_dir, 'feature')
-$workspace_dir     = 'C:\Android\rhodes-plugins-ws'
+$workspace_dir     = 'C:\Users\sv\rhomobile\.inst\workspace'
 # $workspace_dir     = '/Users/sv/rhomobile/workspace'
-$studio_dir        = 'C:\Android\rhodes-plugins'
+$studio_dir        = 'C:\Users\sv\rhomobile\.inst\rhostudio'
 # $studio_dir        = '/Users/sv/rhomobile/rhostudio'
 $eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar")
 
 
 namespace "installer" do
+
+    def findGem(prefix)
+        glob = File.join($gems_dir, '**', prefix + '-*.gem')
+        gems = Dir.glob glob
+        if gems.length == 0
+            puts "Error: Gem '#{glob}' is not found."
+            exit 1
+        elsif gems.length > 1
+            puts "Error: Several gems '#{glob}' are found:"
+            gems.each { |gem| puts "    '#{gem}'" }
+            exit 1
+        end
+        return gems[0]
+    end
 
     def exportPlugin
         destination = File.expand_path File.join($package_dir, 'eclipse')
@@ -189,39 +199,41 @@ namespace "installer" do
         #copy ruby folder
         puts 'start change ruby folder'
         FileUtils.rm_rf "./eclipse/configuration/.setting"
-        #FileUtils.rm_rf $rubyInstallPath      
-        #FileUtils.cp_r $rubyPath, $rubyInstallPath
         chdir File.dirname(__FILE__)
     end
 
     def installMotoGems(isElementsBeta)
-       if File.exist? $rhoelemetsgem
-          Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
-          Jake.run2 "gem", ["install", $rhoelemetsgem], {:nowait => false} 
-       else
-          puts 'Rhoelements gem not found [' + $rhoelemetsgem + ']'
-          exit
-       end
+        rhoelementsgem = findGem('rhoelements')
+        puts "Found rhoelements gem '#{rhoelementsgem}'"
+
+        Jake.run2 "gem", ["uninstall", "rhoelements", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["install", rhoelementsgem], {:nowait => false}
     end
 
     def installGems(isConnBeta, isAdapterBeta)        
-        Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "rhodes", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "rhoconnect", "-a"], {:nowait => false}       
-        Jake.run2 "gem", ["uninstall", "rhoconnect-adapters", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "rhodes-translator", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "rhoelements", "-a"], {:nowait => false} 
-        Jake.run2 "gem", ["uninstall", "mspec", "-a"], {:nowait => false} 
+        rhodesgem = findGem('rhodes')
+        puts "Found rhodes gem '#{rhodesgem}'"
+
+        Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "rhodes", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "rhoconnect-adapters", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "rhoconnect", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "eventmachine", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "rhodes-translator", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "rhoelements", "-aIx"], {:nowait => false}
+        Jake.run2 "gem", ["uninstall", "mspec", "-aIx"], {:nowait => false}
 
         Jake.run2 "gem", ["install", "rhomobile-debug"], {:nowait => false} 
         Jake.run2 "gem", ["install", "rhodes-translator"], {:nowait => false} 
         Jake.run2 "gem", ["install", "mspec"], {:nowait => false} 
 
-        Jake.run2 "gem", ["install", $rhodesgem], {:nowait => false} 
+        Jake.run2 "gem", ["install", rhodesgem], {:nowait => false}
 
         if isConnBeta == false
+          Jake.run2 "gem", ["install", "eventmachine"], {:nowait => false}
           Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
         else
+          Jake.run2 "gem", ["install", "eventmachine", "--pre"], {:nowait => false}
           Jake.run2 "gem", ["install", "rhoconnect", "--pre"], {:nowait => false}       
         end
 
