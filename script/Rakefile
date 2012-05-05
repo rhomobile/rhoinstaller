@@ -69,8 +69,10 @@ namespace "installer" do
     end
 
     def updateSas 
-      chdir File.join($package_dir, "samples", "rhodes-system-api-samples")
-      `git pull`
+      repo = File.join($package_dir, 'samples', 'rhodes-system-api-samples')
+      cmd = "cd \"#{repo}\"&&git pull"
+      puts cmd
+      exit 1 if !(system cmd)
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name, out_dir_name)
@@ -118,37 +120,23 @@ namespace "installer" do
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
         
-    def deployRhoElementsBinaries
-      $app_config = Hash.new
-      $app_config["extpaths"] = Array.new
-
-      rho_elements_dst_dir = File.join($package_dir, "RhoElements2 Shared Runtime")
-      require "rhoelements"
-      rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2", "Runtime"))
-      puts "source Rhoelements2 directory: " + rho_elements_src_dir
-
-      if File.exists? File.join(rho_elements_src_dir)
-        rm_rf rho_elements_dst_dir
-        cp_r rho_elements_src_dir, rho_elements_dst_dir
-        rm_rf rho_elements_src_dir
+    def deployRhoElements2
+      def moveDir(source, targetName)
+        target = File.join($package_dir, targetName)
+        puts "move '#{source}' to '#{target}'"
+        rm_rf target
+        mv source, target
       end
-    end
-
-    def deployRhoElements2App
-      chdir $package_dir
 
       $app_config = Hash.new
       $app_config["extpaths"] = Array.new
 
-      chdir $package_dir
-      rm_rf "RhoElements2"
-      rho_elements_dst_dir = "RhoElements2"
-      rm_rf rho_elements_dst_dir
       require "rhoelements"
-      rho_elements_src_dir = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
-      puts "source Rhoelements2 directory: " + rho_elements_src_dir
-      cp_r rho_elements_src_dir, rho_elements_dst_dir
-      chdir File.dirname(__FILE__)
+
+      source = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
+
+      moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
+      moveDir(          source            , 'RhoElements2'               )
     end
 
     def prepareNsisScript(installDir)
@@ -267,8 +255,7 @@ namespace "installer" do
         updateSas()
         removeEclipseSettings()
         removeRubyCache()
-        deployRhoElementsBinaries
-        deployRhoElements2App()
+        deployRhoElements2
       end
 
       task :nsis => "gems" do 
