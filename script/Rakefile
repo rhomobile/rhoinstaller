@@ -11,7 +11,6 @@ $betaVer  = "5.20"
 
 $isConnBeta     = true
 $isAdapterBeta  = false
-$isElementsBeta = true
 
 $isMotorolaBeta = true
 
@@ -194,25 +193,19 @@ namespace "installer" do
        File.rename($commonName + $extWinExe, installerName) 
     end
 
-    def changeRubyFolder()
-        chdir $package_dir
-        #copy ruby folder
-        puts 'start change ruby folder'
-        FileUtils.rm_rf "./eclipse/configuration/.setting"
-        chdir File.dirname(__FILE__)
+    def removeEclipseSettings
+        FileUtils.rm_rf File.join($package_dir, 'eclipse', 'configuration', '.settings')
     end
 
-    def installMotoGems(isElementsBeta)
-        rhoelementsgem = findGem('rhoelements')
-        puts "Found rhoelements gem '#{rhoelementsgem}'"
-
-        Jake.run2 "gem", ["uninstall", "rhoelements", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["install", rhoelementsgem], {:nowait => false}
+    def removeRubyCache
+        FileUtils.rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
     def installGems(isConnBeta, isAdapterBeta)        
         rhodesgem = findGem('rhodes')
         puts "Found rhodes gem '#{rhodesgem}'"
+        rhoelementsgem = findGem('rhoelements')
+        puts "Found rhoelements gem '#{rhoelementsgem}'"
 
         Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-aIx"], {:nowait => false}
         Jake.run2 "gem", ["uninstall", "rhodes", "-aIx"], {:nowait => false}
@@ -242,13 +235,15 @@ namespace "installer" do
         else
           Jake.run2 "gem", ["install", "rhoconnect-adapters", "--pre"], {:nowait => false} 
         end
+
+        Jake.run2 "gem", ["install", rhoelementsgem], {:nowait => false}
     end  
 
     namespace "user" do
       task :gems do
         installGems($isConnBeta, $isAdapterBeta)
         updateSas()
-        changeRubyFolder()
+        removeEclipseSettings()
       end
 
       task :nsis => "gems" do 
@@ -268,10 +263,10 @@ namespace "installer" do
         $commonName = "MotorolaRhoMobileSuite"
 
         installGems($isConnBeta, $isAdapterBeta)
-        installMotoGems($isElementsBeta)
 
         updateSas()
-        changeRubyFolder()
+        removeEclipseSettings()
+        removeRubyCache()
         deployRhoElementsBinaries
         deployRhoElements2App()
       end
@@ -306,7 +301,6 @@ namespace "installer" do
 
     task :gems do
       installGems($isConnBeta, $isAdapterBeta)
-      installMotoGems($isElementsBeta)
     end
 
     task :motorola => "motorola:rename" do

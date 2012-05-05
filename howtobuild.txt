@@ -84,8 +84,7 @@ Build:
 6. Delete installer\package\eclipse\configuration\.settings directory.
 
 7. Run 'rake installer:motorola' command
-    (At the begining of build process you will see invitation to remove gems. Enter 'y' for all requests.
-    After script finishes working check ..\package directory fot new installer). 
+    (After script finishes working check ..\package directory for new installer). 
 
 
 Settings:
