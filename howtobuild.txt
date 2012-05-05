@@ -49,6 +49,9 @@ Download:
 
 6. Rhodes and RhoElements gems.
 
+7. Run 'git clone git@github.com:rhomobile/eventmachine.git' command next to installer directory.
+   Then run 'cd eventmachine' and 'gem build eventmachine.gemspec' commands.
+
 
 Install:
 
@@ -81,9 +84,7 @@ Build:
     Check for new plugin with 'dir /b ..\package\eclipse\plugins\com.rhomobile.rhostudio_*.jar' command.
     Check line 'com.rhomobile.rhostudio,...' in ..\package\eclipse\configuration\org.eclipse.equinox.simpleconfigurator\bundles.info file.
 
-6. Delete installer\package\eclipse\configuration\.settings directory.
-
-7. Run 'rake installer:motorola' command
+6. Run 'rake installer:motorola' command
     (After script finishes working check ..\package directory for new installer). 
 
 

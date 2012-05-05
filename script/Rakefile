@@ -7,7 +7,7 @@ load 'jake.rb'
 $majorVer = "2"
 $minorVer = "0"
 $miniVer  = "0"
-$betaVer  = "5.20"
+$betaVer  = "5.22"
 
 $isConnBeta     = true
 $isAdapterBeta  = false
@@ -139,6 +139,13 @@ namespace "installer" do
       moveDir(          source            , 'RhoElements2'               )
     end
 
+    def installEventmachineGemSpecialEditon
+      gem = File.join($installer_dir, '..', 'eventmachine', 'eventmachine-1.0.0.beta.4.gem')
+      cmd = "gem install \"#{gem}\""
+      puts cmd
+      exit 1 if !system(cmd)
+    end
+
     def prepareNsisScript(installDir)
        chdir File.dirname(__FILE__)
 
@@ -214,7 +221,7 @@ namespace "installer" do
           Jake.run2 "gem", ["install", "eventmachine"], {:nowait => false}
           Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
         else
-          Jake.run2 "gem", ["install", "eventmachine", "--pre"], {:nowait => false}
+          installEventmachineGemSpecialEditon
           Jake.run2 "gem", ["install", "rhoconnect", "--pre"], {:nowait => false}       
         end
 
