@@ -15,6 +15,7 @@ $isAdapterBeta  = false
 $isMotorolaBeta = true
 
 $installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')
+$script_dir        = File.join($installer_dir, 'script')
 $package_dir       = File.join($installer_dir, 'package')
 $gems_dir          = File.join($package_dir, 'rhoelements gems')
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
@@ -125,7 +126,7 @@ namespace "installer" do
         target = File.join($package_dir, targetName)
         puts "move '#{source}' to '#{target}'"
         rm_rf target
-        mv source, target
+        mv(source, target)
       end
 
       $app_config = Hash.new
@@ -146,54 +147,36 @@ namespace "installer" do
       exit 1 if !system(cmd)
     end
 
-    def prepareNsisScript(installDir)
-       chdir File.dirname(__FILE__)
+    def prepareNsisScript(installScript)
+       replacement = Regexp.escape $script_dir.gsub('/',"\\")
 
-       replacement = Regexp.escape File.expand_path("./").gsub("\/","\\")
-
-       FileUtils.cp_r $installScript, installDir
-       script_name = File.join(installDir, $installScript)
-       install_script = File.read(script_name)
-       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, replacement)
-       File.open(script_name, "w") { |file| file.puts install_script }
-
-       # script for motorola
-       FileUtils.cp_r $installMotoScript, installDir
-       script_name = File.join(installDir, $installMotoScript)
-       install_script = File.read(script_name)
-       install_script = install_script.gsub(/%NSIS_SCRIPT_PATH%/, replacement)
+       install_script = File.read(File.join($script_dir, installScript))
+       install_script.gsub!(/%NSIS_SCRIPT_PATH%/, replacement)
+       script_name = File.join($package_dir, installScript)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
 
     def runNsisScript(installScript)
-       chdir $package_dir
+       prepareNsisScript(installScript)
 
-       prepareNsisScript($package_dir)
-       chdir $package_dir
-       Jake.run2 $nsisPath, [installScript], {:nowait => false}
-       chdir File.dirname(__FILE__)
+       cmd = "cd \"#{$package_dir}\"&&\"#{$nsisPath}\" \"#{installScript}\""
+       puts cmd
+       exit 1 if !system(cmd)
     end
 
     def renameInstaller(installerPrefix)
-       chdir $package_dir
+       oldName = $commonName + $extWinExe
+       newName = $commonName + $majorVer.to_s + "." + $minorVer.to_s + "." + $miniVer +  installerPrefix + $extWinExe
 
-       puts 'add version to build file'
-       installerName = ""
-       currTime = Time.now
-       currDate = currTime.strftime("%d%m%Y%H%M")
-
-       installerName = $commonName + $majorVer.to_s + "." + $minorVer.to_s + "." + $miniVer +  installerPrefix + $extWinExe
-
-       puts 'new installer file name: ' + installerName
-       File.rename($commonName + $extWinExe, installerName) 
+       mv(File.join($package_dir, oldName), File.join($package_dir, newName)) 
     end
 
     def removeEclipseSettings
-        FileUtils.rm_rf File.join($package_dir, 'eclipse', 'configuration', '.settings')
+        rm_rf File.join($package_dir, 'eclipse', 'configuration', '.settings')
     end
 
     def removeRubyCache
-        FileUtils.rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
+        rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
     def installGems(isConnBeta, isAdapterBeta)        
