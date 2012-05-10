@@ -7,7 +7,7 @@ load 'jake.rb'
 $majorVer = "2"
 $minorVer = "0"
 $miniVer  = "0"
-$betaVer  = "5.22"
+$betaVer  = "5.23"
 
 $isConnBeta     = true
 $isAdapterBeta  = false
@@ -33,6 +33,17 @@ $eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse
 
 
 namespace "installer" do
+
+    def run(command, cd = nil)
+        puts
+        if cd.nil?
+            puts command
+            exit 1 if !system(command)
+        else
+            puts "#{cd}>#{command}"
+            exit 1 if !system("cd /d \"#{cd}\"&&#{command}")
+        end
+    end
 
     def findGem(prefix)
         glob = File.join($gems_dir, '**', prefix + '-*.gem')
@@ -71,9 +82,7 @@ namespace "installer" do
 
     def updateSas 
       repo = File.join($package_dir, 'samples', 'rhodes-system-api-samples')
-      cmd = "cd \"#{repo}\"&&git pull"
-      puts cmd
-      exit 1 if !(system cmd)
+      run('git pull', repo)
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name, out_dir_name)
@@ -140,13 +149,6 @@ namespace "installer" do
       moveDir(          source            , 'RhoElements2'               )
     end
 
-    def installEventmachineGemSpecialEditon
-      gem = File.join($installer_dir, '..', 'eventmachine', 'eventmachine-1.0.0.beta.4.gem')
-      cmd = "gem install \"#{gem}\""
-      puts cmd
-      exit 1 if !system(cmd)
-    end
-
     def prepareNsisScript(installScript)
        replacement = Regexp.escape $script_dir.gsub('/',"\\")
 
@@ -158,10 +160,7 @@ namespace "installer" do
 
     def runNsisScript(installScript)
        prepareNsisScript(installScript)
-
-       cmd = "cd \"#{$package_dir}\"&&\"#{$nsisPath}\" \"#{installScript}\""
-       puts cmd
-       exit 1 if !system(cmd)
+       run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
     def renameInstaller(installerPrefix)
@@ -179,43 +178,31 @@ namespace "installer" do
         rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
-    def installGems(isConnBeta, isAdapterBeta)        
+    def installGems(isConnBeta, isAdapterBeta)
+        def installGem(gem, pre = false)
+            run "gem install #{gem}#{pre ? ' --pre' : ''}"
+        end
+
         rhodesgem = findGem('rhodes')
         puts "Found rhodes gem '#{rhodesgem}'"
         rhoelementsgem = findGem('rhoelements')
         puts "Found rhoelements gem '#{rhoelementsgem}'"
 
-        Jake.run2 "gem", ["uninstall", "rhomobile-debug", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "rhodes", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "rhoconnect-adapters", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "rhoconnect", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "eventmachine", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "rhodes-translator", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "rhoelements", "-aIx"], {:nowait => false}
-        Jake.run2 "gem", ["uninstall", "mspec", "-aIx"], {:nowait => false}
+        # 'gem update --system' command have to be invoked. But it is batch that changes itself
+        # leading to harmless error.
+        # There is same action as 'gem update --system':
+        gem = File.join($package_dir, 'ruby', 'bin', 'gem')
+        run "ruby \"#{gem}\" update --system"
 
-        Jake.run2 "gem", ["install", "rhomobile-debug"], {:nowait => false} 
-        Jake.run2 "gem", ["install", "rhodes-translator"], {:nowait => false} 
-        Jake.run2 "gem", ["install", "mspec"], {:nowait => false} 
-
-        Jake.run2 "gem", ["install", rhodesgem], {:nowait => false}
-
-        if isConnBeta == false
-          Jake.run2 "gem", ["install", "eventmachine"], {:nowait => false}
-          Jake.run2 "gem", ["install", "rhoconnect"], {:nowait => false}       
-        else
-          installEventmachineGemSpecialEditon
-          Jake.run2 "gem", ["install", "rhoconnect", "--pre"], {:nowait => false}       
-        end
-
-        if isAdapterBeta == false
-          Jake.run2 "gem", ["install", "rhoconnect-adapters"], {:nowait => false} 
-        else
-          Jake.run2 "gem", ["install", "rhoconnect-adapters", "--pre"], {:nowait => false} 
-        end
-
-        Jake.run2 "gem", ["install", rhoelementsgem], {:nowait => false}
-    end  
+        installGem 'rhomobile-debug'
+        installGem 'rhodes-translator'
+        installGem 'mspec'
+        installGem "\"#{rhodesgem}\""
+        installGem 'eventmachine', isConnBeta
+        installGem 'rhoconnect', isConnBeta
+        installGem 'rhoconnect-adapters', isAdapterBeta
+        installGem "\"#{rhoelementsgem}\""
+    end
 
     namespace "user" do
       task :gems do
