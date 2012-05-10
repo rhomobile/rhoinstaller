@@ -31,18 +31,32 @@ $studio_dir        = 'C:\Users\sv\rhomobile\.inst\rhostudio'
 # $studio_dir        = '/Users/sv/rhomobile/rhostudio'
 $eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar")
 
+$ruby_env = {:Path => [
+    File.join($package_dir, 'redis-2.4.0'),
+    File.join($package_dir, 'ruby', 'bin'),
+    File.join($package_dir, 'devkit', 'bin'),
+    File.join($package_dir, 'devkit', 'mingw', 'bin'),
+    File.join($package_dir, 'make-3.81', 'bin')
+].join(File::PATH_SEPARATOR)}
 
 namespace "installer" do
 
-    def run(command, cd = nil)
-        puts
-        if cd.nil?
-            puts command
-            exit 1 if !system(command)
-        else
-            puts "#{cd}>#{command}"
-            exit 1 if !system("cd /d \"#{cd}\"&&#{command}")
+    def run(command, cd = nil, env = {})
+        set_list = []
+        env.each_pair do |k, v|
+            set_list << "set \"#{k}=#{v}\"&&"
         end
+
+        toPrint = command
+        toRun = set_list.join('') + command
+        if !cd.nil?
+            toPrint = "#{cd}>#{toPrint}"
+            toRun = "cd /d \"#{cd}\"&&#{toRun}"
+        end
+
+        puts
+        puts toPrint
+        exit 1 if !system(toRun)
     end
 
     def findGem(prefix)
@@ -51,12 +65,28 @@ namespace "installer" do
         if gems.length == 0
             puts "Error: Gem '#{glob}' is not found."
             exit 1
-        elsif gems.length > 1
+        end
+        if gems.length > 1
             puts "Error: Several gems '#{glob}' are found:"
             gems.each { |gem| puts "    '#{gem}'" }
             exit 1
         end
         return gems[0]
+    end
+
+    def findRhoElements2
+        glob = File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
+        directories = Dir.glob glob
+        if directories.length == 0
+            puts "Error: directory '#{glob}' is not found."
+            exit 1
+        end
+        if directories.length > 1
+            puts "Error: Several directories '#{glob}' are found:"
+            directories.each { |directory| puts "    '#{directory}'" }
+            exit 1
+        end
+        return directories[0]
     end
 
     def exportPlugin
@@ -141,22 +171,17 @@ namespace "installer" do
         mv(source, target)
       end
 
-      $app_config = Hash.new
-      $app_config["extpaths"] = Array.new
-
-      require "rhoelements"
-
-      source = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
+      source = findRhoElements2
 
       moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
       moveDir(          source            , 'RhoElements2'               )
     end
 
     def prepareNsisScript(installScript)
-       replacement = Regexp.escape $script_dir.gsub('/',"\\")
+       replacement = $script_dir.gsub('/',"\\")
 
        install_script = File.read(File.join($script_dir, installScript))
-       install_script.gsub!(/%NSIS_SCRIPT_PATH%/, replacement)
+       install_script.gsub!(/%NSIS_SCRIPT_PATH%/) {replacement}
        script_name = File.join($package_dir, installScript)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
@@ -181,9 +206,15 @@ namespace "installer" do
         rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
+    def copyRuby
+        target = File.join($package_dir, 'ruby')
+        rm_rf target
+        cp_r(File.join($installer_dir, 'ruby'), target)
+    end
+
     def installGems(isConnBeta, isAdapterBeta)
         def installGem(gem, pre = false)
-            run "gem install #{gem}#{pre ? ' --pre' : ''}"
+            run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
         end
 
         rhodesgem = findGem('rhodes')
@@ -195,7 +226,7 @@ namespace "installer" do
         # leading to harmless error.
         # There is same action as 'gem update --system':
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
-        run "ruby \"#{gem}\" update --system"
+        run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
@@ -230,6 +261,7 @@ namespace "installer" do
         puts 'release - reinstall gems task'        
         $commonName = "MotorolaRhoMobileSuite"
 
+        copyRuby
         installGems($isConnBeta, $isAdapterBeta)
 
         updateSas()
@@ -274,7 +306,6 @@ namespace "installer" do
     end
 
     task :test do
-      updateSas
     end
 
 end
