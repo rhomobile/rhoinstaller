@@ -81,8 +81,11 @@ namespace "installer" do
     end
 
     def updateSas 
-      repo = File.join($package_dir, 'samples', 'rhodes-system-api-samples')
-      run('git pull', repo)
+      samples_dir = File.join($package_dir, 'samples')
+      repo_sas = File.join(samples_dir, 'rhodes-system-api-samples')
+      rm_rf repo_sas
+      run('git clone https://github.com/rhomobile/rhodes-system-api-samples.git', samples_dir)
+      rm_rf File.join(repo_sas, ".git")
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name, out_dir_name)
@@ -271,7 +274,7 @@ namespace "installer" do
     end
 
     task :test do
-
+      updateSas
     end
 
 end
