@@ -4,10 +4,8 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-$majorVer = "2"
-$minorVer = "0"
-$miniVer  = "0"
-$betaVer  = "5.23"
+$version = '2.0.0'
+$betaVersion = '5.24'
 
 $isConnBeta     = true
 $isAdapterBeta  = false
@@ -17,13 +15,11 @@ $isMotorolaBeta = true
 $installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')
 $script_dir        = File.join($installer_dir, 'script')
 $package_dir       = File.join($installer_dir, 'package')
-$gems_dir          = File.join($package_dir, 'rhoelements gems')
+$gems_dir          = File.join($installer_dir, 'gems')
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $installScript     = "rhostudio.nsi"
 $installMotoScript = "rhostudio-moto.nsi"
-$commonName        = "RhoStudioInstaller"
 $extWinExe         = '.exe'
-$extOsxExe         = '.dmg'
 $config            = Jake.config(File.open("installer.yml"))
 $workspace_dir     = 'C:\Users\sv\rhomobile\.inst\workspace'
 # $workspace_dir     = '/Users/sv/rhomobile/workspace'
@@ -31,32 +27,52 @@ $studio_dir        = 'C:\Users\sv\rhomobile\.inst\rhostudio'
 # $studio_dir        = '/Users/sv/rhomobile/rhostudio'
 $eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar")
 
+$ruby_env = {:Path => [
+    File.join($package_dir, 'redis-2.4.0'),
+    File.join($package_dir, 'ruby', 'bin'),
+    File.join($package_dir, 'devkit', 'bin'),
+    File.join($package_dir, 'devkit', 'mingw', 'bin'),
+    File.join($package_dir, 'make-3.81', 'bin')
+].join(File::PATH_SEPARATOR)}
 
 namespace "installer" do
 
-    def run(command, cd = nil)
-        puts
-        if cd.nil?
-            puts command
-            exit 1 if !system(command)
-        else
-            puts "#{cd}>#{command}"
-            exit 1 if !system("cd /d \"#{cd}\"&&#{command}")
+    def run(command, cd = nil, env = {})
+        set_list = []
+        env.each_pair do |k, v|
+            set_list << "set \"#{k}=#{v}\"&&"
         end
+
+        toPrint = command
+        toRun = set_list.join('') + command
+        if !cd.nil?
+            toPrint = "#{cd}>#{toPrint}"
+            toRun = "cd /d \"#{cd}\"&&#{toRun}"
+        end
+
+        puts
+        puts toPrint
+        exit 1 if !system(toRun)
+    end
+
+    def findOneItem(glob)
+        items = Dir.glob glob
+        if items.length == 0
+            puts "Error: item '#{glob}' is not found."
+            exit 1
+        end
+        if items.length > 1
+            puts "Error: Several items '#{glob}' are found:"
+            items.each do |item|
+                puts "    '#{item}'"
+            end
+            exit 1
+        end
+        return items[0]
     end
 
     def findGem(prefix)
-        glob = File.join($gems_dir, '**', prefix + '-*.gem')
-        gems = Dir.glob glob
-        if gems.length == 0
-            puts "Error: Gem '#{glob}' is not found."
-            exit 1
-        elsif gems.length > 1
-            puts "Error: Several gems '#{glob}' are found:"
-            gems.each { |gem| puts "    '#{gem}'" }
-            exit 1
-        end
-        return gems[0]
+        return findOneItem(File.join($gems_dir, prefix + '-*.gem'))
     end
 
     def exportPlugin
@@ -78,14 +94,6 @@ namespace "installer" do
         rm_rf destination
         `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}`
         `java -jar #{$eclipseLauncherJar} -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -source #{destination} -compress -append -publishArtifacts`
-    end
-
-    def updateSas 
-      samples_dir = File.join($package_dir, 'samples')
-      repo_sas = File.join(samples_dir, 'rhodes-system-api-samples')
-      rm_rf repo_sas
-      run('git clone https://github.com/rhomobile/rhodes-system-api-samples.git', samples_dir)
-      rm_rf File.join(repo_sas, ".git")
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name, out_dir_name)
@@ -133,42 +141,32 @@ namespace "installer" do
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
         
-    def deployRhoElements2
-      def moveDir(source, targetName)
-        target = File.join($package_dir, targetName)
-        puts "move '#{source}' to '#{target}'"
-        rm_rf target
-        mv(source, target)
-      end
-
-      $app_config = Hash.new
-      $app_config["extpaths"] = Array.new
-
-      require "rhoelements"
-
-      source = File.expand_path(File.join($rhodes_extensions[0], "..", "..", "RhoElements2"))
-
-      moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
-      moveDir(          source            , 'RhoElements2'               )
+    def removeNsisScript
+       rm_f Dir.glob File.join($package_dir, '*.nsi')
     end
 
-    def prepareNsisScript(installScript)
-       replacement = Regexp.escape $script_dir.gsub('/',"\\")
+    def makeNsisScript(installScript)
+       replacement = $script_dir.gsub('/',"\\")
 
        install_script = File.read(File.join($script_dir, installScript))
-       install_script.gsub!(/%NSIS_SCRIPT_PATH%/, replacement)
+       install_script.gsub!(/%NSIS_SCRIPT_PATH%/) {replacement}
        script_name = File.join($package_dir, installScript)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
 
     def runNsisScript(installScript)
-       prepareNsisScript(installScript)
+       makeNsisScript(installScript)
        run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
-    def renameInstaller(installerPrefix)
-       oldName = $commonName + $extWinExe
-       newName = $commonName + $majorVer.to_s + "." + $minorVer.to_s + "." + $miniVer +  installerPrefix + $extWinExe
+    def removeInstaller
+       rm_f Dir.glob File.join($package_dir, 'MotorolaRhoMobileSuite*.exe')
+       rm_f Dir.glob File.join($package_dir, 'RhoStudioInstaller*.exe')
+    end
+
+    def renameInstaller(commonName, installerSuffix)
+       oldName = commonName + $extWinExe
+       newName = commonName + $version + installerSuffix + $extWinExe
 
        mv(File.join($package_dir, oldName), File.join($package_dir, newName)) 
     end
@@ -181,9 +179,43 @@ namespace "installer" do
         rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
+    def removeRuby
+        rm_rf File.join($package_dir, 'ruby')
+    end
+
+    def copyRuby
+        cp_r(File.join($installer_dir, 'ruby'), File.join($package_dir, 'ruby'))
+    end
+
+    def removeRhoElements2
+      rm_rf File.join($package_dir, 'RhoElements2 Shared Runtime')
+      rm_rf File.join($package_dir, 'RhoElements2'               )
+    end
+
+    def moveRhoElements2
+      def moveDir(source, targetName)
+        mv(source, File.join($package_dir, targetName))
+      end
+
+      glob = File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
+      source = findOneItem(glob)
+
+      moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
+      moveDir(          source            , 'RhoElements2'               )
+    end
+
+    def removeReadme
+      rm_f File.join($package_dir, 'README.html')
+    end
+
+    def copyReadme
+      glob = File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
+      cp(findOneItem(glob), File.join($package_dir, 'README.html'))
+    end
+
     def installGems(isConnBeta, isAdapterBeta)
         def installGem(gem, pre = false)
-            run "gem install #{gem}#{pre ? ' --pre' : ''}"
+            run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
         end
 
         rhodesgem = findGem('rhodes')
@@ -195,7 +227,7 @@ namespace "installer" do
         # leading to harmless error.
         # There is same action as 'gem update --system':
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
-        run "ruby \"#{gem}\" update --system"
+        run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
@@ -207,35 +239,60 @@ namespace "installer" do
         installGem "\"#{rhoelementsgem}\""
     end
 
+    def removeSamples
+      rm_rf File.join($package_dir, 'samples')
+    end
+
+    def downloadSamples
+      removeSamples
+      samples_dir = File.join($package_dir, 'samples')
+      mkdir samples_dir
+
+      repo_sas = File.join(samples_dir, 'rhodes-system-api-samples')
+      run('git clone https://github.com/rhomobile/rhodes-system-api-samples.git', samples_dir)
+      rm_rf File.join(repo_sas, '.git')
+    end
+
     namespace "user" do
       task :gems do
         installGems($isConnBeta, $isAdapterBeta)
-        updateSas()
+        downloadSamples()
         removeEclipseSettings()
       end
 
       task :nsis => "gems" do 
-        puts 'start build nsis script: ' +  $installScript
+        puts 'start build nsis script: ' + $installScript
         runNsisScript($installScript)
       end
 
       task :rename => "nsis" do
-        renameInstaller(".beta" + $betaVer)
+        renameInstaller('RhoStudioInstaller', '.beta' + $betaVersion)
       end
 
     end
 
     namespace "motorola" do
-      task :gems do #=> "installer:rhostudio:plugin" do
-        puts 'release - reinstall gems task'        
-        $commonName = "MotorolaRhoMobileSuite"
+      task :clean do
+        removeRuby
+        removeReadme
+        removeRhoElements2
+        removeSamples
+        removeEclipseSettings
+        removeNsisScript
+        removeInstaller
+      end
 
+      # task :gems => "installer:rhostudio:plugin" do
+      task :gems => 'clean' do
+        copyRuby
         installGems($isConnBeta, $isAdapterBeta)
+        removeRubyCache
 
-        updateSas()
-        removeEclipseSettings()
-        removeRubyCache()
-        deployRhoElements2
+        copyReadme
+        moveRhoElements2
+
+        downloadSamples
+        removeEclipseSettings
       end
 
       task :nsis => "gems" do 
@@ -246,11 +303,8 @@ namespace "installer" do
       task :rename => "nsis" do
         puts 'release - start rename task'
 
-        if $isMotorolaBeta == true
-           renameInstaller(".beta" + $betaVer)
-        else
-           renameInstaller("")
-        end
+        installerSuffix = $isMotorolaBeta ? '.beta' + $betaVersion : ''
+        renameInstaller('MotorolaRhoMobileSuite', installerSuffix)
       end
     end
 
@@ -274,7 +328,6 @@ namespace "installer" do
     end
 
     task :test do
-      updateSas
     end
 
 end
