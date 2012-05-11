@@ -37,6 +37,7 @@
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
   !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
+  !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   #Page custom customerConfig
@@ -72,13 +73,13 @@ section
     StrCmp $0 "" jreInstallFail   
 
     # check spaces in install path, if path contain spaces show message box and exit from installer
-    ${StrStr} $0 $INSTDIR " "
+    #${StrStr} $0 $INSTDIR " "
 
-    StrLen $1 $0
+    #StrLen $1 $0
 
-    ${If} $1 != 0
-      Goto spacesInInstallPath
-    ${EndIf}
+    #${If} $1 != 0
+    #  Goto spacesInInstallPath
+    #${EndIf}
 
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
@@ -109,9 +110,9 @@ section
     
     Goto okFinishSection
 
-    spacesInInstallPath:
-        MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces.  Ruby will not work properly in a path with spaces."
-        Quit 
+    #spacesInInstallPath:
+    #    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces.  Ruby will not work properly in a path with spaces."
+    #    Quit 
     
     jreInstallFail:
         MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Java Runtime Environment could not be found on your computer. Please install Java Runtime Environment before RhoStudio."
@@ -349,6 +350,37 @@ SectionEnd
 
 ;======================================================
 ;Functions
+
+Function relGotoPage
+  IntCmp $R9 0 0 Move Move
+    StrCmp $R9 "X" 0 Move
+      StrCpy $R9 "120"
+ 
+  Move:
+    SendMessage $HWNDPARENT "0x408" "$R9" ""
+FunctionEnd
+
+Function directoryPostFunction
+
+  # check spaces in install path, if path contain spaces show message box and exit from installer
+  ${StrStr} $0 $INSTDIR " "
+
+  StrLen $1 $0
+
+  ${If} $1 != 0
+    MessageBox MB_YESNO|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces. Ruby will not work properly in a path with spaces. Press 'Yes' for change install path or 'No' for exit from the installer." IDNO "failChangeInstallPath" IDYES "changeIsOk"
+  ${Else}
+    return
+  ${EndIf}
+    
+  failChangeInstallPath:
+    Quit
+
+  changeIsOk:
+    StrCpy $R9 "(-1|X)" ;Relative page number. See below.
+    Call relGotoPage
+
+FunctionEnd
 
 Function FixScriptFilesInDir
 Exch $R0 #path
