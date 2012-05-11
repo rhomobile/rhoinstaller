@@ -128,6 +128,7 @@ The file is placed in package folder after build finished.
 5. Make new version of RhoStudio plugin and put it in 'Motorola RhoStudio/plugins' subfolder
 
 6. Update samples/rhodes-system-api-samples (git clone https://github.com/rhomobile/rhodes-system-api-samples.git).
+    Remove .git* entries afterwards.
 
 7. Update 'RhoElements2 Shared Runtime', RhoElements2 directories content, README.html file from rhoelements gem.
 
