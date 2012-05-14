@@ -1,3 +1,7 @@
+This document explains how to build Rhostudio installers for Windows and Mac OSX.
+
+
+
 How to build in first time:
 
 *** RhoStudio plugin ***
@@ -32,83 +36,98 @@ How to build in first time:
 6. Copy product files in directory with eclipse assambly <!!!>
 
 
-*** Windows installer ***
+*** How to build Rhostudio installer for Windows ***
 
-Download:
+1. Create empty directory for build process. It will be referred to as <root>. Path to <root> have to be free of spaces. This is requirement of Ruby which will be used during build process.
 
-1. JDK (32-bit) (http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-windows-i586.exe)
+2. Download and install JDK (32-bit) (http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-windows-i586.exe).
 
-2. NSIS installer (http://nsis.sourceforge.net/Download).
-    NSIS large string patch (http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan)
+3. Download and install Git (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe).
+    On "Adjusting your PATH environment" page select "Run Git from the Windows Command Prompt".
 
-3. Eclipse for RCP and RAP Developers (http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/R/eclipse-rcp-helios-win32-x86_64.zip)
+4. Download and install NSIS (http://prdownloads.sourceforge.net/nsis/nsis-2.46-setup.exe?download).
 
-4. Installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
+5. Download NSIS large string patch (http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan).
+    Unpack patch and copy its content into NSIS installation directory (into 'C:\Program Files (x86)\NSIS' for example).
 
-5. RhoStudio repository (git clone http://github.com/rhomobile/rhostudio.git)
+6. Download Eclipse 3.7 (Indigo) for RCP and RAP Developers (http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-win32-x86_64.zip).
+    Extract downloaded Eclipse archive into <root> directory.
+    Check new <root>\eclipse directory.
 
-6. Rhodes and RhoElements gems.
+7. Download Ruby 1.9.3-p125 (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe).
+    Run ruby installer and install Ruby into <root>\ruby directory.
+    Check new <root>\ruby directory.
 
-7. Run 'git clone git@github.com:rhomobile/eventmachine.git' command next to installer directory.
-   Then run 'cd eventmachine' and 'gem build eventmachine.gemspec' commands.
+8. Download installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/installer.rar).
+    Extract archive into <root> directory.
+    Check new <root>\installer directory.
+    Rename <root>\installer to <root>\rhoinstaller directory.
+    From <root>\rhoinstaller directory run following commands:
+        git checkout .
+        git pull
 
+9. Download Ruby DevKit (https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe).
+    Remove <root>\rhoinstaller\package\devkit directory.
+    Run it and extract to <root>\rhoinstaller\package\devkit directory.
 
-Install:
+10. Configure ruby. Open new console (cmd.exe) and execute there following commands:
+    path <root>\ruby\bin
+    cd <root>\rhoinstaller\package\devkit
+    ruby dk.rb init
+    ruby dk.rb install
 
-1. Install JDK.
+11. Clone RhoStudio repository (git clone http://github.com/rhomobile/rhostudio.git) in <root> directory.
 
-2. Install NSIS. Unpack NSIS large string patch and copy patch content into NSIS installation.
+12. Download or build Rhodes and RhoElements gems.
+    Create <root>\gems directory and place both gems into it.
 
-3. Unpack Eclipse for RCP and RAP Developers.
-   Run Eclipse, select new workspace and remeber path to it.
-   Install DLTK 2.0 from http://download.eclipse.org/technology/dltk/updates/.
-   Import rhostudio projects into workspace.
-   Quick fix build problems.
-   Close Eclipse.
+13. Create Eclipse workspace and configure Eclipse.
+    Run Eclipse with command (use absolute path as "-data" parameter):
+        <root>\eclipse\eclipse -data <root>\workspace
 
-4. Unpack installer package archive. Update from installer repository (git checkout ., git pull).
+    From menu select "Help"->"Install new software...".
+    Press "Add...".
+    Enter "DLTK" as name and "http://download.eclipse.org/technology/dltk/updates/" as location, press "OK".
+    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Next >" again.
+    Accept license and press "Finish".
 
+    Wait for finish of installation. Restart Eclipse from "Software Updates" dialog.
+     
+    From menu select "File"->"Import...".
+    In list of import sources select "General"->"Existing Projects into Workspace", then press "Next >".
+    Press "Browse...".
+    Select <root>\rhostudio directory, press "OK".
+    Press "Finish".
 
-Build:
+    From menu select "Window"->"Show view"->"Problems".
+    Expand "Error" in view, open context menu for any error, select "Quick Fix".
+    Press "Finish".
+    Press "OK".
 
-1. Copy Rhodes and RhoElements gems to installer package at path 'installer\installer\package\rhoelements gems'.
+    Delete all errors from Problems view.
+    
+    From menu select "Project"->"Clean...".
+    Press "OK".
+    Check that there are no errors after clean (warnings only).
 
-2. Change settings in installer\script\Rakefile (see 'Settings' section below).
+    Close Eclipse.
 
-3. Run new console (cmd.exe), change PATH to include Ruby in installer package (installer\package\ruby\bin).
+15. Configure <root>\rhoinstaller\script\Rakefile file. You can tune following vsriables:
+    $version                  = '2.0.0'
+    $betaVersion              = '5.24'
+    $isRhoconnectBeta         = true
+    $isRhoconnectAdaptersBeta = false
+    $isMotorolaBeta           = true
+    $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
-4. In console change directory to installer\script.
+16. Open new console (cmd.exe) and execute following commands:
+    PATH <root>\ruby\bin;C:\Windows\system32
+    cd <root>\rhoinstaller\script
+    rake installer:motorola
 
-5. Run 'rake installer:motorola' command
-    (After script finishes working check ..\package directory for new installer). 
+17. Wait while script finishes. New installer is created in <root> directory.
 
-
-Settings:
-
-$majorVer, $minorVer, $miniVer, $betaVer
-Version number. $betaVer use only in beta and user configurations.
-
-$nsisPath
-Path to NSIS compiler with file name ('C:/Program Files (x86)/NSIS/makensis.exe')
-
-$rhodesgem 
-Path to rhodes gem file
-   
-$rhoelemetsgem 
-Path to rhoelements gem file
-
-$workspace_dir
-Path to eclipse workspace with imported plugin for build rhostudio plugin
-
-$studio_dir
-Path to rhostudio repositary
-
-commands:
-
-rake installer:motorola
-download and install latest release versions rhodes, rhoconnect, rhoconnect-adapters
-after it, build installer with name 'MotorolaRhoMobileSuite#.#.#.exe'. 
-The file is placed in package folder after build finished.
 
 *** OSX installer ***
 

@@ -4,13 +4,12 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-$version = '2.0.0'
-$betaVersion = '5.24'
-
-$isConnBeta     = true
-$isAdapterBeta  = false
-
-$isMotorolaBeta = true
+$version                  = '2.0.0'
+$betaVersion              = '5.24'
+$isRhoconnectBeta         = true
+$isRhoconnectAdaptersBeta = false
+$isMotorolaBeta           = true
+$nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -19,7 +18,6 @@ $workspace_dir     = File.join($base_dir, 'workspace')
 $gems_dir          = File.join($base_dir, 'gems')
 $script_dir        = File.join($installer_dir, 'script')
 $package_dir       = File.join($installer_dir, 'package')
-$nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $installScript     = "rhostudio.nsi"
 $installMotoScript = "rhostudio-moto.nsi"
 $extWinExe         = '.exe'
@@ -249,7 +247,7 @@ namespace "installer" do
       cp(readme, File.join($package_dir, 'README.html'))
     end
 
-    def installGems(isConnBeta, isAdapterBeta)
+    def installGems(isRhoconnectBeta, isRhoconnectAdaptersBeta)
         def installGem(gem, pre = false)
             run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
         end
@@ -269,9 +267,9 @@ namespace "installer" do
         installGem 'rhodes-translator'
         installGem 'mspec'
         installGem "\"#{rhodesgem}\""
-        installGem 'eventmachine', isConnBeta
-        installGem 'rhoconnect', isConnBeta
-        installGem 'rhoconnect-adapters', isAdapterBeta
+        installGem 'eventmachine', isRhoconnectBeta
+        installGem 'rhoconnect', isRhoconnectBeta
+        installGem 'rhoconnect-adapters', isRhoconnectAdaptersBeta
         installGem "\"#{rhoelementsgem}\""
     end
 
@@ -291,7 +289,7 @@ namespace "installer" do
 
     namespace "user" do
       task :gems do
-        installGems($isConnBeta, $isAdapterBeta)
+        installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
         downloadSamples()
         removeEclipseSettings()
       end
@@ -313,7 +311,6 @@ namespace "installer" do
         removeRuby
         removeReadme
         removeRhoElements2
-        removeSamples
         removeEclipseSettings
         removeNsisScript
       end
@@ -322,13 +319,12 @@ namespace "installer" do
         exportPlugin
 
         copyRuby
-        installGems($isConnBeta, $isAdapterBeta)
+        installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
         removeRubyCache
 
         copyReadme
         moveRhoElements2
 
-        downloadSamples
         removeEclipseSettings
       end
 
@@ -358,7 +354,7 @@ namespace "installer" do
     ########################################################
 
     task :gems do
-      installGems($isConnBeta, $isAdapterBeta)
+      installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
     end
 
     task :motorola => "motorola:rename" do
