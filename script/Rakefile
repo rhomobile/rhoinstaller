@@ -5,7 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 $version                  = '0200'
-$betaVersion              = '.05.26'
+$betaVersion              = '0526'
 $isRhoconnectBeta         = true
 $isRhoconnectAdaptersBeta = true
 $isMotorolaBeta           = true
