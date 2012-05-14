@@ -4,22 +4,12 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-<<<<<<< HEAD
-$version = '0200'
-$betaVersion = '05.26'
-
-$isConnBeta     = true
-$isAdapterBeta  = false
-
-$isMotorolaBeta = true
-=======
-$version                  = '2.0.0'
-$betaVersion              = '5.24'
+$version                  = '0200'
+$betaVersion              = '05.26'
 $isRhoconnectBeta         = true
-$isRhoconnectAdaptersBeta = false
+$isRhoconnectAdaptersBeta = true
 $isMotorolaBeta           = true
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
->>>>>>> 4859a59d3056b4e4cbb91507100acc11475aea5d
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
