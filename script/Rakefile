@@ -12,20 +12,19 @@ $isAdapterBeta  = false
 
 $isMotorolaBeta = true
 
-$installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')
+$base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
+$installer_dir     = File.join($base_dir, 'rhoinstaller')
+$studio_dir        = File.join($base_dir, 'rhostudio')
+$workspace_dir     = File.join($base_dir, 'workspace')
+$gems_dir          = File.join($base_dir, 'gems')
 $script_dir        = File.join($installer_dir, 'script')
 $package_dir       = File.join($installer_dir, 'package')
-$gems_dir          = File.join($installer_dir, 'gems')
 $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 $installScript     = "rhostudio.nsi"
 $installMotoScript = "rhostudio-moto.nsi"
 $extWinExe         = '.exe'
 $config            = Jake.config(File.open("installer.yml"))
-$workspace_dir     = 'C:\Users\sv\rhomobile\.inst\workspace'
-# $workspace_dir     = '/Users/sv/rhomobile/workspace'
-$studio_dir        = 'C:\Users\sv\rhomobile\.inst\rhostudio'
-# $studio_dir        = '/Users/sv/rhomobile/rhostudio'
-$eclipseLauncherJar = File.join($package_dir, "eclipse", "plugins", "org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar")
+$eclipse           = File.join($base_dir, 'eclipse', 'eclipsec')
 
 $ruby_env = {:Path => [
     File.join($package_dir, 'redis-2.4.0'),
@@ -55,7 +54,8 @@ namespace "installer" do
         exit 1 if !system(toRun)
     end
 
-    def findOneItem(glob)
+    def findOneItem(*globs)
+        glob = File.join *globs
         items = Dir.glob glob
         if items.length == 0
             puts "Error: item '#{glob}' is not found."
@@ -72,19 +72,61 @@ namespace "installer" do
     end
 
     def findGem(prefix)
-        return findOneItem(File.join($gems_dir, prefix + '-*.gem'))
+        return findOneItem($gems_dir, prefix + '-*.gem')
+    end
+
+    def updateBundlesInfo
+        destinationJarGlob = File.join($package_dir, 'eclipse', 'plugins', 'com.rhomobile.rhostudio_*.jar')
+
+        ids = []
+        Dir.glob(destinationJarGlob).each do |plugin|
+            match = plugin.match(/com.rhomobile.rhostudio_(.+).jar$/)
+            if match.nil?
+                puts 'Impossible'
+                exit 1
+            end
+            ids << match[1]
+        end
+        ids.sort!
+
+        bundles = File.join($package_dir, 'eclipse', 'configuration', 'org.eclipse.equinox.simpleconfigurator', 'bundles.info')
+        lines = []
+        newLines = lambda {
+            if not ids.nil?
+                ids.each do |id|
+                    lines << "com.rhomobile.rhostudio,#{id},plugins/com.rhomobile.rhostudio_#{id}.jar,4,false"
+                end
+                ids = nil
+            end
+        }
+        File.open(bundles, 'r') do |f|
+            while (line = f.gets)
+                next if line.start_with?('com.rhomobile.rhostudio,')
+                newLines.call if line > 'com.rhomobile.rhostudio,'
+                lines << line
+            end
+            newLines.call
+        end
+        File.open(bundles, 'w') do |f|
+            lines.each do |line|
+                f.puts line
+            end
+        end
+    end
+
+    def removePlugin
+        destinationJarGlob = File.join($package_dir, 'eclipse', 'plugins', 'com.rhomobile.rhostudio_*.jar')
+        rm Dir.glob(destinationJarGlob)
+        updateBundlesInfo
     end
 
     def exportPlugin
-        destination = File.expand_path File.join($package_dir, 'eclipse')
-        destinationJarGlob = File.join(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
+        destination = File.join($package_dir, 'eclipse')
         pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
-        rhoStudioExe = File.join(destination, "RhoStudio.exe")
 
-        rm Dir.glob(destinationJarGlob)
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=#{destination}`
+        run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=#{destination}"
 
-        `#{rhoStudioExe}`
+        updateBundlesInfo
     end
 
     def exportFeature
@@ -92,8 +134,8 @@ namespace "installer" do
         featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
 
         rm_rf destination
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}`
-        `java -jar #{$eclipseLauncherJar} -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -source #{destination} -compress -append -publishArtifacts`
+        run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}"
+        run "#{$eclipse} -nosplash -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -source #{destination} -compress -append -publishArtifacts"
     end
 
     def buildRhoElementsWmCfg(cfg_name, bin_dir_name, out_dir_name)
@@ -159,16 +201,11 @@ namespace "installer" do
        run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
-    def removeInstaller
-       rm_f Dir.glob File.join($package_dir, 'MotorolaRhoMobileSuite*.exe')
-       rm_f Dir.glob File.join($package_dir, 'RhoStudioInstaller*.exe')
-    end
-
     def renameInstaller(commonName, installerSuffix)
        oldName = commonName + $extWinExe
        newName = commonName + $version + installerSuffix + $extWinExe
 
-       mv(File.join($package_dir, oldName), File.join($package_dir, newName)) 
+       mv(File.join($package_dir, oldName), File.join($base_dir, newName)) 
     end
 
     def removeEclipseSettings
@@ -184,7 +221,7 @@ namespace "installer" do
     end
 
     def copyRuby
-        cp_r(File.join($installer_dir, 'ruby'), File.join($package_dir, 'ruby'))
+        cp_r(File.join($base_dir, 'ruby'), File.join($package_dir, 'ruby'))
     end
 
     def removeRhoElements2
@@ -197,8 +234,7 @@ namespace "installer" do
         mv(source, File.join($package_dir, targetName))
       end
 
-      glob = File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
-      source = findOneItem(glob)
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
 
       moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
       moveDir(          source            , 'RhoElements2'               )
@@ -209,8 +245,8 @@ namespace "installer" do
     end
 
     def copyReadme
-      glob = File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
-      cp(findOneItem(glob), File.join($package_dir, 'README.html'))
+      readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
+      cp(readme, File.join($package_dir, 'README.html'))
     end
 
     def installGems(isConnBeta, isAdapterBeta)
@@ -273,17 +309,18 @@ namespace "installer" do
 
     namespace "motorola" do
       task :clean do
+        removePlugin
         removeRuby
         removeReadme
         removeRhoElements2
         removeSamples
         removeEclipseSettings
         removeNsisScript
-        removeInstaller
       end
 
-      # task :gems => "installer:rhostudio:plugin" do
       task :gems => 'clean' do
+        exportPlugin
+
         copyRuby
         installGems($isConnBeta, $isAdapterBeta)
         removeRubyCache

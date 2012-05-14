@@ -1,2 +1,7 @@
+package/devkit
 package/eclipse
+package/make-*
+package/redis-*
+package/Git-*.exe
+package/ReleaseNotes.txt
 feature/
