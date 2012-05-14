@@ -368,7 +368,7 @@ Function directoryPostFunction
   StrLen $1 $0
 
   ${If} $1 != 0
-    MessageBox MB_YESNO|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces. Ruby will not work properly in a path with spaces. Press 'Yes' for change install path or 'No' for exit from the installer." IDNO "failChangeInstallPath" IDYES "changeIsOk"
+    MessageBox MB_YESNO|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces. Ruby will not work properly in a path with spaces. Press 'Yes' to change install path or 'No' to exit from the installer." IDNO "failChangeInstallPath" IDYES "changeIsOk"
   ${Else}
     return
   ${EndIf}
