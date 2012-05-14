@@ -5,7 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 $version                  = '0200'
-$betaVersion              = '05.26'
+$betaVersion              = '.05.26'
 $isRhoconnectBeta         = true
 $isRhoconnectAdaptersBeta = true
 $isMotorolaBeta           = true
@@ -366,7 +366,7 @@ namespace "installer" do
       task :rename => "nsis" do
         puts 'release - start rename task'
 
-        installerSuffix = $isMotorolaBeta ? '.beta' + $betaVersion : ''
+        installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
         renameInstaller('MotorolaRhoMobileSuite', installerSuffix)
       end
     end
