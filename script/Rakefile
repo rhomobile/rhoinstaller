@@ -4,8 +4,8 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-$version = '2.0.0'
-$betaVersion = '5.24'
+$version = '0200'
+$betaVersion = '05.26'
 
 $isConnBeta     = true
 $isAdapterBeta  = false
@@ -35,6 +35,36 @@ $ruby_env = {:Path => [
 ].join(File::PATH_SEPARATOR)}
 
 namespace "installer" do
+
+    def chekout_git_repo(repo_path, label)
+      cd repo_path
+      run 'git config core.autocrlf false'
+   	  Dir.glob('*'){ |f| rm_r( f, :verbose => false ) }
+      run 'git reset --hard'
+      run "git checkout #{label}"
+    end
+
+    def pull_git_repo(repo_path)
+      cd repo_path
+      run 'git config core.autocrlf false'
+      run 'git pull'
+    end
+
+    def commit_version(new_version)
+      run('git add version')
+      run("git commit -m '#{new_version}'")
+      run("git tag -a #{new_version} -m '#{new_version}'")
+      run('git push')
+      run('git push --tags')
+    
+      new_version    
+    end
+
+    def git_apply_label(new_version)
+      run("git tag -a #{new_version} -m '#{new_version}'")
+      run('git push --tags')    
+      new_version    
+    end
 
     def run(command, cd = nil, env = {})
         set_list = []
@@ -362,6 +392,13 @@ namespace "installer" do
     end
 
     task :motorola => "motorola:rename" do
+    end
+
+    task :tag do
+      cd $installer_dir
+      git_apply_label($version + $betaVersion)
+      cd $studio_dir
+      git_apply_label($version + $betaVersion) 
     end
 
     task :test do
