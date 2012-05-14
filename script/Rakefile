@@ -149,21 +149,21 @@ namespace "installer" do
       output = File.new('build.yml', 'w+')
       output.puts YAML.dump($re_config)
       output.close
-      
+
       `rake clean:wm`
       `rake device:wm:production`
-      
+
       chdir File.join($package_dir, "RhoElements2 Shared Runtime")
       rm_rf out_dir_name
       mkdir out_dir_name
- 
+
       chdir File.dirname(__FILE__)
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", bin_dir_name, "RhoElements.cab"), File.join($package_dir, "RhoElements2 Shared Runtime", out_dir_name, "RhoElements.cab")
-            
+
     end
 
     def buildRhoElementsAndroidCfg()
-      puts 'start build RhoElements for Android configuration'        
+      puts 'start build RhoElements for Android configuration'
       chdir File.join($package_dir, "RhoElements2")
 
       $re_config = Jake.config(File.open("build.yml"))
@@ -172,7 +172,7 @@ namespace "installer" do
       output = File.new('build.yml', 'w+')
       output.puts YAML.dump($re_config)
       output.close
-    
+
       #`rake clean:android`
       `rake device:android:production`
 
@@ -182,7 +182,7 @@ namespace "installer" do
 
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
-        
+
     def removeNsisScript
        rm_f Dir.glob File.join($package_dir, '*.nsi')
     end
@@ -205,7 +205,7 @@ namespace "installer" do
        oldName = commonName + $extWinExe
        newName = commonName + $version + installerSuffix + $extWinExe
 
-       mv(File.join($package_dir, oldName), File.join($base_dir, newName)) 
+       mv(File.join($package_dir, oldName), File.join($base_dir, newName))
     end
 
     def removeEclipseSettings
@@ -296,7 +296,7 @@ namespace "installer" do
         removeEclipseSettings()
       end
 
-      task :nsis => "gems" do 
+      task :nsis => "gems" do
         puts 'start build nsis script: ' + $installScript
         runNsisScript($installScript)
       end
@@ -332,7 +332,7 @@ namespace "installer" do
         removeEclipseSettings
       end
 
-      task :nsis => "gems" do 
+      task :nsis => "gems" do
         puts 'release - start build nsis script: ' +  $installMotoScript
         runNsisScript($installMotoScript)
       end
