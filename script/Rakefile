@@ -6,8 +6,6 @@ load 'jake.rb'
 
 $version                  = '0200'
 $betaVersion              = '0526'
-$isRhoconnectBeta         = true
-$isRhoconnectAdaptersBeta = true
 $isMotorolaBeta           = true
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
@@ -100,7 +98,7 @@ namespace "installer" do
     end
 
     def findGem(prefix)
-        return findOneItem($gems_dir, prefix + '-*.gem')
+        return findOneItem($gems_dir, prefix + '.gem')
     end
 
     def updateBundlesInfo
@@ -277,15 +275,19 @@ namespace "installer" do
       cp(readme, File.join($package_dir, 'README.html'))
     end
 
-    def installGems(isRhoconnectBeta, isRhoconnectAdaptersBeta)
+    def installGems
         def installGem(gem, pre = false)
             run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
         end
 
-        rhodesgem = findGem('rhodes')
+        rhodesgem = findGem('rhodes-[0-9]*')
         puts "Found rhodes gem '#{rhodesgem}'"
-        rhoelementsgem = findGem('rhoelements')
+        rhoelementsgem = findGem('rhoelements-[0-9]*')
         puts "Found rhoelements gem '#{rhoelementsgem}'"
+        rhoconnectgem = findGem('rhoconnect-[0-9]*')
+        puts "Found rhoconnect gem '#{rhoconnectgem}'"
+        rhoconnectadaptersgem = findGem('rhoconnect-adapters-[0-9]*')
+        puts "Found rhoconnect-adapters gem '#{rhoconnectadaptersgem}'"
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
         # leading to harmless error.
@@ -297,9 +299,9 @@ namespace "installer" do
         installGem 'rhodes-translator'
         installGem 'mspec'
         installGem "\"#{rhodesgem}\""
-        installGem 'eventmachine', isRhoconnectBeta
-        installGem 'rhoconnect', isRhoconnectBeta
-        installGem 'rhoconnect-adapters', isRhoconnectAdaptersBeta
+        installGem 'eventmachine', true
+        installGem "\"#{rhoconnectgem}\""
+        installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoelementsgem}\""
     end
 
@@ -319,7 +321,7 @@ namespace "installer" do
 
     namespace "user" do
       task :gems do
-        installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
+        installGems
         downloadSamples()
         removeEclipseSettings()
       end
@@ -349,7 +351,7 @@ namespace "installer" do
         exportPlugin
 
         copyRuby
-        installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
+        installGems
         removeRubyCache
 
         copyReadme
@@ -367,7 +369,7 @@ namespace "installer" do
         puts 'release - start rename task'
 
         installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
-        renameInstaller('MotorolaRhoMobileSuite', installerSuffix)
+        renameInstaller('RMS_', installerSuffix)
       end
     end
 
@@ -384,7 +386,7 @@ namespace "installer" do
     ########################################################
 
     task :gems do
-      installGems($isRhoconnectBeta, $isRhoconnectAdaptersBeta)
+      installGems
     end
 
     task :motorola => "motorola:rename" do
