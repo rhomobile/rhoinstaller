@@ -35,11 +35,11 @@
   !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
+  !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
-  #Page custom customerConfig
   !insertmacro MUI_PAGE_FINISH
  
 ;======================================================
@@ -71,15 +71,6 @@ section
               
     StrCmp $0 "" jreInstallFail   
 
-    # check spaces in install path, if path contain spaces show message box and exit from installer
-    #${StrStr} $0 $INSTDIR " "
-
-    #StrLen $1 $0
-
-    #${If} $1 != 0
-    #  Goto spacesInInstallPath
-    #${EndIf}
-
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
  
@@ -108,10 +99,6 @@ section
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     
     Goto okFinishSection
-
-    #spacesInInstallPath:
-    #    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Please choose a path without spaces.  Ruby will not work properly in a path with spaces."
-    #    Quit 
     
     jreInstallFail:
         MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Java Runtime Environment could not be found on your computer. Please install Java Runtime Environment before RhoStudio."
