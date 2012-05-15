@@ -36,64 +36,78 @@ Contents
 6. Copy product files in directory with eclipse assambly <!!!>
 
 
-*** How to build Rhostudio installer for Windows ***
+*** Build installer for Windows ***
 
-1. Create empty directory for build process. It will be referred to as <root>. Path to <root> have to be free of spaces. This is requirement of Ruby which will be used during build process.
 
-2. Download and install JDK (32-bit) (http://download.oracle.com/otn-pub/java/jdk/7u4-b20/jdk-7u4-windows-i586.exe).
+** Download required files **
 
-3. Download and install Git (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe).
-    On "Adjusting your PATH environment" page select "Run Git from the Windows Command Prompt".
+1. Java Development Kit (32-bit)
+    goto http://www.oracle.com/technetwork/java/javase/downloads/jdk-7u4-downloads-1591156.html
+    select "Accept license aggrement"
+    click "jdk-7u4-windows-i586.exe"
 
-4. Download and install NSIS (http://prdownloads.sourceforge.net/nsis/nsis-2.46-setup.exe?download).
+2. Git source control manager (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe)
 
-5. Download NSIS large string patch (http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan).
-    Unpack patch and copy its content into NSIS installation directory (into 'C:\Program Files (x86)\NSIS' for example).
+3. NSIS - Nullsoft Scriptable Install System (http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/nsis-2.46-setup.exe/download)
+    and NSIS large string patch (http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/nsis-2.46-strlen_8192.zip/download?use_mirror=citylan)
 
-6. Download Eclipse 3.7 (Indigo) for RCP and RAP Developers (http://ftp.wh2.tu-dresden.de/pub/mirrors/eclipse/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-win32.zip).
-    Extract downloaded Eclipse archive into <root> directory.
-    Check new <root>\eclipse directory.
+4. Eclipse 3.7 (Indigo) for RCP and RAP Developers (32-bits) (http://ftp.wh2.tu-dresden.de/pub/mirrors/eclipse/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-win32.zip)
 
-7. Download Ruby 1.9.3-p125 (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe).
-    Run ruby installer and install Ruby into <root>\ruby directory.
-    Check new <root>\ruby directory.
+5. RubyInstaller 1.9.3-p125 for Ruby programming language (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe)
+    and RubyInstaller Development Kit (https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe)
 
-8. Download installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/installer.rar).
-    Extract archive into <root> directory.
-    Check new <root>\installer directory.
+6. Windows installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/installer.rar)
+
+
+** Install and configure software **
+
+1. Install JDK.
+
+2. Install Git source control manager (select "Run Git from the Windows Command Prompt" on "Adjusting your PATH environment" page).
+
+3. Install NSIS. Extract NSIS large string patch and copy its content into NSIS installation directory (into C:\Program Files (x86)\NSIS in case of typical installation).
+
+4. Create empty directory where you will build installer. It will be referred to as <root> in this document. Path to <root> have to be free of spaces. It is requirement of Ruby which will be installed into subdirectory of <root>.
+
+5. Extract Eclipse archive into <root> directory.
+
+6. Extract Windows installer package archive into <root> directory.
     Rename <root>\installer to <root>\rhoinstaller directory.
     From <root>\rhoinstaller directory run following commands:
-        git checkout .
-        git pull
+    git checkout .
+    git pull
 
-9. Download Ruby DevKit (https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe).
-    Remove <root>\rhoinstaller\package\devkit directory.
-    Run it and extract to <root>\rhoinstaller\package\devkit directory.
+7. Install Ruby into <root>\ruby directory.
 
-10. Configure ruby. Open new console (cmd.exe) and execute there following commands:
+8. Remove <root>\rhoinstaller\package\devkit directory.
+    Run RubyInstaller Development Kit and extract it to <root>\rhoinstaller\package\devkit directory.
+
+9. Configure Ruby installation. Open new console (cmd.exe) and execute there following commands:
     path <root>\ruby\bin
     cd <root>\rhoinstaller\package\devkit
     ruby dk.rb init
     ruby dk.rb install
 
-11. Clone RhoStudio repository (git clone http://github.com/rhomobile/rhostudio.git) in <root> directory.
+10. Clone rhostudio and rhodes-system-api-samples repositories into <root>:
+    cd <root>
+    git clone http://github.com/rhomobile/rhostudio.git
+    git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-12. Download or build Rhodes and RhoElements gems.
-    Create <root>\gems directory and place both gems into it.
+11. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect and rhoconnect-adapters gems there.
 
-13. Create Eclipse workspace and configure Eclipse.
-    Run Eclipse with command (use absolute path as "-data" parameter):
-        <root>\eclipse\eclipse -data <root>\workspace
+12. Create Eclipse workspace and configure Eclipse.
+    Run Eclipse with command (always use absolute path as -data parameter):
+    <root>\eclipse\eclipse -data <root>\workspace
 
     From menu select "Help"->"Install new software...".
     Press "Add...".
-    Enter "DLTK" as name and "http://download.eclipse.org/technology/dltk/updates/" as location, press "OK".
+    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
     Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
     Press "Next >" again.
     Accept license and press "Finish".
+    Wait for finish of DLTK installation.
+    Restart Eclipse from "Software Updates" dialog.
 
-    Wait for finish of installation. Restart Eclipse from "Software Updates" dialog.
-     
     From menu select "File"->"Import...".
     In list of import sources select "General"->"Existing Projects into Workspace", then press "Next >".
     Press "Browse...".
@@ -101,32 +115,33 @@ Contents
     Press "Finish".
 
     From menu select "Window"->"Show view"->"Problems".
-    Expand "Error" in view, open context menu for any error, select "Quick Fix".
+    Expand "Error" in Problems view, open context menu for any error, select "Quick Fix".
     Press "Finish".
     Press "OK".
 
     Delete all errors from Problems view.
-    
+
     From menu select "Project"->"Clean...".
     Press "OK".
-    Check that there are no errors after clean (warnings only).
+    Check that there are no errors in Problems view after clean (warnings only).
 
     Close Eclipse.
 
-15. Configure <root>\rhoinstaller\script\Rakefile file. You can tune following vsriables:
-    $version                  = '2.0.0'
-    $betaVersion              = '5.24'
-    $isRhoconnectBeta         = true
-    $isRhoconnectAdaptersBeta = false
-    $isMotorolaBeta           = true
-    $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
-16. Open new console (cmd.exe) and execute following commands:
-    PATH <root>\ruby\bin;C:\Windows\system32
+** Build installer **
+
+1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
+    $version        = '0200'
+    $betaVersion    = '0526'
+    $isMotorolaBeta = true
+    $nsisPath       = 'C:/Program Files (x86)/NSIS/makensis.exe'
+
+2. Open new console (cmd.exe) and execute following commands:
+    path <root>\ruby\bin;C:\Windows\system32
     cd <root>\rhoinstaller\script
     rake installer:motorola
 
-17. Wait while script finishes. New installer is created in <root> directory.
+3. Wait while script finishes. New installer is created in <root> directory.
 
 
 *** How to build Mac OSX installer ***
