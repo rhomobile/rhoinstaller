@@ -1,14 +1,14 @@
 This document explains how to build Rhostudio installers for Windows and Mac OSX.
 
+Contents
+
+    How to build Eclipse product
+    How to build Rhostudio installer for Windows
+    How to build Mac OSX installer
 
 
-How to build in first time:
-
-*** RhoStudio plugin ***
-
-*** RhoStudio feature ***
-
-*** Eclipse product ***
+*** How to build Eclipse product ***
+(This section is incomplete)
 
 1. Download Eclipse 3.6 for RPC developer config
 1.1 dltk
@@ -129,7 +129,8 @@ How to build in first time:
 17. Wait while script finishes. New installer is created in <root> directory.
 
 
-*** OSX installer ***
+*** How to build Mac OSX installer ***
+(This section is incomplete)
 
 1. Download base DMG image (link - http://rhostudio.s3.amazonaws.com/instant/work/RhoMobileSuiteInstaller.dmg)
 
