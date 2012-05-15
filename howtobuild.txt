@@ -50,7 +50,7 @@ How to build in first time:
 5. Download NSIS large string patch (http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-strlen_8192.zip?r=http%3A%2F%2Fnsis.sourceforge.net%2FSpecial_Builds&ts=1319209736&use_mirror=citylan).
     Unpack patch and copy its content into NSIS installation directory (into 'C:\Program Files (x86)\NSIS' for example).
 
-6. Download Eclipse 3.7 (Indigo) for RCP and RAP Developers (http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-win32-x86_64.zip).
+6. Download Eclipse 3.7 (Indigo) for RCP and RAP Developers (http://ftp.wh2.tu-dresden.de/pub/mirrors/eclipse/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-win32.zip).
     Extract downloaded Eclipse archive into <root> directory.
     Check new <root>\eclipse directory.
 
