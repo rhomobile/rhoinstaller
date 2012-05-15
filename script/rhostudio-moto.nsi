@@ -35,7 +35,6 @@
   !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
-  !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
   !insertmacro MUI_PAGE_DIRECTORY
