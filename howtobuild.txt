@@ -84,12 +84,12 @@ Contents
 
 9. Configure Ruby installation. Open new console (cmd.exe) and execute there following commands:
     path <root>\ruby\bin
-    cd <root>\rhoinstaller\package\devkit
+    cd /d <root>\rhoinstaller\package\devkit
     ruby dk.rb init
     ruby dk.rb install
 
 10. Clone rhostudio and rhodes-system-api-samples repositories into <root>:
-    cd <root>
+    cd /d <root>
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
@@ -115,7 +115,7 @@ Contents
     Press "Finish".
 
     From menu select "Window"->"Show view"->"Problems".
-    Expand "Error" in Problems view, open context menu for any error, select "Quick Fix".
+    Expand "Errors" in Problems view, open context menu for any error, select "Quick Fix".
     Press "Finish".
     Press "OK".
 
@@ -138,33 +138,106 @@ Contents
 
 2. Open new console (cmd.exe) and execute following commands:
     path <root>\ruby\bin;C:\Windows\system32
-    cd <root>\rhoinstaller\script
+    cd /d <root>\rhoinstaller\script
     rake installer:motorola
 
 3. Wait while script finishes. New installer is created in <root> directory.
 
 
-*** How to build Mac OSX installer ***
-(This section is incomplete)
+*** Build installer for Mac OSX ***
 
-1. Download base DMG image (link - http://rhostudio.s3.amazonaws.com/instant/work/RhoMobileSuiteInstaller.dmg)
 
-2. Mount image in system
+** Download required files **
 
-3. Put rhodes and rhoelements gems in '.gems' subfolder on the image
+1. Eclipse 3.7 (Indigo) for RCP and RAP Developers (http://ftp.halifax.rwth-aachen.de/eclipse//technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-macosx-cocoa-x86_64.tar.gz)
 
-4. Change gems names in 'Install gems' and 'Install gems on rvm' scripts
+2. RhoMobileSuiteInstaller.dmg image (http://rhostudio.s3.amazonaws.com/instant/work/RhoMobileSuiteInstaller.dmg)
 
-5. Make new version of RhoStudio plugin and put it in 'Motorola RhoStudio/plugins' subfolder
 
-6. Update samples/rhodes-system-api-samples (git clone https://github.com/rhomobile/rhodes-system-api-samples.git).
-    Remove .git* entries afterwards.
+** Install and configure software **
 
-7. Update 'RhoElements2 Shared Runtime', RhoElements2 directories content, README.html file from rhoelements gem.
+1. Extract Eclipse archive.
 
-8. Hide side bar, "maximize" Finder window to fit content and close it.
+2. Clone rhostudio and rhodes-system-api-samples repositories:
+    git clone http://github.com/rhomobile/rhostudio.git
+    git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-9. Unmount image.
 
-10. Open the image in disk utility and convert to 'read only' image with compressed content.
+** Build installer **
+
+1. Create com.rhomobile.rhostudio plugin
+    Run extracted Eclipse
+    In "Select a workspace dialog" create new workspace.
+
+    From menu select "Help"->"Install new software...".
+    Press "Add...".
+    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
+    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Next >" again.
+    Accept license and press "Finish".
+    Wait for finish of DLTK installation.
+    Restart Eclipse from "Software Updates" dialog.
+
+    From menu select "File"->"Import...".
+    In list of import sources select "General"->"Existing Projects into Workspace", then press "Next >".
+    Press "Browse...".
+    Select directory with rhostudio clone, press "Open".
+    Press "Finish".
+
+    From menu select "Window"->"Show view"->"Problems".
+    Expand "Errors" in Problems view, open context menu for any error, select "Quick Fix".
+    Press "Finish".
+    Press "OK".
+
+    Delete all errors from Problems view.
+
+    From menu select "Project"->"Clean...".
+    Press "OK".
+    Check that there are no errors in Problems view after clean (warnings only).
+
+    From menu select "File"->"Export..."
+    In list of export destinations select "Plug-in Development"->"Deployable plug-ins and frapments", then press "Next >".
+    Mark "com.rhomobile.rhostudio" plugin.
+    Select destination directory.
+    Press "Finish".
+
+    Check that in destination directory file plugins/com.rhomobile.rhostudio_<version>.jar is created.
+
+    Close Eclipse.
+
+2. Mount RhoMobileSuiteInstaller.dmg. Mount point will be referred to as <mount> below.
+
+3. Remove old gems from <mount>/.gems folder.
+    Put new rhodes and rhoelements gems there.
+
+4. Change gems names in <mount>/Install\ gems and <mount>/Install\ gems\ on\ rvm scripts.
+
+5. Remove old com.rhomobile.rhostudio plugin from <mount>/Motorola\ RhoStudio/plugins folder
+    Put new plugin there.
+
+6. Remove contents of <mount>/samples/rhodes-system-api-samples folder.
+    Copy content of cloned rhodes-system-api-samples repository there.
+    Remove <mount>/samples/rhodes-system-api-samples/.git folder and <mount>/samples/rhodes-system-api-samples/.gitignore file.
+
+7. Unpack rhoelements gem. Following command unpacks gem in current folder:
+    sudo gem unpack rhoelements-<version>.gem
+
+8. Remove contents of <mount>/RhoElements2\ Shared\ Runtime folder.
+    Locate RhoElements2/Runtime subfolder in unpacked gem.
+    Copy its contents to <mount>/RhoElements2\ Shared\ Runtime folder.
+    Remove located folder.
+
+9. Remove contents of <mount>/RhoElements2 folder.
+    Locate RhoElements2 subfolder in unpacked gem.
+    Copy its contents to <mount>/RhoElements2 folder.
+
+10. Remove <mount>/README.html file.
+    Locate ReadMe.html file in unpacked gem.
+    Copy and rename it to <mount>/README.html file.
+
+11. Open mounted image in Finder, hide side bar, "maximize" Finder window to fit content and close it.
+
+12. Unmount image.
+
+13. Open the image in disk utility and convert to 'read only' image with compressed content.
     There is sample of new image name: 'RhoMobileSuiteInstaller2.0.0.beta5.24.dmg'
