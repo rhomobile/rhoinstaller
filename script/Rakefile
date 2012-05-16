@@ -4,6 +4,7 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
+
 $version                  = '0200'
 $betaVersion              = '0527'
 $isMotorolaBeta           = true
@@ -98,7 +99,7 @@ namespace "installer" do
     end
 
     def findGem(prefix)
-        return findOneItem($gems_dir, prefix + '.gem')
+        return findOneItem($gems_dir, prefix + '-[0-9]*.gem')
     end
 
     def updateBundlesInfo
@@ -227,9 +228,9 @@ namespace "installer" do
        run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
-    def renameInstaller(commonName, installerSuffix)
+    def renameInstaller(commonName, installerPrefix, installerSuffix)
        oldName = commonName + $extWinExe
-       newName = commonName + $version + installerSuffix + $extWinExe
+       newName = installerPrefix + $version + installerSuffix + $extWinExe
 
        mv(File.join($package_dir, oldName), File.join($base_dir, newName))
     end
@@ -272,6 +273,11 @@ namespace "installer" do
       rm_f File.join($package_dir, 'CREDITS')
     end
 
+    def removeInstaller
+      rm_f File.join($package_dir, 'MotorolaRhoMobileSuite' + $extWinExe)
+      rm_f File.join($package_dir, 'RhoStudioInstaller' + $extWinExe)
+    end
+
     def copyReadme
       readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
       cp(readme, File.join($package_dir, 'README.html'))
@@ -286,14 +292,16 @@ namespace "installer" do
             run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
         end
 
-        rhodesgem = findGem('rhodes-[0-9]*')
-        puts "Found rhodes gem '#{rhodesgem}'"
-        rhoelementsgem = findGem('rhoelements-[0-9]*')
-        puts "Found rhoelements gem '#{rhoelementsgem}'"
-        rhoconnectgem = findGem('rhoconnect-[0-9]*')
-        puts "Found rhoconnect gem '#{rhoconnectgem}'"
-        rhoconnectadaptersgem = findGem('rhoconnect-adapters-[0-9]*')
-        puts "Found rhoconnect-adapters gem '#{rhoconnectadaptersgem}'"
+        def findGemAndReport(name)
+            gem = findGem(name)
+            puts "#{name} gem is found: '#{gem}'"
+            return gem
+        end
+
+        rhodesgem             = findGemAndReport('rhodes'             )
+        rhoelementsgem        = findGemAndReport('rhoelements'        )
+        rhoconnectgem         = findGemAndReport('rhoconnect'         )
+        rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
         # leading to harmless error.
@@ -315,20 +323,22 @@ namespace "installer" do
       rm_rf File.join($package_dir, 'samples')
     end
 
-    def downloadSamples
+    def makeSamples
       removeSamples
+
       samples_dir = File.join($package_dir, 'samples')
       mkdir samples_dir
 
       repo_sas = File.join(samples_dir, 'rhodes-system-api-samples')
-      run('git clone https://github.com/rhomobile/rhodes-system-api-samples.git', samples_dir)
+      cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
       rm_rf File.join(repo_sas, '.git')
+      rm_f File.join(repo_sas, '.gitignore')
     end
 
     namespace "user" do
       task :gems do
         installGems
-        downloadSamples()
+        makeSamples
         removeEclipseSettings()
       end
 
@@ -338,7 +348,7 @@ namespace "installer" do
       end
 
       task :rename => "nsis" do
-        renameInstaller('RhoStudioInstaller', '.beta' + $betaVersion)
+        renameInstaller('RhoStudioInstaller', 'RhoStudioInstaller', '.beta' + $betaVersion)
       end
 
     end
@@ -347,10 +357,12 @@ namespace "installer" do
       task :clean do
         removePlugin
         removeRuby
+        removeSamples
         removeReadme
         removeRhoElements2
         removeEclipseSettings
         removeNsisScript
+        removeInstaller
       end
 
       task :gems => 'clean' do
@@ -359,6 +371,8 @@ namespace "installer" do
         copyRuby
         installGems
         removeRubyCache
+
+        makeSamples
 
         copyReadme
         moveRhoElements2
@@ -375,7 +389,7 @@ namespace "installer" do
         puts 'release - start rename task'
 
         installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
-        renameInstaller('RMS_', installerSuffix)
+        renameInstaller('MotorolaRhoMobileSuite', 'RMS_', installerSuffix)
       end
     end
 
