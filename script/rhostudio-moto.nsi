@@ -9,7 +9,7 @@
 ; Installer Information
  
   Name "Motorola RhoMobile Suite"
-  OutFile "MotorolaRhoMobileSuite.exe"
+  OutFile "RMS_.exe"
   InstallDir "C:\MotorolaRhoMobileSuite2.0.5"
   BrandingText " "
 ;======================================================
@@ -35,7 +35,6 @@
   !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
-  !insertmacro MUI_PAGE_LICENSE "RHOSTUDIO-LICENSE.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
   !insertmacro MUI_PAGE_DIRECTORY
@@ -240,7 +239,8 @@ Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
   File /r "RhoElements2 Shared Runtime"
 
   File "README.html"
-  File "RHOSTUDIO-LICENSE.txt"
+  File "RhoStudio and Rho Software License Agreements.doc"
+  File "CREDITS"  
  
   ;add to path here
 

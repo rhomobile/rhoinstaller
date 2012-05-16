@@ -5,7 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 $version                  = '0200'
-$betaVersion              = '0526'
+$betaVersion              = '0527'
 $isMotorolaBeta           = true
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
@@ -268,11 +268,17 @@ namespace "installer" do
 
     def removeReadme
       rm_f File.join($package_dir, 'README.html')
+      rm_f File.join($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
+      rm_f File.join($package_dir, 'CREDITS')
     end
 
     def copyReadme
       readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
       cp(readme, File.join($package_dir, 'README.html'))
+      eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoStudio and Rho Software License Agreements.doc')
+      cp(eula, File.join($package_dir, 'RhoStudio and Rho Software License Agreements.doc'))
+      credits = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'CREDITS')
+      cp(credits, File.join($package_dir, 'CREDITS'))
     end
 
     def installGems
