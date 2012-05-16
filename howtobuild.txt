@@ -167,7 +167,7 @@ Contents
 
 1. Create com.rhomobile.rhostudio plugin
     Run extracted Eclipse
-    In "Select a workspace dialog" create new workspace.
+    In "Select a workspace" dialog create new workspace.
 
     From menu select "Help"->"Install new software...".
     Press "Add...".
@@ -201,7 +201,7 @@ Contents
     Select destination directory.
     Press "Finish".
 
-    Check that in destination directory file plugins/com.rhomobile.rhostudio_<version>.jar is created.
+    Check that in destination directory plugins/com.rhomobile.rhostudio_<version>.jar file is created.
 
     Close Eclipse.
 
