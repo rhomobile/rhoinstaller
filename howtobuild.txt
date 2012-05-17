@@ -2,38 +2,97 @@ This document explains how to build Rhostudio installers for Windows and Mac OSX
 
 Contents
 
-    How to build Eclipse product
-    How to build Rhostudio installer for Windows
-    How to build Mac OSX installer
+    Build Eclipse product
+    Build installer for Windows
+    Build installer for Mac OSX
 
 
-*** How to build Eclipse product ***
-(This section is incomplete)
+*** Build Eclipse product ***
 
-1. Download Eclipse 3.6 for RPC developer config
-1.1 dltk
-1.2 egit
 
-2. clone Rhostudio repositary (git clone git@github.com:rhomobile/rhostudio.git)
-  
-3. Import RhoStudio project and Rhostudio feature project into workspace
+** Download required files **
 
-   3.1 Goto File/Import menu item 
-   3.2 Select General/Existing Project into Workspace
-   3.3 Select repository directory 
-   3.4 Finish   
-   3.5 Import 
+1. Java Development Kit (32-bit)
+    go to http://www.oracle.com/technetwork/java/javase/downloads/jdk-7u4-downloads-1591156.html
+    select "Accept license agreement"
+    click "jdk-7u4-windows-i586.exe"
 
-4. After import RhoStudio project you should see RhoStudio product item in project tree
+2. Git source control manager (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe)
 
-5. Export product 
+4. Eclipse 3.6.2 (Helios SR2) for RCP and RAP Developers (32-bit) (http://ftp-stud.fht-esslingen.de/pub/Mirrors/eclipse/technology/epp/downloads/release/helios/SR2/eclipse-rcp-helios-SR2-win32.zip)
 
-   5.1 Open product item 
-   5.2 press export button in toolbar
-   5.3 Uncheck 'Generate metadata repositary' item 
-   5.4 Place destination directory 
 
-6. Copy product files in directory with eclipse assambly <!!!>
+** Install and configure software **
+
+1. Install JDK.
+
+2. Install Git source control manager (select "Run Git from the Windows Command Prompt" on "Adjusting your PATH environment" page).
+
+3. Create empty directory where you will build product. It will be referred to as <root>.
+
+4. Extract Eclipse archive into <root> directory.
+
+5. Clone rhostudio repository into <root>:
+    cd /d <root>
+    git clone http://github.com/rhomobile/rhostudio.git
+
+6. Create Eclipse workspace and configure Eclipse.
+    Run Eclipse with command (always use absolute path as -data parameter):
+    <root>\eclipse\eclipse -data <root>\workspace
+
+    From menu select "Help"->"Install new software...".
+    Press "Add...".
+    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
+    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Next >" again.
+    Accept license and press "Finish".
+    Wait for finish of DLTK installation.
+    Restart Eclipse from "Software Updates" dialog.
+
+    From menu select "Help"->"Install new software...".
+    Click "Available Software Sites" link.
+    Locate site http://download.eclipse.org/egit/updates/ in list and mark it, press "OK".
+    Select http://download.eclipse.org/egit/updates/ in "Work with:" list.
+    Wait until list will be populated with values.
+    Expand "Eclipse Git Team Provider" item, mark all subitems except "EGit Mylyn" and press "Next >".
+    Mark "JGit" item.
+    Press "Next >" again.
+    Accept license and press "Finish".
+    Wait for finish of DLTK installation.
+    Restart Eclipse from "Software Updates" dialog.
+
+    From menu select "File"->"Import...".
+    In list of import sources select "General"->"Existing Projects into Workspace", then press "Next >".
+    Press "Browse...".
+    Select <root>\rhostudio directory, press "OK".
+    Press "Finish".
+
+    From menu select "Window"->"Show view"->"Problems".
+    Expand "Errors" in Problems view, open context menu for any error, select "Quick Fix".
+    Press "Finish".
+    Press "OK".
+
+    Delete all errors from Problems view.
+
+    From menu select "Project"->"Clean...".
+    Press "OK".
+    Check that there are no errors in Problems view after clean (warnings only).
+
+    Close Eclipse.
+
+
+** Build product **
+
+1. Run Eclipse with command (always use absolute path as -data parameter):
+    <root>\eclipse\eclipse -data <root>\workspace
+
+2. From menu select "Window"->"Show view"->"Project Explorer".
+    Select "RhogenWizard" item.
+    From menu select "File"->"Export..."
+    In list of export destinations select "Plug-in Development"->"Eclipse product" then press "Next >".
+    Select <root>\product as destination directory.
+    Uncheck "Generate metadata repositary" item.
+    Press "Finish".
 
 
 *** Build installer for Windows ***
@@ -43,7 +102,7 @@ Contents
 
 1. Java Development Kit (32-bit)
     go to http://www.oracle.com/technetwork/java/javase/downloads/jdk-7u4-downloads-1591156.html
-    select "Accept license aggrement"
+    select "Accept license agreement"
     click "jdk-7u4-windows-i586.exe"
 
 2. Git source control manager (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe)
