@@ -249,4 +249,4 @@ Contents
 14. Unmount image.
 
 15. Open the image in disk utility and convert to 'read only' image with compressed content.
-    There is sample of new image name: 'RhoMobileSuiteInstaller2.0.0.beta5.24.dmg'
+    There is sample of new image name: 'RMS_0200.beta0526.dmg'
