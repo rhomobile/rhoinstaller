@@ -6,8 +6,8 @@ load 'jake.rb'
 
 
 $version                  = '0200'
-$betaVersion              = '0527'
-$isMotorolaBeta           = true
+$betaVersion              = '0527.1'
+$isMotorolaBeta           = false
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
@@ -389,7 +389,7 @@ namespace "installer" do
         puts 'release - start rename task'
 
         installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
-        renameInstaller('MotorolaRhoMobileSuite', 'RMS_', installerSuffix)
+        renameInstaller('RMS_', 'RMS_', installerSuffix)
       end
     end
 
