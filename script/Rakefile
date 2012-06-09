@@ -542,7 +542,7 @@ namespace "installer" do
         puts 'release - start rename task'
 
         installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
-        renameInstaller('MotorolaRhoMobileSuite', 'RMS_', installerSuffix)
+        renameInstaller('RMS_', 'RMS_', installerSuffix)
       end
     end
 
