@@ -21,7 +21,8 @@ $installScript     = "rhostudio.nsi"
 $installMotoScript = "rhostudio-moto.nsi"
 $extWinExe         = '.exe'
 $config            = Jake.config(File.open("installer.yml"))
-$eclipse           = File.join($base_dir, 'eclipse', 'eclipsec')
+$eclipse           = File.join($base_dir, 'eclipse', 'eclipse')
+$eclipse           += 'c' if File.exists?($eclipse + 'c.exe')
 
 $ruby_env = {:Path => [
     File.join($package_dir, 'redis-2.4.0'),
@@ -102,6 +103,77 @@ namespace "installer" do
         return findOneItem($gems_dir, prefix + '-[0-9]*.gem')
     end
 
+    def findGemAndReport(name)
+        gem = findGem(name)
+        puts "#{name} gem is found: '#{gem}'"
+        return gem
+    end
+
+    def rmGlob(*globs)
+        Dir.glob(File.join(*globs)) { |d| rm_r d }
+    end
+
+    def attachDmg(dmg)
+        command = "hdiutil attach #{dmg}"
+        puts
+        puts command
+        output = `#{command}`
+        exit 1 if $? != 0
+        disk = nil
+        mount = nil
+        output.lines do |line|
+            match = line.match("^/dev/(\\w+)\\s*\tApple_partition_scheme\\s*\t$")
+            if match
+                disk = match[1]
+            end
+            match = line.match("^/dev/\\w+\\s*\tApple_HFS\\s*\t(/Volumes/.+)$")
+            if match
+                mount = match[1]
+            end
+        end
+        if disk.nil? or mount.nil?
+            STDERR.puts "Can not parse output of '#{command}' conmmand"
+            exit 1
+        end
+        return disk, mount
+    end
+
+    def detachDmg(disk)
+        run "hdiutil detach #{disk}"
+    end
+
+    def attachSuiteDmg
+        attachDmg File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
+    end
+
+    def removeRwDmg
+        dmg = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
+        if File.exists? dmg
+            disk, mount = attachSuiteDmg
+            detachDmg disk
+            rmGlob dmg
+        end
+    end
+
+    def makeRwDmg
+        source = File.join($base_dir, 'RhoMobileSuiteInstaller.dmg')
+        target = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
+        run "hdiutil convert '#{source}' -format UDRW -o '#{target}'"
+    end
+
+    def removeRoDmg
+        rmGlob($base_dir, 'RMS_*.dmg')
+    end
+
+    def makeRoDmg
+        disk, mount = attachSuiteDmg
+        detachDmg disk
+
+        source = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
+        target = File.join($base_dir, "RMS_#{$version}#{$betaVersion}.dmg")
+        run "hdiutil convert '#{source}' -format UDBZ -o '#{target}'"
+    end
+
     def updateBundlesInfo
         destinationJarGlob = File.join($package_dir, 'eclipse', 'plugins', 'com.rhomobile.rhostudio_*.jar')
 
@@ -141,26 +213,39 @@ namespace "installer" do
         end
     end
 
-    def removePlugin
-        destinationJarGlob = File.join($package_dir, 'eclipse', 'plugins', 'com.rhomobile.rhostudio_*.jar')
-        rm Dir.glob(destinationJarGlob)
+    def removePlugin(destination)
+        rmGlob(destination, 'plugins', 'com.rhomobile.rhostudio_*.jar')
+    end
+
+    def exportPlugin(destination)
+        pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
+
+        run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=\"#{destination}\""
+    end
+
+    def removePluginWin
+        removePlugin File.join($package_dir, 'eclipse')
         updateBundlesInfo
     end
 
-    def exportPlugin
-        destination = File.join($package_dir, 'eclipse')
-        pluginExport = File.join($studio_dir, 'rhogen-wizard', 'plugin_export.xml')
-
-        run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=#{destination}"
-
+    def exportPluginWin
+        exportPlugin File.join($package_dir, 'eclipse')
         updateBundlesInfo
+    end
+
+    def removePluginMac(mount)
+        removePlugin File.join(mount, 'Motorola RhoStudio')
+    end
+
+    def exportPluginMac(mount)
+        exportPlugin File.join(mount, 'Motorola RhoStudio')
     end
 
     def exportFeature
         destination = File.expand_path File.join($installer_dir, 'feature')
         featureExport = File.join($studio_dir, 'rhostudio-feature', 'feature_export.xml')
 
-        rm_rf destination
+        rmGlob destination
         run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{featureExport} -Ddestination=#{destination}"
         run "#{$eclipse} -nosplash -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher -metadataRepository file:/#{destination} -artifactRepository file:/#{destination} -source #{destination} -compress -append -publishArtifacts"
     end
@@ -211,7 +296,7 @@ namespace "installer" do
     end
 
     def removeNsisScript
-       rm_f Dir.glob File.join($package_dir, '*.nsi')
+       rmGlob($package_dir, '*.nsi')
     end
 
     def makeNsisScript(installScript)
@@ -236,15 +321,15 @@ namespace "installer" do
     end
 
     def removeEclipseSettings
-        rm_rf File.join($package_dir, 'eclipse', 'configuration', '.settings')
+        rmGlob($package_dir, 'eclipse', 'configuration', '.settings')
     end
 
     def removeRubyCache
-        rm_rf Dir.glob File.join($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
+        rmGlob($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
     def removeRuby
-        rm_rf File.join($package_dir, 'ruby')
+        rmGlob($package_dir, 'ruby')
     end
 
     def copyRuby
@@ -252,8 +337,8 @@ namespace "installer" do
     end
 
     def removeRhoElements2
-      rm_rf File.join($package_dir, 'RhoElements2 Shared Runtime')
-      rm_rf File.join($package_dir, 'RhoElements2'               )
+        rmGlob($package_dir, 'RhoElements2 Shared Runtime')
+        rmGlob($package_dir, 'RhoElements2'               )
     end
 
     def moveRhoElements2
@@ -268,14 +353,14 @@ namespace "installer" do
     end
 
     def removeReadme
-      rm_f File.join($package_dir, 'README.html')
-      rm_f File.join($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
-      rm_f File.join($package_dir, 'CREDITS')
+      rmGlob($package_dir, 'README.html')
+      rmGlob($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
+      rmGlob($package_dir, 'CREDITS')
     end
 
     def removeInstaller
-      rm_f File.join($package_dir, 'MotorolaRhoMobileSuite' + $extWinExe)
-      rm_f File.join($package_dir, 'RhoStudioInstaller' + $extWinExe)
+      rmGlob($package_dir, 'MotorolaRhoMobileSuite' + $extWinExe)
+      rmGlob($package_dir, 'RhoStudioInstaller' + $extWinExe)
     end
 
     def copyReadme
@@ -290,12 +375,6 @@ namespace "installer" do
     def installGems
         def installGem(gem, pre = false)
             run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
-        end
-
-        def findGemAndReport(name)
-            gem = findGem(name)
-            puts "#{name} gem is found: '#{gem}'"
-            return gem
         end
 
         rhodesgem             = findGemAndReport('rhodes'             )
@@ -319,26 +398,100 @@ namespace "installer" do
         installGem "\"#{rhoelementsgem}\""
     end
 
-    def removeSamples
-      rm_rf File.join($package_dir, 'samples')
+    def removeSamples(samplesDir)
+      rmGlob samplesDir
     end
 
-    def makeSamples
-      removeSamples
+    def makeSamples(samplesDir)
+      removeSamples(samplesDir)
 
-      samples_dir = File.join($package_dir, 'samples')
-      mkdir samples_dir
+      mkdir samplesDir
 
-      repo_sas = File.join(samples_dir, 'rhodes-system-api-samples')
+      repo_sas = File.join(samplesDir, 'rhodes-system-api-samples')
       cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
-      rm_rf File.join(repo_sas, '.git')
-      rm_f File.join(repo_sas, '.gitignore')
+      rmGlob(repo_sas, '.git')
+      rmGlob(repo_sas, '.gitignore')
+    end
+
+    def removeSamplesWin
+        removeSamples File.join($package_dir, 'samples')
+    end
+
+    def makeSamplesWin
+        makeSamples File.join($package_dir, 'samples')
+    end
+
+    def removeSamplesMac(mount)
+        removeSamples File.join(mount, 'samples')
+    end
+
+    def makeSamplesMac(mount)
+        makeSamples File.join(mount, 'samples')
+    end
+
+    def cleanDir(dir)
+        rmGlob(dir, '*')
+        rmGlob(dir, '.DS_Store')
+    end
+
+    def removeMiscFilesMac(mount)
+        cleanDir File.join(mount, 'RhoElements2 Shared Runtime')
+        cleanDir File.join(mount, 'RhoElements2')
+        rmGlob(mount, 'ReadMe.html')
+        rmGlob(mount, 'RhoStudio and Rho Software License Agreements.doc')
+        rmGlob(mount, 'CREDITS')
+    end
+
+    def makeMiscFilesMac(mount)
+        def unpackGem(gemName, targetDir)
+            gem = findGem(gemName)
+            run "gem unpack '#{gem}' --target='#{targetDir}'"
+            findOneItem(targetDir, "#{gemName}-[0-9]*")
+        end
+
+        def moveDirContent(source, target)
+            Dir.glob(File.join(source, '*')) { |i| mv(i, target) }
+            rm_r source
+        end
+
+        Dir.mktmpdir do |dir|
+            # retrieve data from rhoelements gem
+            rhoelementsDir = unpackGem('rhoelements', dir)
+
+            moveDirContent(
+                File.join(rhoelementsDir, 'RhoElements2', 'Runtime'),
+                File.join(mount, 'RhoElements2 Shared Runtime')
+            )
+
+            moveDirContent(
+                File.join(rhoelementsDir, 'RhoElements2'),
+                File.join(mount, 'RhoElements2')
+            )
+
+            mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
+            mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
+
+            # retrieve data from rhodes gem
+            rhodesDir = unpackGem('rhodes', dir)
+
+            mv(File.join(rhodesDir, 'CREDITS'), mount)
+        end
+    end
+
+    def removeGems(mount)
+        cleanDir File.join(mount, '.gems')
+    end
+
+    def copyGems(mount)
+        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters']
+        files = names.map { |n| findGemAndReport(n) }
+        files.each { |f| cp(f, File.join(mount, '.gems')) }
     end
 
     namespace "user" do
       task :gems do
         installGems
-        makeSamples
+        makeSamplesWin
         removeEclipseSettings()
       end
 
@@ -355,9 +508,9 @@ namespace "installer" do
 
     namespace "motorola" do
       task :clean do
-        removePlugin
+        removePluginWin
         removeRuby
-        removeSamples
+        removeSamplesWin
         removeReadme
         removeRhoElements2
         removeEclipseSettings
@@ -366,13 +519,13 @@ namespace "installer" do
       end
 
       task :gems => 'clean' do
-        exportPlugin
+        exportPluginWin
 
         copyRuby
         installGems
         removeRubyCache
 
-        makeSamples
+        makeSamplesWin
 
         copyReadme
         moveRhoElements2
@@ -395,12 +548,66 @@ namespace "installer" do
 
     namespace "rhostudio" do
       task :plugin do
-        exportPlugin
+        exportPluginWin
       end
 
       task :feature do
         exportFeature
       end
+    end
+
+    namespace 'mac' do
+        namespace 'dmg' do
+            task :clean do
+                disk, mount = attachSuiteDmg
+                removeGems mount
+                removePluginMac mount
+                removeSamplesMac mount
+                removeMiscFilesMac mount
+            end
+            task :make => 'clean' do
+                disk, mount = attachSuiteDmg
+                copyGems mount
+                exportPluginMac mount
+                makeSamplesMac mount
+                makeMiscFilesMac mount
+            end
+            task :open do
+                disk, mount = attachSuiteDmg
+                run "open '#{mount}'"
+            end
+        end
+
+        task :dmg do
+            removeRwDmg
+            makeRwDmg
+        end
+
+        task :make => :clean do
+            makeRwDmg
+
+            Rake::Task['installer:mac:dmg:make'].invoke
+
+            puts
+            puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
+            print 'Press Enter to open image...'
+            STDOUT.flush()
+            STDIN.gets
+
+            Rake::Task['installer:mac:dmg:open'].invoke
+
+            puts
+            print 'Press Enter to continue rake...'
+            STDOUT.flush()
+            STDIN.gets
+
+            makeRoDmg
+        end
+
+        task :clean do
+            removeRwDmg
+            removeRoDmg
+        end
     end
 
     ########################################################
