@@ -188,7 +188,7 @@ Contents
     Wait for finish of EGit installation.
     Restart Eclipse from "Software Updates" dialog.
 
-    From menu select "Eclipse"->"Preferences...".
+    From menu select "Window"->"Preferences".
     Select "Java"->"Compiler"->"Errors/Warnings".
     Expand "Deprecated and restricted API" in right part of dialog.
     Switch "Forbidden reference (access rules):" to "Warning".
