@@ -5,8 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 
-$version                  = '02010102'
-$betaVersion              = '0527.1'
+$version                  = '02010103'
 $isMotorolaBeta           = false
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
@@ -170,7 +169,7 @@ namespace "installer" do
         detachDmg disk
 
         source = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
-        target = File.join($base_dir, "RMS_#{$version}#{$betaVersion}.dmg")
+        target = File.join($base_dir, "RMS_#{$version}.dmg")
         run "hdiutil convert '#{source}' -format UDBZ -o '#{target}'"
     end
 
@@ -501,7 +500,7 @@ namespace "installer" do
       end
 
       task :rename => "nsis" do
-        renameInstaller('RhoStudioInstaller', 'RhoStudioInstaller', '.beta' + $betaVersion)
+        renameInstaller('RhoStudioInstaller', 'RhoStudioInstaller', '.beta')
       end
 
     end
@@ -541,8 +540,7 @@ namespace "installer" do
       task :rename => "nsis" do
         puts 'release - start rename task'
 
-        installerSuffix = $isMotorolaBeta ? $betaVersion + '.beta' : ''
-        renameInstaller('RMS_', 'RMS_', installerSuffix)
+        renameInstaller('RMS_', 'RMS_', '')
       end
     end
 
@@ -621,9 +619,9 @@ namespace "installer" do
 
     task :tag do
       cd $installer_dir
-      git_apply_label($version + $betaVersion)
+      git_apply_label($version)
       cd $studio_dir
-      git_apply_label($version + $betaVersion) 
+      git_apply_label($version) 
     end
 
     task :test do
