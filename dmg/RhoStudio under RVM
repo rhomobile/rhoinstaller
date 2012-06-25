@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "Enter ruby version: "
+read rubyver
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+if [ -z "$rubyver" ]
+then
+echo 'Please enter valid ruby version'
+exit; 
+else
+rvm use $rubyver
+fi
+
+ruby -v
+
+exec "/Applications/Motorola RhoStudio/eclipse.app/Contents/MacOS/RhoStudio"

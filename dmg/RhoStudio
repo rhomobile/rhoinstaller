@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec "/Applications/Motorola RhoStudio/eclipse.app/Contents/MacOS/RhoStudio"

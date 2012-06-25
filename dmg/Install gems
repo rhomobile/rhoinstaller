@@ -1,0 +1,35 @@
+#!/bin/bash
+
+make > /dev/null 2> /dev/null
+
+if [ $? != 2 ]
+then
+  echo 'Please install building tools'
+  exit;
+fi
+
+java 1> /dev/null 2> /dev/null
+
+if [ $? != 0 ]
+then
+  echo 'Please install java development kit'
+  exit;
+fi
+
+echo "Install rhomobile debugger"
+sudo gem install rhomobile-debug
+
+echo "Install rhodes gem"
+sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhodes-3.4.1.3.0.beta.gem"	
+
+echo "Install rhodes translator gem"
+sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoelements-2.1.1.3.0.beta.gem"
+
+echo "Install rhoconnect gem"
+sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-3.2.1.gem"
+
+echo "Install rhoconnect adapters gem"
+sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-adapters-1.0.3.gem"
+
+echo "Install rhodes translator gem"
+sudo gem install rhodes-translator
