@@ -1,76 +1,72 @@
 #!/bin/bash
 
-echo "Enter ruby version: "
-read rubyver
-
-make > /dev/null 2> /dev/null
-
-if [ $? != 2 ]
-then
-  echo 'Please install building tools'
-  exit;
+# check presence of build tools
+make -v > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install build tools.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
 
-java 1> /dev/null 2> /dev/null
-
-if [ $? != 0 ]
-then
-  echo 'Please install java development kit'
-  exit;
+# check presence of JDK
+java -version > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install Java Development Kit.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
- 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
-if [ -z "$rubyver" ]
-then
-  echo 'Please enter valid ruby version'
-  exit; 
+# load RVM into a shell session *as a function*
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    . "$HOME/.rvm/scripts/rvm"
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]]; then
+    . "/usr/local/rvm/scripts/rvm"
 else
-  rvm use $rubyver
+    echo 'Please install RVM.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
 
+# get gems directory
+pushd "`pwd`" > /dev/null
+cd "`dirname "$0"`/.gems"
+GEMS=`pwd`
+popd > /dev/null
+
+# select Ruby to work with
+echo
+echo "Select Ruby version to install gems:"
+RUBIES=`rvm list strings`
+select RUBY in $RUBIES; do
+    [[ -n "$RUBY" ]] && break;
+done
+echo
+rvm use "$RUBY"
 ruby -v
 
-echo "Enter 1 if you do not want use \"sudo\" for install gems"
-echo "Enter 2 if you want use \"sudo\" command prefix for install gems"
-read usesudo
+# add 'sudo' to 'gem install'?
+INSTALL="gem install"
+echo -ne "\nDo you want to install gems with 'sudo' command prefix? [yN]  "
+while true; do
+    read SUDO
+    if [[ "$SUDO" == "" ]] || [[ "$SUDO" == "n" ]]; then
+        break;
+    fi
+    if [[ "$SUDO" == "y" ]]; then
+        INSTALL="sudo gem install"
+        break;
+    fi
+done
 
-if [ $usesudo != 2 ]
-then
-  echo "Install rhomobile debugger"
-  gem install rhomobile-debug
+# install gems
+function install() { echo; echo $INSTALL $(printf '%q' "$1"); $INSTALL "$1"; }
 
-  echo "Install rhodes gem"
-  gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhodes-3.4.1.3.0.beta.gem"	
-
-  echo "Install rhodes translator gem"
-  gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoelements-2.1.1.3.0.beta.gem"
-
-  echo "Install rhoconnect gem"
-  gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-3.2.1.gem"
-
-  echo "Install rhoconnect adapters gem"
-  gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-adapters-1.0.3.gem"
-
-  echo "Install rhodes translator gem"
-  gem install rhodes-translator
-else
-  echo "Install rhomobile debugger"
-  sudo gem install rhomobile-debug
-
-  echo "Install rhodes gem"
-  sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhodes-3.4.1.3.0.beta.gem"	
-
-  echo "Install rhodes translator gem"
-  sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoelements-2.1.1.3.0.beta.gem"
-
-  echo "Install rhoconnect gem"
-  sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-3.2.1.gem"
-
-  echo "Install rhoconnect adapters gem"
-  sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-adapters-1.0.3.gem"
-
-  echo "Install rhodes translator gem"
-  sudo gem install rhodes-translator
-fi
-
+install rhomobile-debug
+install "$GEMS"/rhodes-[0-9]*.gem
+install "$GEMS"/rhoelements-[0-9]*.gem
+install "$GEMS"/rhoconnect-[0-9]*.gem
+install "$GEMS"/rhoconnect-adapters-[0-9]*.gem
+install rhodes-translator

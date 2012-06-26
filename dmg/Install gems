@@ -1,35 +1,35 @@
 #!/bin/bash
 
-make > /dev/null 2> /dev/null
-
-if [ $? != 2 ]
-then
-  echo 'Please install building tools'
-  exit;
+# check presence of build tools
+make -v > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install build tools.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
 
-java 1> /dev/null 2> /dev/null
-
-if [ $? != 0 ]
-then
-  echo 'Please install java development kit'
-  exit;
+# check presence of JDK
+java -version > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install Java Development Kit.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
 
-echo "Install rhomobile debugger"
-sudo gem install rhomobile-debug
+# get gems directory
+pushd "`pwd`" > /dev/null
+cd "`dirname "$0"`/.gems"
+GEMS=`pwd`
+popd > /dev/null
 
-echo "Install rhodes gem"
-sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhodes-3.4.1.3.0.beta.gem"	
+# install gems
+function install() { echo; echo "sudo gem install" $(printf '%q' "$1"); sudo gem install "$1"; }
 
-echo "Install rhodes translator gem"
-sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoelements-2.1.1.3.0.beta.gem"
-
-echo "Install rhoconnect gem"
-sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-3.2.1.gem"
-
-echo "Install rhoconnect adapters gem"
-sudo gem install "/Volumes/Motorola RhoMobile Suite Installer/.gems/rhoconnect-adapters-1.0.3.gem"
-
-echo "Install rhodes translator gem"
-sudo gem install rhodes-translator
+install rhomobile-debug
+install "$GEMS"/rhodes-[0-9]*.gem
+install "$GEMS"/rhoelements-[0-9]*.gem
+install "$GEMS"/rhoconnect-[0-9]*.gem
+install "$GEMS"/rhoconnect-adapters-[0-9]*.gem
+install rhodes-translator
