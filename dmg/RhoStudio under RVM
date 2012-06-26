@@ -1,17 +1,28 @@
 #!/bin/bash
-echo "Enter ruby version: "
-read rubyver
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-
-if [ -z "$rubyver" ]
-then
-echo 'Please enter valid ruby version'
-exit; 
+# load RVM into a shell session *as a function*
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    . "$HOME/.rvm/scripts/rvm"
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]]; then
+    . "/usr/local/rvm/scripts/rvm"
 else
-rvm use $rubyver
+    echo 'Please install RVM.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
 
+# select Ruby to work with
+echo
+echo "Select Ruby version to start RhoStudio:"
+RUBIES=`rvm list strings`
+select RUBY in $RUBIES; do
+    [[ -n "$RUBY" ]] && break;
+done
+echo
+rvm use "$RUBY"
 ruby -v
+
+sleep 2
 
 exec "/Applications/Motorola RhoStudio/eclipse.app/Contents/MacOS/RhoStudio"
