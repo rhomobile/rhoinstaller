@@ -5,7 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 
-$version                  = '02010103.2'
+$version                  = '02010104'
 $isMotorolaBeta           = false
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
