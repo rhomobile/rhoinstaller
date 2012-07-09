@@ -10,7 +10,7 @@
  
   Name "Motorola RhoMobile Suite"
   OutFile "RMS_.exe"
-  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.3"
+  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.4"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -92,7 +92,7 @@ section
  
     # added information in 'unistall programs' in contorol panel
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
-                 "DisplayName" "Motorola RhoMobile Suite - RAD tool for develop and debug rhodes/rhoconnect applications"
+                 "DisplayName" "Motorola RhoMobile Suite"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
