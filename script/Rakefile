@@ -475,6 +475,13 @@ namespace "installer" do
 
             mv(File.join(rhodesDir, 'CREDITS'), mount)
         end
+
+        # copy scripts
+        cp(File.join($installer_dir, 'dmg', 'Install gems'), mount)
+        cp(File.join($installer_dir, 'dmg', 'Install gems on rvm'), mount)
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio under RVM'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio'), File.join(mount, 'Motorola RhoStudio'))
+
     end
 
     def removeGems(mount)

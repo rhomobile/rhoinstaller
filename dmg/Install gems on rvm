@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# check presence of build tools
+make -v > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install build tools.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
+fi
+
+# check presence of JDK
+java -version > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install Java Development Kit.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
+fi
+
+# load RVM into a shell session *as a function*
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    . "$HOME/.rvm/scripts/rvm"
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]]; then
+    . "/usr/local/rvm/scripts/rvm"
+else
+    echo 'Please install RVM.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
+fi
+
+# get gems directory
+pushd "`pwd`" > /dev/null
+cd "`dirname "$0"`/.gems"
+GEMS=`pwd`
+popd > /dev/null
+
+# select Ruby to work with
+echo
+echo "Select Ruby version to install gems:"
+RUBIES=`rvm list strings`
+select RUBY in $RUBIES; do
+    [[ -n "$RUBY" ]] && break;
+done
+echo
+rvm use "$RUBY"
+ruby -v
+
+# add 'sudo' to 'gem install'?
+INSTALL="gem install"
+echo -ne "\nDo you want to install gems with 'sudo' command prefix? [yN]  "
+while true; do
+    read SUDO
+    if [[ "$SUDO" == "" ]] || [[ "$SUDO" == "n" ]]; then
+        break;
+    fi
+    if [[ "$SUDO" == "y" ]]; then
+        INSTALL="sudo gem install"
+        break;
+    fi
+done
+
+# install gems
+function install() { echo; echo $INSTALL $(printf '%q' "$1"); $INSTALL "$1"; }
+
+install rhomobile-debug
+install "$GEMS"/rhodes-[0-9]*.gem
+install "$GEMS"/rhoelements-[0-9]*.gem
+install "$GEMS"/rhoconnect-[0-9]*.gem
+install "$GEMS"/rhoconnect-adapters-[0-9]*.gem
+install rhodes-translator

@@ -7,7 +7,7 @@ Contents
     Build installer for Mac OSX
 
 
-*** Build Eclipse product ***
+* Build Eclipse product *
 
 
 ** Download required files **
@@ -104,7 +104,7 @@ Contents
     Press "Finish".
 
 
-*** Build installer for Windows ***
+* Build installer for Windows *
 
 
 ** Download required files **
@@ -233,7 +233,7 @@ Contents
 
 
 
-*** Build installer for Mac OSX ***
+* Build installer for Mac OSX *
 
 
 ** Download required files **
