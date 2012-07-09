@@ -5,7 +5,7 @@ require 'fileutils'
 load 'jake.rb'
 
 
-$version                  = '02010103.1'
+$version                  = '02010103.2'
 $isMotorolaBeta           = false
 $nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
 
@@ -507,18 +507,18 @@ namespace "installer" do
 
     namespace "motorola" do
       task :clean do
-        removePluginWin
+        #removePluginWin
         removeRuby
         removeSamplesWin
         removeReadme
         removeRhoElements2
-        removeEclipseSettings
+        #removeEclipseSettings
         removeNsisScript
         removeInstaller
       end
 
       task :gems => 'clean' do
-        exportPluginWin
+        #exportPluginWin
 
         copyRuby
         installGems
@@ -529,7 +529,7 @@ namespace "installer" do
         copyReadme
         moveRhoElements2
 
-        removeEclipseSettings
+        #removeEclipseSettings
       end
 
       task :nsis => "gems" do
@@ -555,57 +555,60 @@ namespace "installer" do
     end
 
     namespace 'mac' do
-        namespace 'dmg' do
-            task :clean do
-                disk, mount = attachSuiteDmg
-                removeGems mount
-                removePluginMac mount
-                removeSamplesMac mount
-                removeMiscFilesMac mount
-            end
-            task :make => 'clean' do
-                disk, mount = attachSuiteDmg
-                copyGems mount
-                exportPluginMac mount
-                makeSamplesMac mount
-                makeMiscFilesMac mount
-            end
-            task :open do
-                disk, mount = attachSuiteDmg
-                run "open '#{mount}'"
-            end
-        end
-
-        task :dmg do
-            removeRwDmg
-            makeRwDmg
-        end
-
-        task :make => :clean do
-            makeRwDmg
-
-            Rake::Task['installer:mac:dmg:make'].invoke
-
-            puts
-            puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
-            print 'Press Enter to open image...'
-            STDOUT.flush()
-            STDIN.gets
-
-            Rake::Task['installer:mac:dmg:open'].invoke
-
-            puts
-            print 'Press Enter to continue rake...'
-            STDOUT.flush()
-            STDIN.gets
-
-            makeRoDmg
-        end
+      namespace 'dmg' do
 
         task :clean do
-            removeRwDmg
-            removeRoDmg
+          disk, mount = attachSuiteDmg
+          removeGems mount
+          removePluginMac mount
+          removeSamplesMac mount
+          removeMiscFilesMac mount
         end
+
+        task :make => 'clean' do
+          disk, mount = attachSuiteDmg
+          copyGems mount
+          exportPluginMac mount
+          makeSamplesMac mount
+          makeMiscFilesMac mount
+        end
+
+        task :open do
+          disk, mount = attachSuiteDmg
+          run "open '#{mount}'"
+        end
+      end
+
+      task :dmg do
+        removeRwDmg
+        makeRwDmg
+      end
+
+      task :make => :clean do
+        makeRwDmg
+
+        Rake::Task['installer:mac:dmg:make'].invoke
+
+        puts
+        puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
+        print 'Press Enter to open image...'
+        STDOUT.flush()
+        STDIN.gets
+
+        Rake::Task['installer:mac:dmg:open'].invoke
+
+        puts
+        print 'Press Enter to continue rake...'
+        STDOUT.flush()
+        STDIN.gets
+
+        makeRoDmg
+      end
+
+      task :clean do
+        removeRwDmg
+        removeRoDmg
+      end
     end
 
     ########################################################
