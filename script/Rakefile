@@ -653,22 +653,7 @@ namespace "installer" do
 
       task :make => :clean do
         makeRwDmg
-
         Rake::Task['installer:mac:dmg:make'].invoke
-
-        puts
-        puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
-        print 'Press Enter to open image...'
-        STDOUT.flush()
-        STDIN.gets
-
-        Rake::Task['installer:mac:dmg:open'].invoke
-
-        puts
-        print 'Press Enter to continue rake...'
-        STDOUT.flush()
-        STDIN.gets
-
         makeRoDmg
       end
 
