@@ -55,7 +55,7 @@
 ;======================================================
 ; Variables
 
-RequestExecutionLevel admin #NOTE: You still need to check user rights with UserInfo!
+#RequestExecutionLevel admin #NOTE: You still need to check user rights with UserInfo!
 
 ;======================================================
 ; Sections
