@@ -55,8 +55,6 @@
 ;======================================================
 ; Variables
 
-#RequestExecutionLevel admin #NOTE: You still need to check user rights with UserInfo!
-
 ;======================================================
 ; Sections
 
@@ -305,6 +303,18 @@ Section "Git 1.7.6" gitSection
 SectionEnd
 
 
+Section "Node JS 0.8.1" nodeSection
+
+  SetOutPath $INSTDIR
+  
+  File "node-v0.8.1-x86.msi"
+ 
+  ExecWait "$INSTDIR\node-v0.8.1-x86.msi"
+
+  delete "$INSTDIR\node-v0.8.1-x86.msi"
+
+SectionEnd
+
 #Section "Java SE Runtime Environment 6 Update 26" javaSection
 
 #  SetOutPath $INSTDIR
@@ -329,6 +339,7 @@ SectionEnd
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
+  LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
   LangString DESC_InstallAns ${LANG_ENGLISH} "This installs ANS service."  
 
   #LangString DESC_InstallJava ${LANG_ENGLISH} "This installs Java SE Runtime Environment."  
@@ -345,6 +356,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
   !insertmacro MUI_DESCRIPTION_TEXT ${ansSection} $(DESC_InstallAns)
+  !insertmacro MUI_DESCRIPTION_TEXT ${nodeSection} $(DESC_InstallNodeJs)
   #!insertmacro MUI_DESCRIPTION_TEXT ${javaSection} $(DESC_InstallJava)    
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
