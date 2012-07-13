@@ -1,0 +1,22 @@
+{
+"httpSecure": "n",
+"devAuthHost": "localhost", 
+"devAuthUrl": "/rc/v1/app/ans_login", 
+"devAuthPort": "9292",
+"userAuthHost": "localhost", 
+"userAuthUrl": "/rc/v1/app/ans_login", 
+"userAuthPort": "9292",
+"appAuthHost": "localhost", 
+"appAuthUrl": "/rc/v1/app/ans_login",
+"appAuthPort": "9292",
+"appCredentials": "appuser:appuserpwd",
+"ansResponseTimeout": "300000",
+"ansServerPort": "8675",
+"registrationTimeout": "2592000",
+"clearDataBase": "n",
+"socketPoolSize": 1,
+"debugLevel": "3",
+"numClients": "2",
+"maxCollapseId": 20,
+"messagePeriod": 0
+}
