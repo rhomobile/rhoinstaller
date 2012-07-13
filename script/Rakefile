@@ -528,6 +528,11 @@ namespace "installer" do
                 File.join(mount, 'RhoElements2')
             )
 
+            moveDirContent(
+                File.join(rhoelementsDir, 'libs', 'ans', 'bin'),
+                File.join(mount, 'AnsService')
+            )
+
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
 
