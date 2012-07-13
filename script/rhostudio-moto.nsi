@@ -84,6 +84,7 @@ section
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Ans service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\AnsService"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
@@ -205,7 +206,7 @@ Section "Ans service" ansSection
  
   SetOutPath $INSTDIR
  
-  File /r "Ans-service"
+  File /r "AnsService"
 
 SectionEnd
 
