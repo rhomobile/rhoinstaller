@@ -412,6 +412,20 @@ namespace "installer" do
       moveDir(          source            , 'RhoElements2'               )
     end
 
+    def removeAnsService
+        rmGlob($package_dir, 'AnsService')
+    end
+
+    def moveAnsService
+      def moveDir(source, targetName)
+        mv(source, File.join($package_dir, targetName))
+      end
+
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'ans', 'bin')
+
+      moveDir(source, 'AnsService')
+    end
+
     def removeReadme
       rmGlob($package_dir, 'README.html')
       rmGlob($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
@@ -469,6 +483,11 @@ namespace "installer" do
 
       repo_sas = File.join(samplesDir, 'rhodes-system-api-samples')
       cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
+
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'anstest')
+
+      mv(source, File.join($package_dir, samplesDir + "AnsTest"))
+
       rmGlob(repo_sas, '.git')
       rmGlob(repo_sas, '.gitignore')
     end
@@ -584,6 +603,7 @@ namespace "installer" do
         removeSamplesWin
         removeReadme
         removeRhoElements2
+        removeAnsService
         #removeEclipseSettings
         removeNsisScript
         removeInstaller
@@ -600,6 +620,7 @@ namespace "installer" do
 
         copyReadme
         moveRhoElements2
+        moveAnsService
 
         #removeEclipseSettings
       end
