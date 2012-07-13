@@ -5,9 +5,9 @@ require 'fileutils'
 load 'jake.rb'
 
 
-$version                  = '02010104'
-$isMotorolaBeta           = false
-$nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
+$version           = '02010104'
+$isBeta            = true
+$nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -73,7 +73,11 @@ namespace "installer" do
         toRun = set_list.join('') + command
         if !cd.nil?
             toPrint = "#{cd}>#{toPrint}"
-            toRun = "cd /d \"#{cd}\"&&#{toRun}"
+            if RUBY_PLATFORM =~ /(win|w)32$/
+                toRun = "cd /d \"#{cd}\"&&#{toRun}"
+            else
+                toRun = "cd '#{cd}'&&#{toRun}"
+            end
         end
 
         puts
@@ -168,8 +172,10 @@ namespace "installer" do
         disk, mount = attachSuiteDmg
         detachDmg disk
 
+        beta = ($isBeta) ? '.beta' : ''
+
         source = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
-        target = File.join($base_dir, "RMS_#{$version}.dmg")
+        target = File.join($base_dir, "RMS_#{$version}#{beta}.dmg")
         run "hdiutil convert '#{source}' -format UDBZ -o '#{target}'"
     end
 
@@ -222,6 +228,53 @@ namespace "installer" do
         run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=\"#{destination}\""
     end
 
+    def exportProduct_(configs, plugin, destination)
+        eclipseDir = File.join($base_dir, 'eclipse')
+        productBuild = findOneItem($base_dir, 'eclipse', 'plugins', 'org.eclipse.pde.build_*', 'scripts', 'productBuild', 'productBuild.xml')
+        builder = File.join($studio_dir, 'rhogen-wizard', 'build-setting')
+        product = File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')
+        pluginPath = File.join($base_dir, 'eclipse') + ':' + plugin
+        Dir.mktmpdir do |base|
+            mkdir File.join(base, 'eclipse')
+            run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner " +
+                "-data #{$workspace_dir} " +
+                "-buildfile '#{productBuild}' " +
+                "-Dbuilder='#{builder}' " +
+                "-DbuildDirectory='#{destination}' " +
+                "-Dbase='#{base}' " +
+                "-Dproduct='#{product}' " +
+                "-DpluginPath='#{pluginPath}' " +
+                "-Dconfigs='#{configs.join(' & ')}' " +
+                '-Dp2.gathering=true ' +
+                '-DbuildLabel=build ' +
+                '-DbuildId=build '
+        end
+    end
+
+    def removeProduct(configs, destination)
+        configs.each { |c| rmGlob(destination, c.gsub(', ', '.')) }
+    end
+
+    def exportProduct(configs, destination)
+        Dir.mktmpdir do |productDestination|
+            Dir.mktmpdir do |pluginDestination|
+                exportPlugin pluginDestination
+                exportProduct_(configs, pluginDestination, productDestination)
+            end
+            buildDir = File.join(productDestination, 'build')
+            Dir.glob(File.join(buildDir, 'build-*.zip')) do |zip|
+                run("unzip #{zip}", buildDir)
+                match = File.basename(zip).match('^build-(.*)\.zip$')
+                if match.nil?
+                    puts "Error: Can not parse '#{zip}' file name."
+                    exit 1
+                end
+                name = match[1]
+                mv(File.join(buildDir, 'eclipse'), File.join(destination, name))
+            end
+        end
+    end
+
     def removePluginWin
         removePlugin File.join($package_dir, 'eclipse')
         updateBundlesInfo
@@ -238,6 +291,14 @@ namespace "installer" do
 
     def exportPluginMac(mount)
         exportPlugin File.join(mount, 'Motorola RhoStudio')
+    end
+
+    def removeProductMac(mount)
+        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+    end
+
+    def exportProductMac(mount)
+        exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
     end
 
     def exportFeature
@@ -467,6 +528,11 @@ namespace "installer" do
                 File.join(mount, 'RhoElements2')
             )
 
+            moveDirContent(
+                File.join(rhoelementsDir, 'libs', 'ans', 'bin'),
+                File.join(mount, 'AnsService')
+            )
+
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
 
@@ -478,9 +544,8 @@ namespace "installer" do
 
         # copy scripts
         cp(File.join($installer_dir, 'dmg', 'Install gems'), mount)
-        cp(File.join($installer_dir, 'dmg', 'Install gems on rvm'), mount)
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio under RVM'), File.join(mount, 'Motorola RhoStudio'))
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 32 bits'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 64 bits'), File.join(mount, 'Motorola RhoStudio'))
 
     end
 
@@ -567,7 +632,7 @@ namespace "installer" do
         task :clean do
           disk, mount = attachSuiteDmg
           removeGems mount
-          removePluginMac mount
+          removeProductMac mount
           removeSamplesMac mount
           removeMiscFilesMac mount
         end
@@ -575,7 +640,7 @@ namespace "installer" do
         task :make => 'clean' do
           disk, mount = attachSuiteDmg
           copyGems mount
-          exportPluginMac mount
+          exportProductMac mount
           makeSamplesMac mount
           makeMiscFilesMac mount
         end
@@ -593,22 +658,7 @@ namespace "installer" do
 
       task :make => :clean do
         makeRwDmg
-
         Rake::Task['installer:mac:dmg:make'].invoke
-
-        puts
-        puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
-        print 'Press Enter to open image...'
-        STDOUT.flush()
-        STDIN.gets
-
-        Rake::Task['installer:mac:dmg:open'].invoke
-
-        puts
-        print 'Press Enter to continue rake...'
-        STDOUT.flush()
-        STDIN.gets
-
         makeRoDmg
       end
 
@@ -635,6 +685,12 @@ namespace "installer" do
     end
 
     task :test do
+        # makeRwDmg
+        # disk, mount = attachSuiteDmg
+        # exportProductMac mount
+
+        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], '/Users/sv/tmp')
+        # exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], '/Users/sv/tmp')
     end
 
 end
