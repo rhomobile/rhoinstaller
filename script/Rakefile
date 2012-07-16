@@ -484,10 +484,6 @@ namespace "installer" do
       repo_sas = File.join(samplesDir, 'rhodes-system-api-samples')
       cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
 
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'anstest')
-
-      mv(source, File.join(samplesDir, "AnsTest"))
-
       rmGlob(repo_sas, '.git')
       rmGlob(repo_sas, '.gitignore')
     end
@@ -497,7 +493,11 @@ namespace "installer" do
     end
 
     def makeSamplesWin
-        makeSamples File.join($package_dir, 'samples')
+        samplesDir = File.join($package_dir, 'samples')
+        makeSamples samplesDir
+
+        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'anstest')
+        mv(source, File.join(samplesDir, 'AnsTest'))
     end
 
     def removeSamplesMac(mount)
@@ -554,6 +554,11 @@ namespace "installer" do
 
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
+
+            mv(
+                findOneItem(rhoelementsDir, 'samples', 'anstest'),
+                File.join(mount, 'samples', 'AnsTest')
+            )
 
             # retrieve data from rhodes gem
             rhodesDir = unpackGem('rhodes', dir)
