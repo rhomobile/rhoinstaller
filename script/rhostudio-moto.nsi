@@ -79,8 +79,8 @@ section
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Ans service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\AnsService"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
