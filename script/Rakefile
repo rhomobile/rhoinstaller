@@ -228,49 +228,47 @@ namespace "installer" do
         run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=\"#{destination}\""
     end
 
-    def exportProduct_(configs, plugin, destination)
-        eclipseDir = File.join($base_dir, 'eclipse')
+    def exportProduct_(config, plugin, destination)
         productBuild = findOneItem($base_dir, 'eclipse', 'plugins', 'org.eclipse.pde.build_*', 'scripts', 'productBuild', 'productBuild.xml')
         builder = File.join($studio_dir, 'rhogen-wizard', 'build-setting')
         product = File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')
-        pluginPath = File.join($base_dir, 'eclipse') + ':' + plugin
+        pluginPath = File.join($base_dir, 'eclipse') + File::PATH_SEPARATOR + plugin
+
         Dir.mktmpdir do |base|
             mkdir File.join(base, 'eclipse')
             run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner " +
-                "-data #{$workspace_dir} " +
-                "-buildfile '#{productBuild}' " +
-                "-Dbuilder='#{builder}' " +
-                "-DbuildDirectory='#{destination}' " +
-                "-Dbase='#{base}' " +
-                "-Dproduct='#{product}' " +
-                "-DpluginPath='#{pluginPath}' " +
-                "-Dconfigs='#{configs.join(' & ')}' " +
+                "-data \"#{$workspace_dir}\" " +
+                "-buildfile \"#{productBuild}\" " +
+                "-Dbuilder=\"#{builder}\" " +
+                "-DbuildDirectory=\"#{destination}\" " +
+                "-Dbase=\"#{base}\" " +
+                "-Dproduct=\"#{product}\" " +
+                "-DpluginPath=\"#{pluginPath}\" " +
+                "-Dconfigs=\"#{config}\" " +
+                "-DarchivesFormat=\"#{config} - folder\" " +
                 '-Dp2.gathering=true ' +
                 '-DbuildLabel=build ' +
                 '-DbuildId=build '
         end
     end
 
+    def configName(config)
+        return config.gsub(', ', '.')
+    end
+
     def removeProduct(configs, destination)
-        configs.each { |c| rmGlob(destination, c.gsub(', ', '.')) }
+        configs.each { |c| rmGlob(destination, configName(c)) }
     end
 
     def exportProduct(configs, destination)
-        Dir.mktmpdir do |productDestination|
-            Dir.mktmpdir do |pluginDestination|
-                exportPlugin pluginDestination
-                exportProduct_(configs, pluginDestination, productDestination)
-            end
-            buildDir = File.join(productDestination, 'build')
-            Dir.glob(File.join(buildDir, 'build-*.zip')) do |zip|
-                run("unzip #{zip}", buildDir)
-                match = File.basename(zip).match('^build-(.*)\.zip$')
-                if match.nil?
-                    puts "Error: Can not parse '#{zip}' file name."
-                    exit 1
+        Dir.mktmpdir do |pluginDestination|
+            exportPlugin pluginDestination
+            Dir.mktmpdir do |productDestination|
+                configs.each do |config|
+                    exportProduct_(config, pluginDestination, productDestination)
+                    folder = File.join(productDestination, 'tmp', 'eclipse')
+                    mv(folder, File.join(destination, configName(config)))
                 end
-                name = match[1]
-                mv(File.join(buildDir, 'eclipse'), File.join(destination, name))
             end
         end
     end
@@ -299,6 +297,16 @@ namespace "installer" do
 
     def exportProductMac(mount)
         exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+    end
+
+    def removeProductWin
+        rmGlob($package_dir, 'rhostudio')
+    end
+
+    def exportProductWin
+        target = File.join($package_dir, 'rhostudio')
+        mkdir target
+        exportProduct(['win32, win32, x86', 'win32, win32, x86_64'], target)
     end
 
     def exportFeature
@@ -603,7 +611,7 @@ namespace "installer" do
 
     namespace "motorola" do
       task :clean do
-        #removePluginWin
+        removeProductWin
         removeRuby
         removeSamplesWin
         removeReadme
@@ -615,7 +623,7 @@ namespace "installer" do
       end
 
       task :gems => 'clean' do
-        #exportPluginWin
+        exportProductWin
 
         copyRuby
         installGems
@@ -711,12 +719,8 @@ namespace "installer" do
     end
 
     task :test do
-        # makeRwDmg
-        # disk, mount = attachSuiteDmg
-        # exportProductMac mount
-
-        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], '/Users/sv/tmp')
-        # exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], '/Users/sv/tmp')
+        removeProduct(['win32, win32, x86', 'win32, win32, x86_64'],  '/Users/sv/tmp')
+        exportProduct(['win32, win32, x86', 'win32, win32, x86_64'],  '/Users/sv/tmp')
     end
 
 end
