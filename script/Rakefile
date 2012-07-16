@@ -484,9 +484,9 @@ namespace "installer" do
       repo_sas = File.join(samplesDir, 'rhodes-system-api-samples')
       cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
 
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'anstest')
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'anstest')
 
-      mv(source, File.join($package_dir, samplesDir + "AnsTest"))
+      mv(source, File.join(samplesDir, "AnsTest"))
 
       rmGlob(repo_sas, '.git')
       rmGlob(repo_sas, '.gitignore')
