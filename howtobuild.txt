@@ -113,13 +113,11 @@ Contents
 
 6. Extract Windows installer package archive into <root> directory.
     From <root>\rhoinstaller directory run following commands:
-    git checkout .
     git pull
 
 7. Install Ruby into <root>\ruby directory.
 
-8. Remove <root>\rhoinstaller\package\devkit directory.
-    Run RubyInstaller Development Kit and extract it to <root>\rhoinstaller\package\devkit directory.
+8. Run RubyInstaller Development Kit and extract it to <root>\rhoinstaller\package\devkit directory.
 
 9. Configure Ruby installation. Open new console (cmd.exe) and execute there following commands:
     path <root>\ruby\bin
