@@ -87,8 +87,6 @@ section
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
-    #ShellLink::SetRunAsAdministrator "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk"
- 
     # added information in 'unistall programs' in contorol panel
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "DisplayName" "Motorola RhoMobile Suite"
@@ -307,32 +305,25 @@ Section "Node JS 0.8.1" nodeSection
 
   SetOutPath $INSTDIR
   
-  File "node-v0.8.1-x86.msi"
+  File /r "ans"
  
-  ExecWait "$INSTDIR\node-v0.8.1-x86.msi"
+  ExecWait "msiexec.exe /i $INSTDIR\ans\node-v0.8.1-x86.msi"
 
-  delete "$INSTDIR\node-v0.8.1-x86.msi"
+  ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
+
+  ReadEnvStr $R0 "PATH"
+  StrCpy $R0 "$R0;$0"
+  System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("PATH", R0).r0'
+                                   
+  ExecWait "$INSTDIR\ans\patch.bat"
 
 SectionEnd
-
-#Section "Java SE Runtime Environment 6 Update 26" javaSection
-
-#  SetOutPath $INSTDIR
-  
-#  File "jre-6u26-windows-i586.exe"
- 
-#  ExecWait "$INSTDIR\jre-6u26-windows-i586.exe"
-
-#  delete "$INSTDIR\jre-6u26-windows-i586.exe"
-
-#SectionEnd
 
 ;======================================================
 ;Descriptions
  
   ;Language strings
   LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio IDE."
-  #LangString DESC_InstallApache ${LANG_ENGLISH} "This installs the Apache 2.2 webserver"
   LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
@@ -341,14 +332,11 @@ SectionEnd
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
   LangString DESC_InstallAns ${LANG_ENGLISH} "This installs ANS service."  
-
-  #LangString DESC_InstallJava ${LANG_ENGLISH} "This installs Java SE Runtime Environment."  
   
   ;Assign language strings to sections
   
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${studioSection} $(DESC_InstallRhostudio)
-  #!insertmacro MUI_DESCRIPTION_TEXT ${apache2Section} $(DESC_InstallApache)
   !insertmacro MUI_DESCRIPTION_TEXT ${gnumakeSection} $(DESC_InstallGnuMake)
   !insertmacro MUI_DESCRIPTION_TEXT ${devkitSection} $(DESC_InstallDevKit)
   !insertmacro MUI_DESCRIPTION_TEXT ${rubySection} $(DESC_InstallRuby) 
