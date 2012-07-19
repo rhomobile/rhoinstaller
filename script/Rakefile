@@ -252,6 +252,12 @@ namespace "installer" do
         end
     end
 
+    def editConfigIni(configIni)
+        File.open(configIni, 'a') do |f|
+            f.puts 'osgi.instance.area.default=@user.home/workspace'
+        end
+    end
+
     def configName(config)
         return config.gsub(', ', '.')
     end
@@ -266,8 +272,10 @@ namespace "installer" do
             Dir.mktmpdir do |productDestination|
                 configs.each do |config|
                     exportProduct_(config, pluginDestination, productDestination)
-                    folder = File.join(productDestination, 'tmp', 'eclipse')
-                    mv(folder, File.join(destination, configName(config)))
+                    source = File.join(productDestination, 'tmp', 'eclipse')
+                    editConfigIni File.join(source, 'configuration', 'config.ini')
+                    target = File.join(destination, configName(config))
+                    mv(source, target)
                 end
             end
         end
@@ -719,8 +727,8 @@ namespace "installer" do
     end
 
     task :test do
-        removeProduct(['win32, win32, x86', 'win32, win32, x86_64'],  '/Users/sv/tmp')
-        exportProduct(['win32, win32, x86', 'win32, win32, x86_64'],  '/Users/sv/tmp')
+        removeProductWin
+        exportProductWin
     end
 
 end
