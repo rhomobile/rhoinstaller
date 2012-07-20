@@ -437,7 +437,7 @@ namespace "installer" do
         mv(source, File.join($package_dir, targetName))
       end
 
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-bin')
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-service')
 
       moveDir(source, 'rhoconnect-push-service')
     end
@@ -566,7 +566,7 @@ namespace "installer" do
             )
 
             moveDirContent(
-                File.join(rhoelementsDir, 'libs', 'rhoconnect-push-bin'),
+                File.join(rhoelementsDir, 'libs', 'rhoconnect-push-service'),
                 File.join(mount, 'rhoconnect-push-service')
             )
 
