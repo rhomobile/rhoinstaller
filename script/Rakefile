@@ -429,7 +429,7 @@ namespace "installer" do
     end
 
     def removeAnsService
-        rmGlob($package_dir, 'AnsService')
+        rmGlob($package_dir, 'rhoconnect-push-service')
     end
 
     def moveAnsService
@@ -437,9 +437,9 @@ namespace "installer" do
         mv(source, File.join($package_dir, targetName))
       end
 
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'ans', 'bin')
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-bin')
 
-      moveDir(source, 'AnsService')
+      moveDir(source, 'rhoconnect-push-service')
     end
 
     def removeReadme
@@ -471,6 +471,7 @@ namespace "installer" do
         rhoelementsgem        = findGemAndReport('rhoelements'        )
         rhoconnectgem         = findGemAndReport('rhoconnect'         )
         rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
+        rhohubgem             = findGemAndReport('rhohub')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
         # leading to harmless error.
@@ -486,6 +487,7 @@ namespace "installer" do
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoelementsgem}\""
+        installGem "\"#{rhohubgem}\""
     end
 
     def removeSamples(samplesDir)
@@ -642,8 +644,6 @@ namespace "installer" do
         copyReadme
         moveRhoElements2
         moveAnsService
-
-        #removeEclipseSettings
       end
 
       task :nsis => "gems" do
