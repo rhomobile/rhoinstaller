@@ -428,11 +428,11 @@ namespace "installer" do
       moveDir(          source            , 'RhoElements2'               )
     end
 
-    def removeAnsService
+    def removeRhoconnectPushService
         rmGlob($package_dir, 'rhoconnect-push-service')
     end
 
-    def moveAnsService
+    def moveRhoconnectPushService
       def moveDir(source, targetName)
         mv(source, File.join($package_dir, targetName))
       end
@@ -514,8 +514,8 @@ namespace "installer" do
         samplesDir = File.join($package_dir, 'samples')
         makeSamples samplesDir
 
-        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'anstest')
-        mv(source, File.join(samplesDir, 'AnsTest'))
+        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'rhoconnect-push-test')
+        mv(source, File.join(samplesDir, 'rhoconnect-push-test'))
     end
 
     def removeSamplesMac(mount)
@@ -566,16 +566,16 @@ namespace "installer" do
             )
 
             moveDirContent(
-                File.join(rhoelementsDir, 'libs', 'ans', 'bin'),
-                File.join(mount, 'AnsService')
+                File.join(rhoelementsDir, 'libs', 'rhoconnect-push-bin'),
+                File.join(mount, 'rhoconnect-push-service')
             )
 
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
 
             mv(
-                findOneItem(rhoelementsDir, 'samples', 'anstest'),
-                File.join(mount, 'samples', 'AnsTest')
+                findOneItem(rhoelementsDir, 'samples', 'rhoconnect-push-test'),
+                File.join(mount, 'samples', 'rhoconnect-push-test')
             )
 
             # retrieve data from rhodes gem
@@ -626,7 +626,7 @@ namespace "installer" do
         removeSamplesWin
         removeReadme
         removeRhoElements2
-        removeAnsService
+        removeRhoconnectPushService
         #removeEclipseSettings
         removeNsisScript
         removeInstaller
@@ -643,7 +643,7 @@ namespace "installer" do
 
         copyReadme
         moveRhoElements2
-        moveAnsService
+        moveRhoconnectPushService
       end
 
       task :nsis => "gems" do

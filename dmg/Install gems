@@ -69,4 +69,5 @@ install "$GEMS"/rhodes-[0-9]*.gem
 install "$GEMS"/rhoelements-[0-9]*.gem
 install "$GEMS"/rhoconnect-[0-9]*.gem
 install "$GEMS"/rhoconnect-adapters-[0-9]*.gem
+install "$GEMS"/rhohub-[0-9]*.gem
 install rhodes-translator
