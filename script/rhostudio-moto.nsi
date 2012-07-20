@@ -198,11 +198,11 @@ Section "RhoStudio IDE" studioSection
 
 SectionEnd
 
-Section "Ans service" ansSection
+Section "Rhoconnect-push service clients" rhoconnectpushSection
  
   SetOutPath $INSTDIR
  
-  File /r "AnsService"
+  File /r "rhoconnect-push-service"
 
 SectionEnd
 
@@ -331,7 +331,7 @@ SectionEnd
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
-  LangString DESC_InstallAns ${LANG_ENGLISH} "This installs ANS service."  
+  LangString DESC_InstallRhoconnectPush ${LANG_ENGLISH} "This installs Rhoconnect-push service clients."  
   
   ;Assign language strings to sections
   
@@ -343,7 +343,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${redisSection} $(DESC_InstallRedis)
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
-  !insertmacro MUI_DESCRIPTION_TEXT ${ansSection} $(DESC_InstallAns)
+  !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
   !insertmacro MUI_DESCRIPTION_TEXT ${nodeSection} $(DESC_InstallNodeJs)
   #!insertmacro MUI_DESCRIPTION_TEXT ${javaSection} $(DESC_InstallJava)    
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
