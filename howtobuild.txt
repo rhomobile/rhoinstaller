@@ -113,6 +113,7 @@ Contents
 
 6. Extract Windows installer package archive into <root> directory.
     From <root>\rhoinstaller directory run following commands:
+    git checkout .
     git pull
 
 7. Install Ruby into <root>\ruby directory.
