@@ -489,7 +489,7 @@ namespace "installer" do
     end
 
     def copyGems(mount)
-        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters']
+        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters', 'rhohub']
         files = names.map { |n| findGemAndReport(n) }
         files.each { |f| cp(f, File.join(mount, '.gems')) }
     end
