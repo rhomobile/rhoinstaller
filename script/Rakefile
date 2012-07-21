@@ -269,8 +269,11 @@ namespace "installer" do
     def exportProduct(configs, destination)
         Dir.mktmpdir do |pluginDestination|
             exportPlugin pluginDestination
-            Dir.mktmpdir do |productDestination|
-                configs.each do |config|
+            # These two loops are nested in inefficient way.
+            # It is attempt to avoid bug when second configuration are built without executable or with
+            # corrupted executable.
+            configs.each do |config|
+                Dir.mktmpdir do |productDestination|
                     exportProduct_(config, pluginDestination, productDestination)
                     source = File.join(productDestination, 'tmp', 'eclipse')
                     editConfigIni File.join(source, 'configuration', 'config.ini')
