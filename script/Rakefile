@@ -5,9 +5,9 @@ require 'fileutils'
 load 'jake.rb'
 
 
-$version                  = '02010104'
-$isMotorolaBeta           = false
-$nsisPath                 = "C:/Program Files (x86)/NSIS/makensis.exe"
+$version           = '02010105'
+$isBeta            = true
+$nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -73,7 +73,11 @@ namespace "installer" do
         toRun = set_list.join('') + command
         if !cd.nil?
             toPrint = "#{cd}>#{toPrint}"
-            toRun = "cd /d \"#{cd}\"&&#{toRun}"
+            if RUBY_PLATFORM =~ /(win|w)32$/
+                toRun = "cd /d \"#{cd}\"&&#{toRun}"
+            else
+                toRun = "cd '#{cd}'&&#{toRun}"
+            end
         end
 
         puts
@@ -168,8 +172,10 @@ namespace "installer" do
         disk, mount = attachSuiteDmg
         detachDmg disk
 
+        beta = ($isBeta) ? '.beta' : ''
+
         source = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
-        target = File.join($base_dir, "RMS_#{$version}.dmg")
+        target = File.join($base_dir, "RMS_#{$version}#{beta}.dmg")
         run "hdiutil convert '#{source}' -format UDBZ -o '#{target}'"
     end
 
@@ -222,6 +228,59 @@ namespace "installer" do
         run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=\"#{destination}\""
     end
 
+    def exportProduct_(config, plugin, destination)
+        productBuild = findOneItem($base_dir, 'eclipse', 'plugins', 'org.eclipse.pde.build_*', 'scripts', 'productBuild', 'productBuild.xml')
+        builder = File.join($studio_dir, 'rhogen-wizard', 'build-setting')
+        product = File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')
+        pluginPath = File.join($base_dir, 'eclipse') + File::PATH_SEPARATOR + plugin
+
+        Dir.mktmpdir do |base|
+            mkdir File.join(base, 'eclipse')
+            run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner " +
+                "-data \"#{$workspace_dir}\" " +
+                "-buildfile \"#{productBuild}\" " +
+                "-Dbuilder=\"#{builder}\" " +
+                "-DbuildDirectory=\"#{destination}\" " +
+                "-Dbase=\"#{base}\" " +
+                "-Dproduct=\"#{product}\" " +
+                "-DpluginPath=\"#{pluginPath}\" " +
+                "-Dconfigs=\"#{config}\" " +
+                "-DarchivesFormat=\"#{config} - folder\" " +
+                '-Dp2.gathering=true ' +
+                '-DbuildLabel=build ' +
+                '-DbuildId=build '
+        end
+    end
+
+    def editConfigIni(configIni)
+        File.open(configIni, 'a') do |f|
+            f.puts 'osgi.instance.area.default=@user.home/workspace'
+        end
+    end
+
+    def configName(config)
+        return config.gsub(', ', '.')
+    end
+
+    def removeProduct(configs, destination)
+        configs.each { |c| rmGlob(destination, configName(c)) }
+    end
+
+    def exportProduct(configs, destination)
+        Dir.mktmpdir do |pluginDestination|
+            exportPlugin pluginDestination
+            Dir.mktmpdir do |productDestination|
+                configs.each do |config|
+                    exportProduct_(config, pluginDestination, productDestination)
+                    source = File.join(productDestination, 'tmp', 'eclipse')
+                    editConfigIni File.join(source, 'configuration', 'config.ini')
+                    target = File.join(destination, configName(config))
+                    mv(source, target)
+                end
+            end
+        end
+    end
+
     def removePluginWin
         removePlugin File.join($package_dir, 'eclipse')
         updateBundlesInfo
@@ -238,6 +297,24 @@ namespace "installer" do
 
     def exportPluginMac(mount)
         exportPlugin File.join(mount, 'Motorola RhoStudio')
+    end
+
+    def removeProductMac(mount)
+        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+    end
+
+    def exportProductMac(mount)
+        exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+    end
+
+    def removeProductWin
+        rmGlob($package_dir, 'rhostudio')
+    end
+
+    def exportProductWin
+        target = File.join($package_dir, 'rhostudio')
+        mkdir target
+        exportProduct(['win32, win32, x86', 'win32, win32, x86_64'], target)
     end
 
     def exportFeature
@@ -351,6 +428,20 @@ namespace "installer" do
       moveDir(          source            , 'RhoElements2'               )
     end
 
+    def removeRhoconnectPushService
+        rmGlob($package_dir, 'rhoconnect-push-service')
+    end
+
+    def moveRhoconnectPushService
+      def moveDir(source, targetName)
+        mv(source, File.join($package_dir, targetName))
+      end
+
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-service')
+
+      moveDir(source, 'rhoconnect-push-service')
+    end
+
     def removeReadme
       rmGlob($package_dir, 'README.html')
       rmGlob($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
@@ -380,6 +471,7 @@ namespace "installer" do
         rhoelementsgem        = findGemAndReport('rhoelements'        )
         rhoconnectgem         = findGemAndReport('rhoconnect'         )
         rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
+        rhohubgem             = findGemAndReport('rhohub')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
         # leading to harmless error.
@@ -395,6 +487,7 @@ namespace "installer" do
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoelementsgem}\""
+        installGem "\"#{rhohubgem}\""
     end
 
     def removeSamples(samplesDir)
@@ -408,6 +501,7 @@ namespace "installer" do
 
       repo_sas = File.join(samplesDir, 'rhodes-system-api-samples')
       cp_r(File.join($base_dir, 'rhodes-system-api-samples'), repo_sas)
+
       rmGlob(repo_sas, '.git')
       rmGlob(repo_sas, '.gitignore')
     end
@@ -417,7 +511,11 @@ namespace "installer" do
     end
 
     def makeSamplesWin
-        makeSamples File.join($package_dir, 'samples')
+        samplesDir = File.join($package_dir, 'samples')
+        makeSamples samplesDir
+
+        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'rhoconnect-push-test')
+        mv(source, File.join(samplesDir, 'rhoconnect-push-test'))
     end
 
     def removeSamplesMac(mount)
@@ -467,8 +565,18 @@ namespace "installer" do
                 File.join(mount, 'RhoElements2')
             )
 
+            moveDirContent(
+                File.join(rhoelementsDir, 'libs', 'rhoconnect-push-service'),
+                File.join(mount, 'rhoconnect-push-service')
+            )
+
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
+
+            mv(
+                findOneItem(rhoelementsDir, 'samples', 'rhoconnect-push-test'),
+                File.join(mount, 'samples', 'rhoconnect-push-test')
+            )
 
             # retrieve data from rhodes gem
             rhodesDir = unpackGem('rhodes', dir)
@@ -478,9 +586,8 @@ namespace "installer" do
 
         # copy scripts
         cp(File.join($installer_dir, 'dmg', 'Install gems'), mount)
-        cp(File.join($installer_dir, 'dmg', 'Install gems on rvm'), mount)
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio under RVM'), File.join(mount, 'Motorola RhoStudio'))
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 32 bits'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 64 bits'), File.join(mount, 'Motorola RhoStudio'))
 
     end
 
@@ -514,18 +621,19 @@ namespace "installer" do
 
     namespace "motorola" do
       task :clean do
-        #removePluginWin
+        removeProductWin
         removeRuby
         removeSamplesWin
         removeReadme
         removeRhoElements2
+        removeRhoconnectPushService
         #removeEclipseSettings
         removeNsisScript
         removeInstaller
       end
 
       task :gems => 'clean' do
-        #exportPluginWin
+        exportProductWin
 
         copyRuby
         installGems
@@ -535,8 +643,7 @@ namespace "installer" do
 
         copyReadme
         moveRhoElements2
-
-        #removeEclipseSettings
+        moveRhoconnectPushService
       end
 
       task :nsis => "gems" do
@@ -567,7 +674,7 @@ namespace "installer" do
         task :clean do
           disk, mount = attachSuiteDmg
           removeGems mount
-          removePluginMac mount
+          removeProductMac mount
           removeSamplesMac mount
           removeMiscFilesMac mount
         end
@@ -575,7 +682,7 @@ namespace "installer" do
         task :make => 'clean' do
           disk, mount = attachSuiteDmg
           copyGems mount
-          exportPluginMac mount
+          exportProductMac mount
           makeSamplesMac mount
           makeMiscFilesMac mount
         end
@@ -593,22 +700,7 @@ namespace "installer" do
 
       task :make => :clean do
         makeRwDmg
-
         Rake::Task['installer:mac:dmg:make'].invoke
-
-        puts
-        puts 'Now installer image will be opened in Finder. Please hide side bar if any, "zoom" window to fit content and close it.'
-        print 'Press Enter to open image...'
-        STDOUT.flush()
-        STDIN.gets
-
-        Rake::Task['installer:mac:dmg:open'].invoke
-
-        puts
-        print 'Press Enter to continue rake...'
-        STDOUT.flush()
-        STDIN.gets
-
         makeRoDmg
       end
 
@@ -635,6 +727,8 @@ namespace "installer" do
     end
 
     task :test do
+        removeProductWin
+        exportProductWin
     end
 
 end

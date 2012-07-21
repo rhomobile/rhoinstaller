@@ -10,7 +10,7 @@
  
   Name "Motorola RhoMobile Suite"
   OutFile "RMS_.exe"
-  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.3"
+  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.5"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -55,8 +55,6 @@
 ;======================================================
 ; Variables
 
-RequestExecutionLevel admin #NOTE: You still need to check user rights with UserInfo!
-
 ;======================================================
 ; Sections
 
@@ -81,18 +79,17 @@ section
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\eclipse\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\uninstall.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
-    #ShellLink::SetRunAsAdministrator "$SMPROGRAMS\Motorola RhoMobile Suite\Launch RhoStudio IDE.lnk"
- 
     # added information in 'unistall programs' in contorol panel
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
-                 "DisplayName" "Motorola RhoMobile Suite - RAD tool for develop and debug rhodes/rhoconnect applications"
+                 "DisplayName" "Motorola RhoMobile Suite"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
@@ -201,6 +198,14 @@ Section "RhoStudio IDE" studioSection
 
 SectionEnd
 
+Section "Rhoconnect-push service clients" rhoconnectpushSection
+ 
+  SetOutPath $INSTDIR
+ 
+  File /r "rhoconnect-push-service"
+
+SectionEnd
+
 Section "Samples" samplesSection
  
   SetOutPath $INSTDIR
@@ -296,43 +301,50 @@ Section "Git 1.7.6" gitSection
 SectionEnd
 
 
-#Section "Java SE Runtime Environment 6 Update 26" javaSection
+Section "Node JS 0.8.1" nodeSection
 
-#  SetOutPath $INSTDIR
+  SetOutPath $INSTDIR
   
-#  File "jre-6u26-windows-i586.exe"
+  File /r "ans"
  
-#  ExecWait "$INSTDIR\jre-6u26-windows-i586.exe"
+  ExecWait "msiexec.exe /i $INSTDIR\ans\node-v0.8.1-x86.msi"
 
-#  delete "$INSTDIR\jre-6u26-windows-i586.exe"
+  ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
 
-#SectionEnd
+  ReadEnvStr $R0 "PATH"
+  StrCpy $R0 "$R0;$0"
+  System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("PATH", R0).r0'
+                                   
+  ExecWait "$INSTDIR\ans\patch.bat"
+
+SectionEnd
 
 ;======================================================
 ;Descriptions
  
   ;Language strings
   LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio IDE."
-  #LangString DESC_InstallApache ${LANG_ENGLISH} "This installs the Apache 2.2 webserver"
   LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
-  #LangString DESC_InstallJava ${LANG_ENGLISH} "This installs Java SE Runtime Environment."  
+  LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
+  LangString DESC_InstallRhoconnectPush ${LANG_ENGLISH} "This installs Rhoconnect-push service clients."  
   
   ;Assign language strings to sections
   
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${studioSection} $(DESC_InstallRhostudio)
-  #!insertmacro MUI_DESCRIPTION_TEXT ${apache2Section} $(DESC_InstallApache)
   !insertmacro MUI_DESCRIPTION_TEXT ${gnumakeSection} $(DESC_InstallGnuMake)
   !insertmacro MUI_DESCRIPTION_TEXT ${devkitSection} $(DESC_InstallDevKit)
   !insertmacro MUI_DESCRIPTION_TEXT ${rubySection} $(DESC_InstallRuby) 
   !insertmacro MUI_DESCRIPTION_TEXT ${redisSection} $(DESC_InstallRedis)
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
+  !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
+  !insertmacro MUI_DESCRIPTION_TEXT ${nodeSection} $(DESC_InstallNodeJs)
   #!insertmacro MUI_DESCRIPTION_TEXT ${javaSection} $(DESC_InstallJava)    
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
