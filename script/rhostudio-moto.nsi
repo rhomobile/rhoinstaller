@@ -122,6 +122,7 @@ section "uninstall"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk" 
+    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\"
 
     ExecWait 'net stop redis'
@@ -305,9 +306,9 @@ Section "Node JS 0.8.1" nodeSection
 
   SetOutPath $INSTDIR
   
-  File /r "ans"
+  File /r "rhoconnect-push"
  
-  ExecWait "msiexec.exe /i $INSTDIR\ans\node-v0.8.1-x86.msi"
+  ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
 
   ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
 
@@ -315,7 +316,7 @@ Section "Node JS 0.8.1" nodeSection
   StrCpy $R0 "$R0;$0"
   System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("PATH", R0).r0'
                                    
-  ExecWait "$INSTDIR\ans\patch.bat"
+  ExecWait "$INSTDIR\rhoconnect-push\patch.bat"
 
 SectionEnd
 
