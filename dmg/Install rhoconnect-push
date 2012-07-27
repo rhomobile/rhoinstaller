@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# check presence of npm
+npm --version > /dev/null 2>&1
+if [[ $? != 0 ]]; then
+    echo 'Please install Node.js (http://nodejs.org/dist/v0.8.4/node-v0.8.4.pkg).'
+    echo
+    echo -n "Press Enter to stop rhoconnect-push installation..."
+    read
+    exit
+fi
+
+# get rps directory
+pushd "`pwd`" > /dev/null
+cd "`dirname "$0"`/.rps"
+RPS=`pwd`
+popd > /dev/null
+
+# add 'sudo' to 'npm install'?
+INSTALL="npm install --global"
+echo -ne "\nDo you want to install rhoconnect-push with 'sudo' command prefix? [Yn]  "
+while true; do
+    read SUDO
+    if [[ "$SUDO" == "" ]] || [[ "$SUDO" == "y" ]]; then
+        INSTALL="sudo "$INSTALL
+        break;
+    fi
+    if [[ "$SUDO" == "n" ]]; then
+        break;
+    fi
+done
+
+# install rhoconnect-push
+function install() { echo; echo $INSTALL $(printf '%q' "$1"); $INSTALL "$1"; }
+
+install "$RPS"/rhoconnect-push-[0-9]*.tgz
+
+# keep terminal window to inspect output
+echo
+echo -n 'Press Enter to exit...'
+read
