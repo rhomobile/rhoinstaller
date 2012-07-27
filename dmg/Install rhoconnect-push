@@ -4,8 +4,7 @@
 npm --version > /dev/null 2>&1
 if [[ $? != 0 ]]; then
     echo 'Please install Node.js (http://nodejs.org/dist/v0.8.4/node-v0.8.4.pkg).'
-    echo
-    echo -n "Press Enter to stop rhoconnect-push installation..."
+    echo -ne "\nPress Enter to stop rhoconnect-push installation..."
     read
     exit
 fi
@@ -36,6 +35,5 @@ function install() { echo; echo $INSTALL $(printf '%q' "$1"); $INSTALL "$1"; }
 install "$RPS"/rhoconnect-push-[0-9]*.tgz
 
 # keep terminal window to inspect output
-echo
-echo -n 'Press Enter to exit...'
+echo -ne '\nPress Enter to exit...'
 read
