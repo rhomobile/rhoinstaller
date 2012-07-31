@@ -10,7 +10,7 @@
  
   Name "Motorola RhoMobile Suite"
   OutFile "RMS_.exe"
-  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.6"
+  InstallDir "C:\MotorolaRhoMobileSuite2.1.1.7"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
