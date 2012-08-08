@@ -73,7 +73,8 @@ namespace "installer" do
         if !cd.nil?
             toPrint = "#{cd}>#{toPrint}"
             if RUBY_PLATFORM =~ /(win|w)32$/
-                toRun = "cd /d \"#{cd}\"&&#{toRun}"
+                cd_ = cd.gsub('/', "\\")
+                toRun = "cd /d \"#{cd_}\"&&#{toRun}"
             else
                 toRun = "cd '#{cd}'&&#{toRun}"
             end
