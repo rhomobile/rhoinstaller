@@ -107,14 +107,14 @@ Contents
 
 3. Install NSIS. Extract NSIS large string patch and copy its content into NSIS installation directory (into C:\Program Files (x86)\NSIS in case of typical installation).
 
-4. Create empty directory where you will build installer. It will be referred to as <root> in this document. Path to <root> have to be free of spaces. It is requirement of Ruby which will be installed into subdirectory of <root>.
+4. Create an empty directory where you are going to build the installer, this will be referred to as <root> throughout the following steps. The path to <root> must not contain any spaces due to restrictions in the Ruby installation.
 
 5. Extract Eclipse and Eclipse delta pack archives into <root> directory.
 
 6. Extract Windows installer package archive into <root> directory.
     From <root>\rhoinstaller directory run following commands:
-    git checkout .
     git pull
+    git checkout .
 
 7. Install Ruby into <root>\ruby directory.
 
@@ -131,7 +131,7 @@ Contents
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-11. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect and rhoconnect-adapters gems there.
+11. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
 12. Create Eclipse workspace and configure Eclipse.
     Run Eclipse with command (always use absolute path as -data parameter):
@@ -143,7 +143,7 @@ Contents
     Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
     Press "Next >" again.
     Accept license and press "Finish".
-    Wait for finish of DLTK installation.
+    Wait for the DLTK installation to finish.
     Restart Eclipse from "Software Updates" dialog.
 
     From menu select "File"->"Import...".
@@ -199,7 +199,7 @@ Contents
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-5. Create <root>/gems directory and place rhodes, rhoelements, rhoconnect and rhoconnect-adapters gems there.
+5. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
 6. Extract Eclipse and delta pack archives into <root> directory.
     cd <root>
