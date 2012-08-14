@@ -210,12 +210,14 @@ Contents
 
 5. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
-6. Extract Eclipse and delta pack archives into <root> directory.
+6. Create <root>\rps directory and place rhoconnect-push-<version>.tgz there.
+
+7. Extract Eclipse and delta pack archives into <root> directory.
     cd <root>
     tar -xzf <download_dir>/eclipse-rcp-indigo-SR2-macosx-cocoa-x86_64.tar.gz
     unzip -o <download_dir>/eclipse-3.7.2-delta-pack.zip
 
-7. Configure Eclipse:
+8. Configure Eclipse:
     Run Eclipse with command (always use absolute path as -data parameter):
     <root>/eclipse/eclipse -data <root>/workspace&
 
