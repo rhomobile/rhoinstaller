@@ -610,7 +610,7 @@ namespace "installer" do
     end
 
     def copyRps(mount)
-        ['config.json', 'rhoconnect-push-[0-9]*.tgz'].each do |n|
+        ['rhoconnect-push-[0-9]*.tgz'].each do |n|
             cp(findOneItem($base_dir, 'rps', n), File.join(mount, '.rps'))
         end
     end
