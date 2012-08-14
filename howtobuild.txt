@@ -23,6 +23,8 @@ Contents
 
 5. Eclipse 3.7.2 delta pack (http://mirror.tspu.ru/eclipse/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip)
 
+6. DLTK SDK 4.0 for Eclipse (http://ftp.halifax.rwth-aachen.de/eclipse/technology/dltk/downloads/drops/R4.0/R-4.0-201206120903/dltk-sdk-R-4.0-201206120903.zip)
+
 
 ** Install and configure software **
 
@@ -44,11 +46,13 @@ Contents
 
     From menu select "Help"->"Install new software...".
     Press "Add...".
-    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
-    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Archive...".
+    Point DLTK SDK archive.
+    Press "OK".
+    Mark "Dynamic Languages Toolkit (DLTK)" and press "Next >".
     Press "Next >" again.
     Accept license and press "Finish".
-    Wait for finish of DLTK installation.
+    Wait for the DLTK installation to finish.
     Restart Eclipse from "Software Updates" dialog.
 
     From menu select "File"->"Import...".
@@ -58,7 +62,6 @@ Contents
     Press "Finish".
 
     Close Eclipse.
-
 
 ** Build product **
 
@@ -93,10 +96,12 @@ Contents
 
 5. Eclipse 3.7.2 delta pack (http://mirror.tspu.ru/eclipse/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip)
 
-6. RubyInstaller 1.9.3-p125 for Ruby programming language (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe)
+6. DLTK SDK 4.0 for Eclipse (http://ftp.halifax.rwth-aachen.de/eclipse/technology/dltk/downloads/drops/R4.0/R-4.0-201206120903/dltk-sdk-R-4.0-201206120903.zip)
+
+7. RubyInstaller 1.9.3-p125 for Ruby programming language (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe)
     and RubyInstaller Development Kit (https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe)
 
-7. Windows installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/rhoinstaller.zip)
+8. Windows installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/rhoinstaller.zip)
 
 
 ** Install and configure software **
@@ -139,8 +144,10 @@ Contents
 
     From menu select "Help"->"Install new software...".
     Press "Add...".
-    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
-    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Archive...".
+    Point DLTK SDK archive.
+    Press "OK".
+    Mark "Dynamic Languages Toolkit (DLTK)" and press "Next >".
     Press "Next >" again.
     Accept license and press "Finish".
     Wait for the DLTK installation to finish.
@@ -182,7 +189,9 @@ Contents
 
 3. Eclipse 3.7.2 delta pack (http://mirror.tspu.ru/eclipse/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip)
 
-4. RhoMobileSuiteInstaller.dmg image (http://rhostudio.s3.amazonaws.com/instant/work/RhoMobileSuiteInstaller.dmg)
+4. DLTK SDK 4.0 for Eclipse (http://ftp.halifax.rwth-aachen.de/eclipse/technology/dltk/downloads/drops/R4.0/R-4.0-201206120903/dltk-sdk-R-4.0-201206120903.zip)
+
+5. RhoMobileSuiteInstaller.dmg image (http://rhostudio.s3.amazonaws.com/instant/work/RhoMobileSuiteInstaller.dmg)
 
 
 ** Install and configure software **
@@ -212,11 +221,13 @@ Contents
 
     From menu select "Help"->"Install new software...".
     Press "Add...".
-    Enter DLTK as name and http://download.eclipse.org/technology/dltk/updates/ as location, press "OK".
-    Wait until list will be populated with values, then mark "Dynamic Languages Toolkit (DLTK) 2.0" and press "Next >".
+    Press "Archive...".
+    Point DLTK SDK archive.
+    Press "OK".
+    Mark "Dynamic Languages Toolkit (DLTK)" and press "Next >".
     Press "Next >" again.
     Accept license and press "Finish".
-    Wait for finish of DLTK installation.
+    Wait for the DLTK installation to finish.
     Restart Eclipse from "Software Updates" dialog.
 
     From menu select "File"->"Import...".
