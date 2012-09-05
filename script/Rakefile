@@ -4,10 +4,12 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-
 $version           = '02010107'
 $isBeta            = false
-$nsisPath          = "C:/Program Files/NSIS/makensis.exe"
+$nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
+
+$version           =  ENV['fullbuild_installer_version']            if ENV['fullbuild_installer_version']
+$isBeta            = (ENV['fullbuild_installer_beta'   ] == 'true') if ENV['fullbuild_installer_beta'   ]
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -29,6 +31,13 @@ $ruby_env = {:Path => [
     File.join($package_dir, 'devkit', 'mingw', 'bin'),
     File.join($package_dir, 'make-3.81', 'bin')
 ].join(File::PATH_SEPARATOR)}
+
+if not File.exists?($nsisPath)
+    ['C:/Program Files/NSIS', 'C:/Program Files (x86)/NSIS'].each do |dir|
+        nsisPath = File.join(dir, 'makensis.exe')
+        $nsisPath = nsisPath if File.exists?(nsisPath)
+    end
+end
 
 namespace "installer" do
 
@@ -759,8 +768,6 @@ namespace "installer" do
     end
 
     task :test do
-        copyRubyAndDevkit
-        installDevkitIntoRuby
     end
 
 end
