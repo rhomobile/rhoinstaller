@@ -7,7 +7,7 @@ load 'jake.rb'
 
 $version           = '02010107'
 $isBeta            = false
-$nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
+$nsisPath          = "C:/Program Files/NSIS/makensis.exe"
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -72,6 +72,7 @@ namespace "installer" do
         toRun = set_list.join('') + command
         if !cd.nil?
             toPrint = "#{cd}>#{toPrint}"
+
             if RUBY_PLATFORM =~ /(win|w)32$/
                 cd_ = cd.gsub('/', "\\")
                 toRun = "cd /d \"#{cd_}\"&&#{toRun}"
@@ -407,12 +408,26 @@ namespace "installer" do
         rmGlob($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'cache')
     end
 
-    def removeRuby
-        rmGlob($package_dir, 'ruby')
+    def removeRubyAndDevkit
+        ['ruby', 'devkit'].each { |n| rmGlob($package_dir, n) }
     end
 
-    def copyRuby
-        cp_r(File.join($base_dir, 'ruby'), File.join($package_dir, 'ruby'))
+    def copyRubyAndDevkit
+        ['ruby', 'devkit'].each do |n|
+            cp_r(File.join($base_dir, n), File.join($package_dir, n))
+        end
+    end
+
+    def installDevkitIntoRuby
+        ruby_dir = File.join($package_dir, 'ruby')
+        devkit_dir = File.join($package_dir, 'devkit')
+
+        File.open(File.join(devkit_dir, 'config.yml'), 'w') do |f|
+            f.puts('---')
+            f.puts("- #{ruby_dir}")
+        end
+
+        run('ruby dk.rb install', devkit_dir, {:Path => File.join(ruby_dir, 'bin')})
     end
 
     def removeRhoElements2
@@ -636,7 +651,7 @@ namespace "installer" do
     namespace "motorola" do
       task :clean do
         removeProductWin
-        removeRuby
+        removeRubyAndDevkit
         removeSamplesWin
         removeReadme
         removeRhoElements2
@@ -649,7 +664,8 @@ namespace "installer" do
       task :gems => 'clean' do
         exportProductWin
 
-        copyRuby
+        copyRubyAndDevkit
+        installDevkitIntoRuby
         installGems
         removeRubyCache
 
@@ -743,8 +759,8 @@ namespace "installer" do
     end
 
     task :test do
-        removeProductWin
-        exportProductWin
+        copyRubyAndDevkit
+        installDevkitIntoRuby
     end
 
 end
