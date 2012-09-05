@@ -116,19 +116,17 @@ Contents
 
 5. Extract Eclipse and Eclipse delta pack archives into <root> directory.
 
-6. Extract Windows installer package archive into <root> directory.
-    From <root>\rhoinstaller directory run following commands:
-    git pull
-    git checkout .
+6. Unpack Ruby 7z archive into <root> directory. Rename new directory (ruby-1.9.3-p125-i386-mingw32) into ruby.
 
-7. Unpack Ruby 7z archive into <root> directory. Rename new directory (ruby-1.9.3-p125-i386-mingw32) into ruby.
+7. Run RubyInstaller Development Kit and extract it to <root>\devkit directory.
 
-8. Run RubyInstaller Development Kit and extract it to <root>\devkit directory.
-
-9. Clone rhostudio and rhodes-system-api-samples repositories into <root>:
+8. Clone rhostudio, rhodes-system-api-samples and rhoinstaller repositories into <root>:
     cd /d <root>
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
+    git clone http://github.com/rhomobile/rhoinstaller.git
+
+9. Extract Windows installer package archive into <root> directory.
 
 10. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
@@ -202,9 +200,9 @@ Contents
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-5. Create <root>/gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
+5. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
-6. Create <root>/rps directory and place rhoconnect-push-<version>.tgz there.
+6. Create <root>\rps directory and place rhoconnect-push-<version>.tgz there.
 
 7. Extract Eclipse and delta pack archives into <root> directory.
     cd <root>
@@ -237,7 +235,7 @@ Contents
 
 ** Build installer **
 
-1. Edit <root>/rhoinstaller/script/Rakefile file. You can tune following variables:
+1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
     $version           = '02010104'
     $isBeta            = false
 
