@@ -98,7 +98,7 @@ Contents
 
 6. DLTK SDK 4.0 for Eclipse (http://ftp.halifax.rwth-aachen.de/eclipse/technology/dltk/downloads/drops/R4.0/R-4.0-201206120903/dltk-sdk-R-4.0-201206120903.zip)
 
-7. RubyInstaller 1.9.3-p125 for Ruby programming language (http://rubyforge.org/frs/download.php/75848/rubyinstaller-1.9.3-p125.exe)
+7. Ruby 1.9.3-p125 7z archive (http://files.rubyforge.vm.bytemark.co.uk/rubyinstaller/ruby-1.9.3-p125-i386-mingw32.7z)
     and RubyInstaller Development Kit (https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe)
 
 8. Windows installer package archive (http://rhostudio.s3.amazonaws.com/instant/work/rhoinstaller.zip)
@@ -121,24 +121,18 @@ Contents
     git pull
     git checkout .
 
-7. Install Ruby into <root>\ruby directory.
+7. Unpack Ruby 7z archive into <root> directory. Rename new directory (ruby-1.9.3-p125-i386-mingw32) into ruby.
 
-8. Run RubyInstaller Development Kit and extract it to <root>\rhoinstaller\package\devkit directory.
+8. Run RubyInstaller Development Kit and extract it to <root>\devkit directory.
 
-9. Configure Ruby installation. Open new console (cmd.exe) and execute there following commands:
-    path <root>\ruby\bin
-    cd /d <root>\rhoinstaller\package\devkit
-    ruby dk.rb init
-    ruby dk.rb install
-
-10. Clone rhostudio and rhodes-system-api-samples repositories into <root>:
+9. Clone rhostudio and rhodes-system-api-samples repositories into <root>:
     cd /d <root>
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-11. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
+10. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
-12. Create Eclipse workspace and configure Eclipse.
+11. Create Eclipse workspace and configure Eclipse.
     Run Eclipse with command (always use absolute path as -data parameter):
     <root>\eclipse\eclipse -data <root>\workspace
 
