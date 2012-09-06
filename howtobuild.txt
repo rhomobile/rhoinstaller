@@ -158,8 +158,7 @@ Contents
 
 1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
     $version           = '02010104'
-    $isBeta            = false
-    $nsisPath          = "C:/Program Files (x86)/NSIS/makensis.exe"
+    $nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
 
 2. Open new console (cmd.exe) and execute following commands:
     path <root>\ruby\bin;C:\Windows\system32
