@@ -5,11 +5,9 @@ require 'fileutils'
 load 'jake.rb'
 
 $version           = '02010107'
-$isBeta            = false
 $nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
 
-$version           =  ENV['fullbuild_installer_version']            if ENV['fullbuild_installer_version']
-$isBeta            = (ENV['fullbuild_installer_beta'   ] == 'true') if ENV['fullbuild_installer_beta'   ]
+$version           = ENV['fullbuild_installer_version'] if ENV['fullbuild_installer_version']
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
 $installer_dir     = File.join($base_dir, 'rhoinstaller')
@@ -182,10 +180,8 @@ namespace "installer" do
         disk, mount = attachSuiteDmg
         detachDmg disk
 
-        beta = ($isBeta) ? '.beta' : ''
-
         source = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
-        target = File.join($base_dir, "RMS_#{$version}#{beta}.dmg")
+        target = File.join($base_dir, "RMS_#{$version}.dmg")
         run "hdiutil convert '#{source}' -format UDBZ -o '#{target}'"
     end
 
