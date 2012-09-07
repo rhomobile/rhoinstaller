@@ -236,7 +236,6 @@ Contents
 
 1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
     $version           = '02010104'
-    $isBeta            = false
 
 2. Run build script:
     cd <root>/rhoinstaller/script
