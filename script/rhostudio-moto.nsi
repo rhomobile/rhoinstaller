@@ -15,8 +15,8 @@
 ;======================================================
 ; Modern Interface Configuration
  
-  !define MUI_ICON "icon.ico" 
-  !define MUI_UNICON "icon.ico"     
+  !define MUI_ICON "rho_rhosuite.ico"
+  !define MUI_UNICON "rho_rhosuite.ico"
   !define MUI_HEADERIMAGE
   !define MUI_ABORTWARNING
   !define MUI_COMPONENTSPAGE_SMALLDESC
