@@ -4,7 +4,7 @@ require 'date'
 require 'fileutils'
 load 'jake.rb'
 
-$version           = '02010107'
+$version           = '02020102.beta'
 $nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
 
 $version           = ENV['fullbuild_installer_version'] if ENV['fullbuild_installer_version']
