@@ -380,15 +380,27 @@ namespace "installer" do
       cp_r File.join($package_dir, "RhoElements2", "bin", "target", "RhoElements_signed.apk"), File.join($package_dir, "RhoElements2 Shared Runtime", "android", "RhoElements_signed.apk")
     end
 
+    def getNsisVersion(version)
+        numbers = []
+        i = 0
+        while i < vesion.length do
+            numbers << version[i, 2].to_i
+            i += 2
+        end
+        numbers.join('.')
+    end
+
     def removeNsisScript
        rmGlob($package_dir, '*.nsi')
     end
 
     def makeNsisScript(installScript)
-       replacement = $script_dir.gsub('/',"\\")
+       scriptDir = $script_dir.gsub('/',"\\")
+       nsisVersion = getNsisVersion($version)
 
        install_script = File.read(File.join($script_dir, installScript))
-       install_script.gsub!(/%NSIS_SCRIPT_PATH%/) {replacement}
+       install_script.gsub!(/%NSIS_SCRIPT_PATH%/) { scriptDir   }
+       install_script.gsub!(/%NSIS_VERSION%/    ) { nsisVersion }
        script_name = File.join($package_dir, installScript)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
