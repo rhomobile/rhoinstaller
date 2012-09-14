@@ -383,7 +383,7 @@ namespace "installer" do
     def getNsisVersion(version)
         numbers = []
         i = 0
-        while i < vesion.length do
+        while i < version.length do
             numbers << version[i, 2].to_i
             i += 2
         end
