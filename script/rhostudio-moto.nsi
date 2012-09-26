@@ -295,7 +295,10 @@ Section "Git 1.7.6" gitSection
   
   File "Git-1.7.6-preview20110708.exe"
  
-  ExecWait "$INSTDIR\Git-1.7.6-preview20110708.exe"
+  IfSilent +3
+    ExecWait "$INSTDIR\Git-1.7.6-preview20110708.exe"
+  Goto +2
+    ExecWait "$INSTDIR\Git-1.7.6-preview20110708.exe /silent"
 
   delete "$INSTDIR\Git-1.7.6-preview20110708.exe"
 
@@ -308,7 +311,10 @@ Section "Node JS 0.8.1" nodeSection
   
   File /r "rhoconnect-push"
  
-  ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
+  IfSilent +3
+    ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
+  Goto +2
+    ExecWait "msiexec.exe /passive /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
 
   ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
 
