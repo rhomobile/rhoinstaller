@@ -516,7 +516,7 @@ namespace "installer" do
         installGem 'rhodes-translator'
         installGem 'mspec'
         installGem "\"#{rhodesgem}\""
-        installGem 'eventmachine', true
+        installGem 'eventmachine'
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoelementsgem}\""
