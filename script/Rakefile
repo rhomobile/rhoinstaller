@@ -547,8 +547,8 @@ namespace "installer" do
         samplesDir = File.join($package_dir, 'samples')
         makeSamples samplesDir
 
-        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples', 'rhoconnect-push-test')
-        mv(source, File.join(samplesDir, 'rhoconnect-push-test'))
+        source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'samples')
+        Dir.glob(File.join(source, '*')).each { |d| mv(d, samplesDir) }
     end
 
     def removeSamplesMac(mount)
@@ -606,10 +606,9 @@ namespace "installer" do
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
 
-            mv(
-                findOneItem(rhoelementsDir, 'samples', 'rhoconnect-push-test'),
-                File.join(mount, 'samples', 'rhoconnect-push-test')
-            )
+            Dir.glob(File.join(rhoelementsDir, 'samples', '*')).each do |d|
+                mv(d, File.join(mount, 'samples'))
+            end
 
             # retrieve data from rhodes gem
             rhodesDir = unpackGem('rhodes', dir)
