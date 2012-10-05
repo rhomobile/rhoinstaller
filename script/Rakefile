@@ -111,7 +111,7 @@ namespace "installer" do
     end
 
     def findGem(prefix)
-        return findOneItem($base_dir, 'gems', prefix + '-[0-9]*.gem')
+        return findOneItem($base_dir, 'files', prefix + '-[0-9]*.gem')
     end
 
     def findGemAndReport(name)
@@ -639,9 +639,7 @@ namespace "installer" do
     end
 
     def copyRps(mount)
-        ['rhoconnect-push-[0-9]*.tgz'].each do |n|
-            cp(findOneItem($base_dir, 'rps', n), File.join(mount, '.rps'))
-        end
+        cp(findOneItem($base_dir, 'files', 'rhoconnect-push-[0-9]*.tgz'), File.join(mount, '.rps'))
     end
 
     namespace "user" do

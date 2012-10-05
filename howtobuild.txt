@@ -128,7 +128,7 @@ Contents
 
 9. Extract Windows installer package archive into <root> directory.
 
-10. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
+10. Create <root>\files directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
 11. Create Eclipse workspace and configure Eclipse.
     Run Eclipse with command (always use absolute path as -data parameter):
@@ -199,9 +199,9 @@ Contents
     git clone http://github.com/rhomobile/rhostudio.git
     git clone http://github.com/rhomobile/rhodes-system-api-samples.git
 
-5. Create <root>\gems directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
+5. Create <root>\files directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
-6. Create <root>\rps directory and place rhoconnect-push-<version>.tgz there.
+6. Place rhoconnect-push-<version>.tgz into <root>\files.
 
 7. Extract Eclipse and delta pack archives into <root> directory.
     cd <root>
