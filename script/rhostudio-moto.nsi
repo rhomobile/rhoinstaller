@@ -63,6 +63,15 @@ section
 
     SetShellVarContext all
 
+    ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" "UninstallString" 
+
+    StrCmp $0 "" continueInstallation
+
+    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "RhoMobile Suite already installed on this computer. If you want reinstal it run unistall from program menu before."
+    Quit 
+
+    continueInstallation:
+
     # check install JRE or not, if not show message box and exit from installer
     ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\javaws.exe" "Path"
               
@@ -71,6 +80,9 @@ section
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
  
+    # copy rhoconnect files on destination computer for manual installation
+    File /r "rhoconnect-push"
+
     # create the uninstaller
     writeUninstaller "$INSTDIR\uninstall.exe"
  
@@ -96,7 +108,7 @@ section
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "Publisher" "Motorola Solutions Inc."
-    WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "DisplayVersion" "%RHOMOBILE_SUITE_VER%"  
     WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "NoRepair" 1
@@ -314,8 +326,6 @@ SectionEnd
 Section "Node JS 0.8.1" nodeSection
 
   SetOutPath $INSTDIR
-  
-  File /r "rhoconnect-push"
  
   IfSilent +3
     ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"

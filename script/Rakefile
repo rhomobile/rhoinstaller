@@ -411,7 +411,7 @@ namespace "installer" do
 
     def runNsisScript(installScript)
        makeNsisScript(installScript)
-       #run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
+       run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
     def renameInstaller(commonName, installerPrefix, installerSuffix)
