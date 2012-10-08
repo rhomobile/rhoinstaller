@@ -94,7 +94,13 @@ section
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
-    
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+                 "Publisher" "Motorola Solutions Inc."
+    WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+                 "DisplayVersion" "%RHOMOBILE_SUITE_VER%"  
+    WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+                 "NoRepair" 1
+      
     Goto okFinishSection
     
     jreInstallFail:

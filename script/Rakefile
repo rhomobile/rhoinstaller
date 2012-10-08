@@ -389,6 +389,9 @@ namespace "installer" do
         numbers.join('.') + suffix
     end
 
+    def getPackageSize
+    end 
+
     def removeNsisScript
        rmGlob($package_dir, '*.nsi')
     end
@@ -398,15 +401,17 @@ namespace "installer" do
        nsisVersion = getNsisVersion($version)
 
        install_script = File.read(File.join($script_dir, installScript))
-       install_script.gsub!(/%NSIS_SCRIPT_PATH%/) { scriptDir   }
-       install_script.gsub!(/%NSIS_VERSION%/    ) { nsisVersion }
+       install_script.gsub!(/%NSIS_SCRIPT_PATH%/    ) { scriptDir   }
+       install_script.gsub!(/%NSIS_VERSION%/        ) { nsisVersion }
+       install_script.gsub!(/%RHOMOBILE_SUITE_VER%/ ) { nsisVersion }
+
        script_name = File.join($package_dir, installScript)
        File.open(script_name, "w") { |file| file.puts install_script }
     end
 
     def runNsisScript(installScript)
        makeNsisScript(installScript)
-       run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
+       #run("\"#{$nsisPath}\" \"#{installScript}\"", $package_dir)
     end
 
     def renameInstaller(commonName, installerPrefix, installerSuffix)
@@ -771,6 +776,7 @@ namespace "installer" do
     end
 
     task :test do
+      runNsisScript($installMotoScript)
     end
 
 end
