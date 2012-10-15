@@ -238,7 +238,12 @@ namespace "installer" do
         productBuild = findOneItem($base_dir, 'eclipse', 'plugins', 'org.eclipse.pde.build_*', 'scripts', 'productBuild', 'productBuild.xml')
         builder = File.join($studio_dir, 'rhogen-wizard', 'build-setting')
         product = File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')
+        icons   = File.join($studio_dir, 'rhogen-wizard', 'icons')
         pluginPath = File.join($base_dir, 'eclipse') + File::PATH_SEPARATOR + plugin
+
+        iconsCopy = File.join(destination, 'plugins', 'RhogenWizard')
+        mkdir_p iconsCopy
+        cp_r(icons, iconsCopy)
 
         Dir.mktmpdir do |base|
             mkdir File.join(base, 'eclipse')
