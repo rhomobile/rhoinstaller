@@ -150,7 +150,7 @@ namespace "installer" do
     end
 
     def detachDmg(disk)
-        run "hdiutil detach #{disk}"
+        run "hdiutil detach #{disk} -force"
     end
 
     def attachSuiteDmg
