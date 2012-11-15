@@ -13,9 +13,9 @@ Contents
 ** Download required files **
 
 1. Java Development Kit (32-bit)
-    go to http://www.oracle.com/technetwork/java/javase/downloads/jdk-7u4-downloads-1591156.html
+    go to http://www.oracle.com/technetwork/java/javase/downloads/jdk7u9-downloads-1859576.html
     select "Accept license agreement"
-    click "jdk-7u4-windows-i586.exe"
+    click "jdk-7u9-windows-i586.exe"
 
 2. Git source control manager (https://github.com/downloads/schacon/testy/Git-1.7.10-preview20120409.exe)
 
@@ -130,7 +130,9 @@ Contents
 
 10. Create <root>\files directory and place rhodes, rhoelements, rhoconnect, rhoconnect-adapters and rhohub gems there.
 
-11. Create Eclipse workspace and configure Eclipse.
+11. Place rhoconnect-push-<version>.tgz into <root>\files.
+
+12. Create Eclipse workspace and configure Eclipse.
     Run Eclipse with command (always use absolute path as -data parameter):
     <root>\eclipse\eclipse -data <root>\workspace
 
@@ -157,7 +159,7 @@ Contents
 ** Build installer **
 
 1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
-    $version           = '02010104'
+    $version           = '2.2.1.11'
     $nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
 
 2. Open new console (cmd.exe) and execute following commands:
@@ -235,7 +237,7 @@ Contents
 ** Build installer **
 
 1. Edit <root>\rhoinstaller\script\Rakefile file. You can tune following variables:
-    $version           = '02010104'
+    $version           = '2.2.1.11'
 
 2. Run build script:
     cd <root>/rhoinstaller/script
