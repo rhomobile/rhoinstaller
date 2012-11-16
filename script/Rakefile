@@ -533,6 +533,14 @@ namespace "installer" do
         installGem "\"#{rhohubgem}\""
     end
 
+    def removeRhoconnectPushTgz
+        rmGlob($package_dir, 'rhoconnect-push', 'rhoconnect-push-[0-9]*.tgz')
+    end
+
+    def copyRhoconnectPushTgz
+        cp(findOneItem($base_dir, 'files', 'rhoconnect-push-[0-9]*.tgz'), File.join($package_dir, 'rhoconnect-push'))
+    end
+
     def removeSamples(samplesDir)
       rmGlob samplesDir
     end
@@ -678,6 +686,7 @@ namespace "installer" do
         removeReadme
         removeRhoElements2
         removeRhoconnectPushService
+        removeRhoconnectPushTgz
         #removeEclipseSettings
         removeNsisScript
         removeInstaller
@@ -696,6 +705,7 @@ namespace "installer" do
         copyReadme
         moveRhoElements2
         moveRhoconnectPushService
+        copyRhoconnectPushTgz
       end
 
       task :nsis => "gems" do
