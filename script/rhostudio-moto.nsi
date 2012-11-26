@@ -124,8 +124,9 @@ sectionEnd
  
 # uninstaller section start
 section "uninstall"
- 
-    MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall Motorola RhoMobile Suite" IDNO "Continue"    
+
+    IfSilent +3
+      MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall Motorola RhoMobile Suite" IDNO "Continue"    
 
     SetShellVarContext all
 
