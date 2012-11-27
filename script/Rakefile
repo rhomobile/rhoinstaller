@@ -246,20 +246,22 @@ namespace "installer" do
         cp_r(icons, iconsCopy)
 
         Dir.mktmpdir do |base|
-            mkdir File.join(base, 'eclipse')
+            baseLocation = File.join(base, 'eclipse')
+            mkdir baseLocation 
             run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner " +
                 "-data \"#{$workspace_dir}\" " +
                 "-buildfile \"#{productBuild}\" " +
                 "-Dbuilder=\"#{builder}\" " +
                 "-DbuildDirectory=\"#{destination}\" " +
                 "-Dbase=\"#{base}\" " +
+                "-DbaseLocation=\"#{baseLocation}\" " +
                 "-Dproduct=\"#{product}\" " +
                 "-DpluginPath=\"#{pluginPath}\" " +
                 "-Dconfigs=\"#{config}\" " +
                 "-DarchivesFormat=\"#{config} - folder\" " +
                 '-Dp2.gathering=true ' +
                 '-DbuildLabel=build ' +
-                '-DbuildId=build '
+                '-DbuildId=build'
         end
     end
 
