@@ -256,6 +256,7 @@ namespace "installer" do
                 "-Dbase=\"#{base}\" " +
                 "-DbaseLocation=\"#{baseLocation}\" " +
                 "-Dproduct=\"#{product}\" " +
+                '-DcollectingFolder=eclipse ' +
                 "-DpluginPath=\"#{pluginPath}\" " +
                 "-Dconfigs=\"#{config}\" " +
                 "-DarchivesFormat=\"#{config} - folder\" " +
