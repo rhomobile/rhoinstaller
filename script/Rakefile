@@ -90,22 +90,20 @@ namespace "installer" do
 
         puts
         puts toPrint
-        exit 1 if !system(toRun)
+        STDOUT.flush
+        fail unless system(toRun)
     end
 
     def findOneItem(*globs)
         glob = File.join *globs
         items = Dir.glob glob
-        if items.length == 0
-            puts "Error: item '#{glob}' is not found."
-            exit 1
-        end
+        fail "item '#{glob}' is not found." if items.length == 0
         if items.length > 1
             puts "Error: Several items '#{glob}' are found:"
             items.each do |item|
                 puts "    '#{item}'"
             end
-            exit 1
+            fail
         end
         return items[0]
     end
@@ -128,8 +126,9 @@ namespace "installer" do
         command = "hdiutil attach #{dmg}"
         puts
         puts command
+        STDOUT.flush
         output = `#{command}`
-        exit 1 if $? != 0
+        fail unless $? == 0
         disk = nil
         mount = nil
         output.lines do |line|
@@ -142,10 +141,7 @@ namespace "installer" do
                 mount = match[1]
             end
         end
-        if disk.nil? or mount.nil?
-            STDERR.puts "Can not parse output of '#{command}' conmmand"
-            exit 1
-        end
+        fail "Can not parse output of '#{command}' conmmand" if disk.nil? or mount.nil?
         return disk, mount
     end
 
@@ -191,10 +187,7 @@ namespace "installer" do
         ids = []
         Dir.glob(destinationJarGlob).each do |plugin|
             match = plugin.match(/com.rhomobile.rhostudio_(.+).jar$/)
-            if match.nil?
-                puts 'Impossible'
-                exit 1
-            end
+            fail 'Impossible' if match.nil?
             ids << match[1]
         end
         ids.sort!
