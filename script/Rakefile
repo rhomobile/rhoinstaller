@@ -510,6 +510,7 @@ namespace "installer" do
         rhoelementsgem        = findGemAndReport('rhoelements'        )
         rhoconnectgem         = findGemAndReport('rhoconnect'         )
         rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
+        rhoconnectclientgem   = findGemAndReport('rhoconnect-client'  )
         rhohubgem             = findGemAndReport('rhohub')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
@@ -525,6 +526,7 @@ namespace "installer" do
         installGem 'eventmachine'
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
+        installGem "\"#{rhoconnectclientgem}\""
         installGem "\"#{rhoelementsgem}\""
         installGem "\"#{rhohubgem}\""
     end
@@ -643,7 +645,7 @@ namespace "installer" do
     end
 
     def copyGems(mount)
-        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters', 'rhohub']
+        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters', 'rhoconnect-client', 'rhohub']
         files = names.map { |n| findGemAndReport(n) }
         files.each { |f| cp(f, File.join(mount, '.gems')) }
     end
