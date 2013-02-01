@@ -15,7 +15,7 @@ fi
 # select Ruby to work with
 echo
 echo "Select Ruby version to start RhoStudio:"
-RUBIES=`rvm list strings`
+RUBIES=`rvm list gemsets strings`
 select RUBY in $RUBIES; do
     [[ -n "$RUBY" ]] && break;
 done

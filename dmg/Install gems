@@ -39,7 +39,7 @@ popd > /dev/null
 # select Ruby to work with
 echo
 echo "Select Ruby version to install gems:"
-RUBIES=`rvm list strings`
+RUBIES=`rvm list gemsets strings`
 select RUBY in $RUBIES; do
     [[ -n "$RUBY" ]] && break;
 done
