@@ -22,13 +22,16 @@ $config            = Jake.config(File.open("installer.yml"))
 $eclipse           = File.join($base_dir, 'eclipse', 'eclipse')
 $eclipse           += 'c' if File.exists?($eclipse + 'c.exe')
 
-$ruby_env = {:Path => [
-    File.join($package_dir, 'redis-2.4.0'),
-    File.join($package_dir, 'ruby', 'bin'),
-    File.join($package_dir, 'devkit', 'bin'),
-    File.join($package_dir, 'devkit', 'mingw', 'bin'),
-    File.join($package_dir, 'make-3.81', 'bin')
-].join(File::PATH_SEPARATOR)}
+$ruby_env = {
+    'RDOCOPT' => '--encoding=UTF-8',
+    'Path' => [
+        File.join($package_dir, 'redis-2.4.0'),
+        File.join($package_dir, 'ruby', 'bin'),
+        File.join($package_dir, 'devkit', 'bin'),
+        File.join($package_dir, 'devkit', 'mingw', 'bin'),
+        File.join($package_dir, 'make-3.81', 'bin')
+    ].join(File::PATH_SEPARATOR)
+}
 
 if not File.exists?($nsisPath)
     ['C:/Program Files/NSIS', 'C:/Program Files (x86)/NSIS'].each do |dir|
