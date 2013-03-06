@@ -520,7 +520,7 @@ namespace "installer" do
         # leading to harmless error.
         # There is same action as 'gem update --system':
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
-        run("ruby \"#{gem}\" update --system", nil, $ruby_env)
+        run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
@@ -792,7 +792,10 @@ namespace "installer" do
     end
 
     task :test do
-      runNsisScript($installMotoScript)
+      removeRubyAndDevkit
+      copyRubyAndDevkit
+      installDevkitIntoRuby
+      installGems
     end
 
 end
