@@ -67,7 +67,7 @@ section
 
     StrCmp $0 "" continueInstallation
 
-    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Motorola RhoMobile Suite already installed on this computer. If you want reinstall it run uninstall from program menu before."
+    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Motorola RhoMobile Suite is already installed. Please uninstall the previous version before installing this one."
     Quit 
 
     continueInstallation:
