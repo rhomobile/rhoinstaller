@@ -22,7 +22,7 @@
   !define MUI_COMPONENTSPAGE_SMALLDESC
   !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\README.html
   !define MUI_FINISHPAGE
-  !define MUI_FINISHPAGE_TEXT "Thank you for installing Rhodes, RhoConnect and RhoStudio. \r\n\n\n"
+  !define MUI_FINISHPAGE_TEXT "Thank you for installing RhoElements, RhoConnect and RhoStudio. \r\n\n\n"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "..\script\images\rhosuite_left.bmp"
   !define MUI_HEADERIMAGE_BITMAP  "..\script\images\rhosuite_top.bmp"
   !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
