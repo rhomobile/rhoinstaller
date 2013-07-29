@@ -295,6 +295,14 @@ class Jake
     self.run2(command, args, {:directory => wd, :system => system, :hiderrors => hideerrors})
   end
   
+  def self.edit_xml(file, out_file = nil)
+    out_file = file if out_file.nil?
+
+    doc = REXML::Document.new(File.new(file).read)
+    yield doc
+    File.open(out_file, 'w') {|f| f << doc}
+  end
+
   def self.unjar(src,targetdir)
     jpath = $config["env"]["paths"]["java"]   
     cmd = jpath && jpath.length()>0 ? File.join(jpath, "jar" ) : "jar"

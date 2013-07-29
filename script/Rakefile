@@ -230,6 +230,14 @@ namespace "installer" do
         run "#{$eclipse} -nosplash -application org.eclipse.ant.core.antRunner -data #{$workspace_dir} -buildfile #{pluginExport} -Ddestination=\"#{destination}\""
     end
 
+    def setProductVersion_
+        Jake.edit_xml(File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')) do |doc|
+            REXML::XPath.each(doc, "/product") do |node|
+                node.attributes['version'] = $version
+            end
+        end
+    end
+
     def exportProduct_(config, plugin, destination)
         productBuild = findOneItem($base_dir, 'eclipse', 'plugins', 'org.eclipse.pde.build_*', 'scripts', 'productBuild', 'productBuild.xml')
         builder = File.join($studio_dir, 'rhogen-wizard', 'build-setting')
@@ -277,6 +285,7 @@ namespace "installer" do
     end
 
     def exportProduct(configs, destination)
+        setProductVersion_
         Dir.mktmpdir do |pluginDestination|
             exportPlugin pluginDestination
             # These two loops are nested in inefficient way.
