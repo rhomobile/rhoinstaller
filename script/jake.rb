@@ -28,7 +28,6 @@ require 'pathname'
 require 'yaml'
 require 'socket'
 require 'webrick'
-require 'rexml/document'
   
 class Hash
   def fetch_r(key)
@@ -296,12 +295,12 @@ class Jake
     self.run2(command, args, {:directory => wd, :system => system, :hiderrors => hideerrors})
   end
   
-  def self.edit_xml(file, out_file = nil)
+  def self.edit_file(file, out_file = nil)
     out_file = file if out_file.nil?
 
-    doc = REXML::Document.new(File.new(file).read)
-    yield doc
-    File.open(out_file, 'w') {|f| f << doc}
+    text = File.read(file)
+    yield text
+    File.open(out_file, 'w') {|f| f.write text}
   end
 
   def self.unjar(src,targetdir)

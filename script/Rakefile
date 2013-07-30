@@ -236,10 +236,10 @@ namespace "installer" do
             items = items.slice(0, 3) + [items.slice(3, items.length - 3).join('_')]
         end
         version = items.join('.')
-        Jake.edit_xml(File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')) do |doc|
-            REXML::XPath.each(doc, "/product") do |node|
-                node.attributes['version'] = version
-            end
+
+        # do not use XML editor! next steps has specific requirements to file format
+        Jake.edit_file(File.join($studio_dir, 'rhogen-wizard', 'rhostudio.product')) do |text|
+            text.gsub!(/(<product [^>]*version=")[^"]*("[^>]*>)/, "\\1#{version}\\2")
         end
     end
 
