@@ -28,6 +28,7 @@ require 'pathname'
 require 'yaml'
 require 'socket'
 require 'webrick'
+require 'rexml/document'
   
 class Hash
   def fetch_r(key)
