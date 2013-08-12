@@ -675,6 +675,16 @@ namespace "installer" do
         cp(findOneItem($base_dir, 'files', 'rhoconnect-push-[0-9]*.tgz'), File.join(mount, '.rps'))
     end
 
+    def removeRhoapiModules(mount)
+        rmGlob(mount, 'rhoapi-modules')
+    end
+
+    def copyRhoapiModules(mount)
+        archive = findOneItem($base_dir, 'files', 'rhoapi-modules-js-[0-9]*.tar.gz')
+        run("tar -xzf #{archive}", mount)
+        cp(findOneItem($base_dir, 'files', 'rhoconnect-push-[0-9]*.tgz'), File.join(mount, '.rps'))
+    end
+
     namespace "user" do
       task :gems do
         installGems
@@ -752,6 +762,7 @@ namespace "installer" do
           disk, mount = attachSuiteDmg
           removeGems mount
           removeRps mount
+          removeRhoapiModules mount
           removeProductMac mount
           removeSamplesMac mount
           removeMiscFilesMac mount
@@ -761,6 +772,7 @@ namespace "installer" do
           disk, mount = attachSuiteDmg
           copyGems mount
           copyRps mount
+          copyRhoapiModules mount
           exportProductMac mount
           makeSamplesMac mount
           makeMiscFilesMac mount
