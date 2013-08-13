@@ -234,6 +234,14 @@ Section "Samples" samplesSection
 
 SectionEnd
 
+Section "rhoapi-modules" rhoapiModulesSection
+
+  SetOutPath $INSTDIR
+
+  File /r "rhoapi-modules"
+
+SectionEnd
+
 Section "DevKit" devkitSection
  
   SetOutPath $INSTDIR
@@ -353,6 +361,7 @@ SectionEnd
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
+  LangString DESC_InstallRhoapiModules ${LANG_ENGLISH} "This installs universal rhoapi-modules.js solution."
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
   LangString DESC_InstallRhoconnectPush ${LANG_ENGLISH} "This installs Rhoconnect-push service clients."  
@@ -367,6 +376,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${redisSection} $(DESC_InstallRedis)
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
+  !insertmacro MUI_DESCRIPTION_TEXT ${rhoapiModulesSection} $(DESC_InstallRhoapiModules)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
   !insertmacro MUI_DESCRIPTION_TEXT ${nodeSection} $(DESC_InstallNodeJs)
   #!insertmacro MUI_DESCRIPTION_TEXT ${javaSection} $(DESC_InstallJava)    
