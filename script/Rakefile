@@ -125,6 +125,19 @@ namespace "installer" do
         Dir.glob(File.join(*globs)) { |d| rm_rf d }
     end
 
+    def unpack_tar_gz(archive, where)
+        if RUBY_PLATFORM =~ /(win|w)32$/
+            Dir.mktmpdir do |dir|
+                run("7za x \"#{archive}\" -bd", dir)
+                Dir.glob(File.join(dir, '*')) do |f|
+                    run("7za x \"#{f}\" -bd", where)
+                end
+            end
+        else
+            run("tar -xzf #{archive}", where)
+        end
+    end
+
     def attachDmg(dmg)
         command = "hdiutil attach #{dmg}"
         puts
@@ -675,22 +688,21 @@ namespace "installer" do
         cp(findOneItem($base_dir, 'files', 'rhoconnect-push-[0-9]*.tgz'), File.join(mount, '.rps'))
     end
 
+    def removeRhoapiModules(dir)
+        rmGlob(dir, 'rhoapi-modules')
+    end
+
+    def copyRhoapiModules(dir)
+        archive = findOneItem($base_dir, 'files', 'rhoapi-modules-js-[0-9]*.tar.gz')
+        unpack_tar_gz(archive, dir)
+    end
+
     def removeRhoapiModulesWin
-        rmGlob($package_dir, 'rhoapi-modules')
+        removeRhoapiModules($package_dir)
     end
 
     def copyRhoapiModulesWin
-        archive = findOneItem($base_dir, 'files', 'rhoapi-modules-js-[0-9]*.zip')
-        run("7za x #{archive} -bd", $package_dir)
-    end
-
-    def removeRhoapiModulesMac(mount)
-        rmGlob(mount, 'rhoapi-modules')
-    end
-
-    def copyRhoapiModulesMac(mount)
-        archive = findOneItem($base_dir, 'files', 'rhoapi-modules-js-[0-9]*.tar.gz')
-        run("tar -xzf #{archive}", mount)
+        copyRhoapiModules($package_dir)
     end
 
     namespace "user" do
@@ -772,7 +784,7 @@ namespace "installer" do
           disk, mount = attachSuiteDmg
           removeGems mount
           removeRps mount
-          removeRhoapiModulesMac mount
+          removeRhoapiModules mount
           removeProductMac mount
           removeSamplesMac mount
           removeMiscFilesMac mount
@@ -782,7 +794,7 @@ namespace "installer" do
           disk, mount = attachSuiteDmg
           copyGems mount
           copyRps mount
-          copyRhoapiModulesMac mount
+          copyRhoapiModules mount
           exportProductMac mount
           makeSamplesMac mount
           makeMiscFilesMac mount
