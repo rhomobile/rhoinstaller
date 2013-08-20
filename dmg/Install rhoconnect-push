@@ -17,14 +17,14 @@ popd > /dev/null
 
 # add 'sudo' to 'npm install'?
 INSTALL="npm install --global"
-echo -ne "\nDo you want to install rhoconnect-push with 'sudo' command prefix? [Yn]  "
 while true; do
+    echo -ne "\nDo you want to install rhoconnect-push with 'sudo' command prefix? [Yn]  "
     read SUDO
-    if [[ "$SUDO" == "" ]] || [[ "$SUDO" == "y" ]]; then
+    if [[ "$SUDO" == "" || "$SUDO" == "y" || "$SUDO" == "Y" ]]; then
         INSTALL="sudo "$INSTALL
         break;
     fi
-    if [[ "$SUDO" == "n" ]]; then
+    if [[ "$SUDO" == "n" || "$SUDO" == "N" ]]; then
         break;
     fi
 done

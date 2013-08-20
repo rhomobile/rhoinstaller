@@ -49,13 +49,13 @@ ruby -v
 
 # add 'sudo' to 'gem install'?
 INSTALL="gem install"
-echo -ne "\nDo you want to install gems with 'sudo' command prefix? [yN]  "
 while true; do
+    echo -ne "\nDo you want to install gems with 'sudo' command prefix? [yN]  "
     read SUDO
-    if [[ "$SUDO" == "" ]] || [[ "$SUDO" == "n" ]]; then
+    if [[ "$SUDO" == "" || "$SUDO" == "n" || "$SUDO" == "N" ]]; then
         break;
     fi
-    if [[ "$SUDO" == "y" ]]; then
+    if [[ "$SUDO" == "y" || "$SUDO" == "Y" ]]; then
         INSTALL="sudo gem install"
         break;
     fi
