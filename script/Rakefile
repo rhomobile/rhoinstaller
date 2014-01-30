@@ -138,6 +138,10 @@ namespace "installer" do
         end
     end
 
+    def moveDir(source, targetName)
+      mv(source, File.join($package_dir, targetName))
+    end
+
     def attachDmg(dmg)
         command = "hdiutil attach #{dmg}"
         puts
@@ -488,10 +492,6 @@ namespace "installer" do
     end
 
     def moveRhoElements2
-      def moveDir(source, targetName)
-        mv(source, File.join($package_dir, targetName))
-      end
-
       source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
 
       moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
@@ -503,13 +503,17 @@ namespace "installer" do
     end
 
     def moveRhoconnectPushService
-      def moveDir(source, targetName)
-        mv(source, File.join($package_dir, targetName))
-      end
-
       source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-service')
-
       moveDir(source, 'rhoconnect-push-service')
+    end
+
+    def removePrintingService
+        rmGlob($package_dir, 'printing-service')
+    end
+
+    def movePrintingService
+      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'printing-service')
+      moveDir(source, 'printing-service')
     end
 
     def removeReadme
@@ -649,6 +653,11 @@ namespace "installer" do
                 File.join(mount, 'rhoconnect-push-service')
             )
 
+            moveDirContent(
+                File.join(rhoelementsDir, 'libs', 'printing-service'),
+                File.join(mount, 'printing-service')
+            )
+
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
             mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
 
@@ -731,6 +740,7 @@ namespace "installer" do
         removeReadme
         removeRhoElements2
         removeRhoconnectPushService
+        removePrintingService
         removeRhoconnectPushTgz
         #removeEclipseSettings
         removeNsisScript
@@ -751,6 +761,7 @@ namespace "installer" do
         copyReadme
         moveRhoElements2
         moveRhoconnectPushService
+        movePrintingService
         copyRhoconnectPushTgz
         copyRhoapiModulesWin
       end

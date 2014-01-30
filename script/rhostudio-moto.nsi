@@ -95,6 +95,7 @@ section
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
+    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
@@ -142,6 +143,7 @@ section "uninstall"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk" 
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"
+    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\"
 
     ExecWait 'net stop redis'
@@ -223,6 +225,14 @@ Section "Rhoconnect-push service clients" rhoconnectpushSection
   SetOutPath $INSTDIR
  
   File /r "rhoconnect-push-service"
+
+SectionEnd
+
+Section "Printing service" printingserviceSection
+
+  SetOutPath $INSTDIR
+
+  File /r "printing-service"
 
 SectionEnd
 
@@ -365,6 +375,7 @@ SectionEnd
   LangString DESC_InstallDevKit ${LANG_ENGLISH} "This installs development kit for application building."  
   LangString DESC_InstallNodeJs ${LANG_ENGLISH} "This installs Node for JavaScript."  
   LangString DESC_InstallRhoconnectPush ${LANG_ENGLISH} "This installs Rhoconnect-push service clients."  
+  LangString DESC_InstallPrintingService ${LANG_ENGLISH} "This installs printing service."
   
   ;Assign language strings to sections
   
@@ -378,6 +389,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoapiModulesSection} $(DESC_InstallRhoapiModules)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
+  !insertmacro MUI_DESCRIPTION_TEXT ${printingserviceSection} $(DESC_InstallPrintingService)
   !insertmacro MUI_DESCRIPTION_TEXT ${nodeSection} $(DESC_InstallNodeJs)
   #!insertmacro MUI_DESCRIPTION_TEXT ${javaSection} $(DESC_InstallJava)    
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
