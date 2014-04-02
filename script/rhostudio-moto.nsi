@@ -30,7 +30,7 @@
 ;======================================================
 ; Pages
  
-  !define MUI_WELCOMEPAGE_TEXT "© 2012 Motorola Solutions, Inc. All rights reserved.\r\n\r\n$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
+  !define MUI_WELCOMEPAGE_TEXT "© 2014 Motorola Solutions, Inc. All rights reserved.\r\n\r\n$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
   !insertmacro MUI_PAGE_WELCOME
   !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
