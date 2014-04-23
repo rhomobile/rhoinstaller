@@ -93,7 +93,6 @@ section
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe"
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" 0
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\RhoElements2 Shared Runtime"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
     createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
@@ -141,7 +140,6 @@ section "uninstall"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Web Apps.lnk" 
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"
     delete "$SMPROGRAMS\Motorola RhoMobile Suite\"
@@ -281,7 +279,6 @@ Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
   File /r "ruby"
   File /r "make-3.81"
   File /r "RhoElements2"
-  File /r "RhoElements2 Shared Runtime"
 
   File "README.html"
   File "RhoStudio and Rho Software License Agreements.doc"
