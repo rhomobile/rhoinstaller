@@ -493,9 +493,7 @@ namespace "installer" do
 
     def moveRhoElements2
       source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoElements2')
-
-      moveDir(File.join(source, 'Runtime'), 'RhoElements2 Shared Runtime')
-      moveDir(          source            , 'RhoElements2'               )
+      moveDir(source, 'RhoElements2')
     end
 
     def removeRhoconnectPushService
@@ -637,11 +635,6 @@ namespace "installer" do
         Dir.mktmpdir do |dir|
             # retrieve data from rhoelements gem
             rhoelementsDir = unpackGem('rhoelements', dir)
-
-            moveDirContent(
-                File.join(rhoelementsDir, 'RhoElements2', 'Runtime'),
-                File.join(mount, 'RhoElements2 Shared Runtime')
-            )
 
             moveDirContent(
                 File.join(rhoelementsDir, 'RhoElements2'),
