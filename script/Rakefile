@@ -183,7 +183,7 @@ namespace "installer" do
     end
 
     def makeRwDmg
-        source = File.join($base_dir, 'RhoMobileSuiteInstaller.dmg')
+        source = File.join($installer_dir, 'dmg', 'RhoMobileSuiteInstaller.dmg')
         target = File.join($base_dir, 'RhoMobileSuiteInstaller.rw.dmg')
         run "hdiutil convert '#{source}' -format UDRW -o '#{target}'"
     end
@@ -516,7 +516,7 @@ namespace "installer" do
 
     def removeReadme
       rmGlob($package_dir, 'README.html')
-      rmGlob($package_dir, 'RhoStudio and Rho Software License Agreements.doc')
+      rmGlob($package_dir, 'RhoMobile End User License Agreement.docx')
       rmGlob($package_dir, 'CREDITS')
     end
 
@@ -527,8 +527,8 @@ namespace "installer" do
     def copyReadme
       readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
       cp(readme, File.join($package_dir, 'README.html'))
-      eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoStudio and Rho Software License Agreements.doc')
-      cp(eula, File.join($package_dir, 'RhoStudio and Rho Software License Agreements.doc'))
+      eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoMobile End User License Agreement.docx')
+      cp(eula, $package_dir))
       credits = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'CREDITS')
       cp(credits, File.join($package_dir, 'CREDITS'))
     end
@@ -616,7 +616,8 @@ namespace "installer" do
         cleanDir File.join(mount, 'RhoElements2 Shared Runtime')
         cleanDir File.join(mount, 'RhoElements2')
         rmGlob(mount, 'ReadMe.html')
-        rmGlob(mount, 'RhoStudio and Rho Software License Agreements.doc')
+        rmGlob(mount, 'RhoMobile End User License Agreement.docx')
+        rmGlob(mount, 'RhoMobile-EULA.txt')
         rmGlob(mount, 'CREDITS')
     end
 
@@ -652,7 +653,8 @@ namespace "installer" do
             )
 
             mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
-            mv(File.join(rhoelementsDir, 'RhoStudio and Rho Software License Agreements.doc'), mount)
+            mv(File.join(rhoelementsDir, 'RhoMobile End User License Agreement.docx'), mount)
+            cp(File.join($installer_dir, 'package', 'RhoMobile-EULA.txt'), mount)
 
             Dir.glob(File.join(rhoelementsDir, 'samples', '*')).each do |d|
                 mv(d, File.join(mount, 'samples'))

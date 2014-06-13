@@ -34,7 +34,7 @@
   !insertmacro MUI_PAGE_WELCOME
   !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
-  !insertmacro MUI_PAGE_LICENSE "RHOELEMENTS-EULA.txt"
+  !insertmacro MUI_PAGE_LICENSE "RhoMobile-EULA.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
   !insertmacro MUI_PAGE_DIRECTORY
@@ -281,7 +281,7 @@ Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
   File /r "RhoElements2"
 
   File "README.html"
-  File "RhoStudio and Rho Software License Agreements.doc"
+  File "RhoMobile End User License Agreement.docx"
   File "CREDITS"  
  
   ;add to path here
