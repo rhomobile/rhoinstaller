@@ -528,7 +528,7 @@ namespace "installer" do
       readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
       cp(readme, File.join($package_dir, 'README.html'))
       eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoMobile End User License Agreement.docx')
-      cp(eula, $package_dir))
+      cp(eula, $package_dir)
       credits = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'CREDITS')
       cp(credits, File.join($package_dir, 'CREDITS'))
     end
