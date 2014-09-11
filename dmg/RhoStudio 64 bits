@@ -1,26 +1,26 @@
 #!/bin/bash
 
 # load RVM into a shell session *as a function*
+RVM=true
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
     . "$HOME/.rvm/scripts/rvm"
 elif [[ -s "/usr/local/rvm/scripts/rvm" ]]; then
     . "/usr/local/rvm/scripts/rvm"
 else
-    echo 'Please install RVM.'
-    echo -n 'Press Enter to stop installation...'
-    read
-    exit
+    RVM=false
 fi
 
 # select Ruby to work with
-echo
-echo "Select Ruby version to start RhoStudio:"
-RUBIES=`rvm list gemsets strings`
-select RUBY in $RUBIES; do
-    [[ -n "$RUBY" ]] && break;
-done
-echo
-rvm use "$RUBY"
+if $RVM; then
+    echo
+    echo "Select Ruby version to start RhoStudio:"
+    RUBIES=`rvm list gemsets strings`
+    select RUBY in $RUBIES; do
+        [[ -n "$RUBY" ]] && break;
+    done
+    echo
+    rvm use "$RUBY"
+fi
 ruby -v
 
 sleep 2
