@@ -19,33 +19,33 @@ if [[ $? != 0 ]]; then
 fi
 
 # load RVM into a shell session *as a function*
-RVM=true
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
     . "$HOME/.rvm/scripts/rvm"
 elif [[ -s "/usr/local/rvm/scripts/rvm" ]]; then
     . "/usr/local/rvm/scripts/rvm"
 else
-    RVM=false
+    echo 'Please install RVM.'
+    echo -n 'Press Enter to stop installation...'
+    read
+    exit
 fi
-
-# select Ruby to work with
-if $RVM; then
-    echo
-    echo "Select Ruby version to install gems:"
-    RUBIES=`rvm list gemsets strings`
-    select RUBY in $RUBIES; do
-        [[ -n "$RUBY" ]] && break;
-    done
-    echo
-    rvm use "$RUBY"
-fi
-ruby -v
 
 # get gems directory
 pushd "`pwd`" > /dev/null
 cd "`dirname "$0"`/.gems"
 GEMS=`pwd`
 popd > /dev/null
+
+# select Ruby to work with
+echo
+echo "Select Ruby version to install gems:"
+RUBIES=`rvm list gemsets strings`
+select RUBY in $RUBIES; do
+    [[ -n "$RUBY" ]] && break;
+done
+echo
+rvm use "$RUBY"
+ruby -v
 
 # add 'sudo' to 'gem install'?
 INSTALL="gem install"
