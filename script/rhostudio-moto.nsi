@@ -72,11 +72,6 @@ section
 
     continueInstallation:
 
-    # check install JRE or not, if not show message box and exit from installer
-    ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\javaws.exe" "Path"
-              
-    StrCmp $0 "" jreInstallFail   
-
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
  
@@ -113,13 +108,6 @@ section
     WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
                  "NoRepair" 1
       
-    Goto okFinishSection
-    
-    jreInstallFail:
-        MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Java Runtime Environment could not be found on your computer. Please install Java Runtime Environment before RhoStudio."
-        Quit 
-
-    okFinishSection: 
 sectionEnd
  
 # uninstaller section start
