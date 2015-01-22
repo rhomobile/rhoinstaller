@@ -25,4 +25,4 @@ ruby -v
 
 sleep 2
 
-exec "/Applications/Motorola RhoStudio/macosx.cocoa.x86/RhoStudio.app/Contents/MacOS/RhoStudio"
+exec "/Applications/RhoStudio/macosx.cocoa.x86/RhoStudio.app/Contents/MacOS/RhoStudio"

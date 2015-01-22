@@ -335,20 +335,24 @@ namespace "installer" do
         updateBundlesInfo
     end
 
+    def rhostudio_(mount)
+      File.join(mount, 'RhoStudio')
+    end
+
     def removePluginMac(mount)
-        removePlugin File.join(mount, 'Motorola RhoStudio')
+        removePlugin rhostudio_(mount)
     end
 
     def exportPluginMac(mount)
-        exportPlugin File.join(mount, 'Motorola RhoStudio')
+        exportPlugin rhostudio_(mount)
     end
 
     def removeProductMac(mount)
-        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+        removeProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], rhostudio_(mount))
     end
 
     def exportProductMac(mount)
-        exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], File.join(mount, 'Motorola RhoStudio'))
+        exportProduct(['macosx, cocoa, x86', 'macosx, cocoa, x86_64'], rhostudio_(mount))
     end
 
     def removeProductWin
@@ -669,8 +673,8 @@ namespace "installer" do
         # copy scripts
         cp(File.join($installer_dir, 'dmg', 'Install gems'), mount)
         cp(File.join($installer_dir, 'dmg', 'Install rhoconnect-push'), mount)
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio 32 bits'), File.join(mount, 'Motorola RhoStudio'))
-        cp(File.join($installer_dir, 'dmg', 'RhoStudio 64 bits'), File.join(mount, 'Motorola RhoStudio'))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 32 bits'), rhostudio_(mount))
+        cp(File.join($installer_dir, 'dmg', 'RhoStudio 64 bits'), rhostudio_(mount))
 
     end
 

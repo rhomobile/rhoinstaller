@@ -8,9 +8,9 @@
 ;======================================================
 ; Installer Information
  
-  Name "Motorola RhoMobile Suite"
+  Name "RhoMobile Suite"
   OutFile "RMS_.exe"
-  InstallDir "C:\MotorolaRhoMobileSuite%NSIS_VERSION%"
+  InstallDir "C:\RhoMobileSuite%NSIS_VERSION%"
   BrandingText " "
 ;======================================================
 ; Modern Interface Configuration
@@ -32,8 +32,8 @@
  
   !define MUI_WELCOMEPAGE_TEXT "© 2014 Motorola Solutions, Inc. All rights reserved.\r\n\r\n$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
   !insertmacro MUI_PAGE_WELCOME
-  !define MUI_PAGE_HEADER_TEXT "Motorola RhoMobile Suite License Agreement"
-  !define MUI_PAGE_HEADER_SUBTEXT "Please review the Motorola RhoMobile Suite license terms before installing."
+  !define MUI_PAGE_HEADER_TEXT "RhoMobile Suite License Agreement"
+  !define MUI_PAGE_HEADER_SUBTEXT "Please review the RhoMobile Suite license terms before installing."
   !insertmacro MUI_PAGE_LICENSE "RhoMobile-EULA.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE directoryPostFunction
@@ -64,13 +64,16 @@ section
     SetShellVarContext all
 
     ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" "UninstallString" 
-
-    StrCmp $0 "" continueInstallation
-
+    StrCmp $0 "" continueInstallation1
     MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Motorola RhoMobile Suite is already installed. Please uninstall the previous version before installing this one."
     Quit 
+    continueInstallation1:
 
-    continueInstallation:
+    ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" "UninstallString" 
+    StrCmp $0 "" continueInstallation2
+    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "RhoMobile Suite is already installed. Please uninstall the previous version before installing this one."
+    Quit 
+    continueInstallation2:
 
     # set the installation directory as the destination for the following actions
     setOutPath $INSTDIR
@@ -81,31 +84,31 @@ section
     # create the uninstaller
     writeUninstaller "$INSTDIR\uninstall.exe"
  
-    SetOutPath "$SMPROGRAMS\Motorola RhoMobile Suite"
+    SetOutPath "$SMPROGRAMS\RhoMobile Suite"
     
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" 0
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
-    createShortCut "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
     # added information in 'unistall programs' in contorol panel
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
-                 "DisplayName" "Motorola RhoMobile Suite"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
+                 "DisplayName" "RhoMobile Suite"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "Publisher" "Motorola Solutions Inc."
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayVersion" "%RHOMOBILE_SUITE_VER%"  
-    WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" \
+    WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "NoRepair" 1
       
 sectionEnd
@@ -114,7 +117,7 @@ sectionEnd
 section "uninstall"
 
     IfSilent +3
-      MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall Motorola RhoMobile Suite" IDNO "Continue"    
+      MessageBox MB_YESNO|MB_TOPMOST|MB_ICONQUESTION "Are you sure you want to uninstall RhoMobile Suite" IDNO "Continue"    
 
     SetShellVarContext all
 
@@ -122,15 +125,15 @@ section "uninstall"
     delete "$INSTDIR\uninstall.exe"
  
     # second, remove the link from the start menu    
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Uninstall RhoMobile Suite.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 32-bit.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Motorola RhoStudio 64-bit.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Readme.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Developer Community.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Documentation.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\Printing service.lnk"
-    delete "$SMPROGRAMS\Motorola RhoMobile Suite\"
+    delete "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\RhoStudio 32-bit.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\RhoStudio 64-bit.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Readme.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\Printing service.lnk"
+    delete "$SMPROGRAMS\RhoMobile Suite\"
 
     ExecWait 'net stop redis'
     ExecWait 'sc delete redis'
@@ -172,7 +175,7 @@ section "uninstall"
     Pop $R0
 
     DeleteRegValue HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" REDIS_HOME
-    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite"
+    DeleteRegKey HKLM  "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite"
 
     # remove $INSTDIR
     RMDir /r /REBOOTOK $INSTDIR
