@@ -30,7 +30,7 @@
 ;======================================================
 ; Pages
  
-  !define MUI_WELCOMEPAGE_TEXT "© 2014 Motorola Solutions, Inc. All rights reserved.\r\n\r\n$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
+  !define MUI_WELCOMEPAGE_TEXT "$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_WELCOME_INFO_TEXT)"
   !insertmacro MUI_PAGE_WELCOME
   !define MUI_PAGE_HEADER_TEXT "RhoMobile Suite License Agreement"
   !define MUI_PAGE_HEADER_SUBTEXT "Please review the RhoMobile Suite license terms before installing."
@@ -105,7 +105,7 @@ section
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
-                 "Publisher" "Motorola Solutions Inc."
+                 "Publisher" "Symbol Technologies, Inc."
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayVersion" "%RHOMOBILE_SUITE_VER%"  
     WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
