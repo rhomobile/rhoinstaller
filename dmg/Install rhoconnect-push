@@ -3,7 +3,7 @@
 # check presence of npm
 npm --version > /dev/null 2>&1
 if [[ $? != 0 ]]; then
-    echo 'Please install Node.js (http://nodejs.org/dist/v0.8.4/node-v0.8.4.pkg).'
+    echo 'Please install Node.js (https://nodejs.org/dist/latest/node-v0.12.7.pkg).'
     echo -ne "\nPress Enter to stop rhoconnect-push installation..."
     read
     exit
