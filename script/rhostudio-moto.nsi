@@ -330,14 +330,14 @@ Section "Git 1.7.6" gitSection
 SectionEnd
 
 
-Section "Node JS 0.8.1" nodeSection
+Section "Node JS 0.12.7" nodeSection
 
   SetOutPath $INSTDIR
  
   IfSilent +3
-    ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
+    ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.12.7-x64.msi"
   Goto +2
-    ExecWait "msiexec.exe /passive /i $INSTDIR\rhoconnect-push\node-v0.8.1-x86.msi"
+    ExecWait "msiexec.exe /passive /i $INSTDIR\rhoconnect-push\node-v0.12.7-x64.msi"
 
   ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
 
