@@ -237,7 +237,7 @@ Section "rhoapi-modules" rhoapiModulesSection
 
   SetOutPath $INSTDIR
 
-  File /r "rhoapi-modules"
+  ;File /r "rhoapi-modules"
 
 SectionEnd
 
