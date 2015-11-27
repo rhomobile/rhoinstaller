@@ -762,7 +762,7 @@ namespace "installer" do
         moveRhoconnectPushService
         movePrintingService
         copyRhoconnectPushTgz
-        copyRhoapiModulesWin
+        #copyRhoapiModulesWin
       end
 
       task :nsis => "gems" do
