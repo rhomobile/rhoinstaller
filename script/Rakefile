@@ -617,8 +617,8 @@ namespace "installer" do
     end
 
     def removeMiscFilesMac(mount)
-        cleanDir File.join(mount, 'RhoElements2 Shared Runtime')
-        cleanDir File.join(mount, 'RhoElements2')
+        #cleanDir File.join(mount, 'RhoElements2 Shared Runtime')
+        #cleanDir File.join(mount, 'RhoElements2')
         rmGlob(mount, 'ReadMe.html')
         rmGlob(mount, 'RhoMobile End User License Agreement.docx')
         rmGlob(mount, 'RhoMobile-EULA.txt')
@@ -641,10 +641,10 @@ namespace "installer" do
             # retrieve data from rhoelements gem
             rhoelementsDir = unpackGem('rhoelements', dir)
 
-            moveDirContent(
-                File.join(rhoelementsDir, 'RhoElements2'),
-                File.join(mount, 'RhoElements2')
-            )
+            # moveDirContent(
+            #     File.join(rhoelementsDir, 'RhoElements2'),
+            #     File.join(mount, 'RhoElements2')
+            # )
 
             moveDirContent(
                 File.join(rhoelementsDir, 'libs', 'rhoconnect-push-service'),
@@ -758,7 +758,7 @@ namespace "installer" do
         makeSamplesWin
 
         copyReadme
-        moveRhoElements2
+        #moveRhoElements2
         moveRhoconnectPushService
         movePrintingService
         copyRhoconnectPushTgz
@@ -804,7 +804,7 @@ namespace "installer" do
           disk, mount = attachSuiteDmg
           copyGems mount
           copyRps mount
-          copyRhoapiModules mount
+          #copyRhoapiModules mount
           exportProductMac mount
           makeSamplesMac mount
           makeMiscFilesMac mount
