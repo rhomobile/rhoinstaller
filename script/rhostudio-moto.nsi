@@ -269,7 +269,7 @@ Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
  
   File /r "ruby"
   File /r "make-3.81"
-  File /r "RhoElements2"
+  ;File /r "RhoElements2"
 
   File "README.html"
   File "RhoMobile End User License Agreement.docx"
