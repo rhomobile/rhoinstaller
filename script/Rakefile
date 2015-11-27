@@ -737,7 +737,7 @@ namespace "installer" do
         removeRubyAndDevkit
         removeSamplesWin
         removeReadme
-        removeRhoElements2
+        #removeRhoElements2
         removeRhoconnectPushService
         removePrintingService
         removeRhoconnectPushTgz
@@ -758,7 +758,7 @@ namespace "installer" do
         makeSamplesWin
 
         copyReadme
-        moveRhoElements2
+        #moveRhoElements2
         moveRhoconnectPushService
         movePrintingService
         copyRhoconnectPushTgz
