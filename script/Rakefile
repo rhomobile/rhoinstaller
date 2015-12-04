@@ -737,7 +737,7 @@ namespace "installer" do
         removeRubyAndDevkit
         removeSamplesWin
         removeReadme
-        removeRhoElements2
+        #removeRhoElements2
         removeRhoconnectPushService
         removePrintingService
         removeRhoconnectPushTgz
