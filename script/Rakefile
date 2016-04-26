@@ -16,7 +16,7 @@ $workspace_dir     = File.join($base_dir, 'workspace')
 $script_dir        = File.join($installer_dir, 'script')
 $package_dir       = File.join($installer_dir, 'package')
 $installScript     = "rhostudio.nsi"
-$installMotoScript = "rhostudio-moto.nsi"
+$installRMSScript = "rhomobilesuite.nsi"
 $extWinExe         = '.exe'
 $config            = Jake.config(File.open("installer.yml"))
 $eclipse           = File.join($base_dir, 'eclipse', 'eclipse')
@@ -500,27 +500,27 @@ namespace "installer" do
       moveDir(source, 'RhoElements2')
     end
 
-    def removeRhoconnectPushService
-        rmGlob($package_dir, 'rhoconnect-push-service')
-    end
+    #def removeRhoconnectPushService
+        #rmGlob($package_dir, 'rhoconnect-push-service')
+    #end
 
-    def moveRhoconnectPushService
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'rhoconnect-push-service')
-      moveDir(source, 'rhoconnect-push-service')
-    end
+    #def moveRhoconnectPushService
+      #source = findOneItem($package_dir, 'rhoconnect-push-service')
+      #moveDir(source, 'rhoconnect-push-service')
+    #end
 
     def removePrintingService
         rmGlob($package_dir, 'printing-service')
     end
 
     def movePrintingService
-      source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'printing-service')
-      moveDir(source, 'printing-service')
+      #source = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'libs', 'printing-service')
+      #moveDir(source, 'printing-service')
     end
 
     def removeReadme
-      rmGlob($package_dir, 'README.html')
-      rmGlob($package_dir, 'RhoMobile End User License Agreement.docx')
+      #rmGlob($package_dir, 'README.html')
+      #rmGlob($package_dir, 'RhoMobile End User License Agreement.docx')
       rmGlob($package_dir, 'CREDITS')
     end
 
@@ -529,10 +529,10 @@ namespace "installer" do
     end
 
     def copyReadme
-      readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
-      cp(readme, File.join($package_dir, 'README.html'))
-      eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoMobile End User License Agreement.docx')
-      cp(eula, $package_dir)
+      #readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
+      #cp(readme, File.join($package_dir, 'README.html'))
+      #eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoMobile End User License Agreement.docx')
+      #cp(eula, $package_dir)
       credits = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'CREDITS')
       cp(credits, File.join($package_dir, 'CREDITS'))
     end
@@ -543,11 +543,11 @@ namespace "installer" do
         end
 
         rhodesgem             = findGemAndReport('rhodes'             )
-        rhoelementsgem        = findGemAndReport('rhoelements'        )
+        #rhoelementsgem        = findGemAndReport('rhoelements'        )
         rhoconnectgem         = findGemAndReport('rhoconnect'         )
         rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
         rhoconnectclientgem   = findGemAndReport('rhoconnect-client'  )
-        rhohubgem             = findGemAndReport('rhohub')
+        #rhohubgem             = findGemAndReport('rhohub')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
         # leading to harmless error.
@@ -563,8 +563,6 @@ namespace "installer" do
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoconnectclientgem}\""
-        installGem "\"#{rhoelementsgem}\""
-        installGem "\"#{rhohubgem}\""
     end
 
     def removeRhoconnectPushTgz
@@ -633,13 +631,13 @@ namespace "installer" do
         end
 
         def moveDirContent(source, target)
-            Dir.glob(File.join(source, '*')) { |i| mv(i, target) }
-            rm_r source
+            Dir.glob(File.join(source, '*')) { |i| cp(i, target) }
+            #rm_r source
         end
 
         Dir.mktmpdir do |dir|
             # retrieve data from rhoelements gem
-            rhoelementsDir = unpackGem('rhoelements', dir)
+            # rhoelementsDir = unpackGem('rhoelements', dir)
 
             # moveDirContent(
             #     File.join(rhoelementsDir, 'RhoElements2'),
@@ -647,22 +645,22 @@ namespace "installer" do
             # )
 
             moveDirContent(
-                File.join(rhoelementsDir, 'libs', 'rhoconnect-push-service'),
+                File.join($installer_dir, 'package', 'rhoconnect-push-service'),
                 File.join(mount, 'rhoconnect-push-service')
             )
 
-            moveDirContent(
-                File.join(rhoelementsDir, 'libs', 'printing-service'),
-                File.join(mount, 'printing-service')
-            )
+            # moveDirContent(
+            #     File.join(rhoelementsDir, 'libs', 'printing-service'),
+            #     File.join(mount, 'printing-service')
+            # )
 
-            mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
-            mv(File.join(rhoelementsDir, 'RhoMobile End User License Agreement.docx'), mount)
+            # mv(File.join(rhoelementsDir, 'ReadMe.html'), mount)
+            # mv(File.join(rhoelementsDir, 'RhoMobile End User License Agreement.docx'), mount)
             cp(File.join($installer_dir, 'package', 'RhoMobile-EULA.txt'), mount)
 
-            Dir.glob(File.join(rhoelementsDir, 'samples', '*')).each do |d|
-                mv(d, File.join(mount, 'samples'))
-            end
+            # Dir.glob(File.join(rhoelementsDir, 'samples', '*')).each do |d|
+            #     mv(d, File.join(mount, 'samples'))
+            # end
 
             # retrieve data from rhodes gem
             rhodesDir = unpackGem('rhodes', dir)
@@ -683,7 +681,7 @@ namespace "installer" do
     end
 
     def copyGems(mount)
-        names = ['rhodes', 'rhoelements', 'rhoconnect', 'rhoconnect-adapters', 'rhoconnect-client', 'rhohub']
+        names = ['rhodes', 'rhoconnect', 'rhoconnect-adapters', 'rhoconnect-client']
         files = names.map { |n| findGemAndReport(n) }
         files.each { |f| cp(f, File.join(mount, '.gems')) }
     end
@@ -731,14 +729,14 @@ namespace "installer" do
 
     end
 
-    namespace "motorola" do
+    namespace "symbol" do
       task :clean do
         removeProductWin
         removeRubyAndDevkit
         removeSamplesWin
         removeReadme
         removeRhoElements2
-        removeRhoconnectPushService
+        #removeRhoconnectPushService
         removePrintingService
         removeRhoconnectPushTgz
         #removeEclipseSettings
@@ -755,19 +753,19 @@ namespace "installer" do
         installGems
         removeRubyCache
 
-        makeSamplesWin
+        #makeSamplesWin
 
         copyReadme
         #moveRhoElements2
-        moveRhoconnectPushService
+        #moveRhoconnectPushService
         movePrintingService
         copyRhoconnectPushTgz
         #copyRhoapiModulesWin
       end
 
       task :nsis => "gems" do
-        puts 'release - start build nsis script: ' +  $installMotoScript
-        runNsisScript($installMotoScript)
+        puts 'release - start build nsis script: ' +  $installRMSScript
+        runNsisScript($installRMSScript)
       end
 
       task :rename => "nsis" do
@@ -839,7 +837,7 @@ namespace "installer" do
       installGems
     end
 
-    task :motorola => "motorola:rename" do
+    task :symbol => "symbol:rename" do
     end
 
     task :tag do

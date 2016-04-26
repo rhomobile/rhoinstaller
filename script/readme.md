@@ -4,7 +4,7 @@ Windows build:
 
 2. change build version in Rakefile
 
-3. run 'rake installer:motorola' command
+3. run 'rake installer:symbol' command
 
 4. in package folder you can find installer
 

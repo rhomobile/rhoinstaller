@@ -22,7 +22,7 @@
   !define MUI_COMPONENTSPAGE_SMALLDESC
   !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\README.html
   !define MUI_FINISHPAGE
-  !define MUI_FINISHPAGE_TEXT "Thank you for installing RhoElements, RhoConnect and RhoStudio. \r\n\n\n"
+  !define MUI_FINISHPAGE_TEXT "Thank you for installing Rhodes, RhoConnect and RhoStudio. \r\n\n\n"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "..\script\images\rhosuite_left.bmp"
   !define MUI_HEADERIMAGE_BITMAP  "..\script\images\rhosuite_top.bmp"
   !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
@@ -63,9 +63,9 @@ section
 
     SetShellVarContext all
 
-    ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Motorola RhoMobile Suite" "UninstallString" 
+    ReadRegStr $0 HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" "UninstallString" 
     StrCmp $0 "" continueInstallation1
-    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "Motorola RhoMobile Suite is already installed. Please uninstall the previous version before installing this one."
+    MessageBox MB_OK|MB_ICONINFORMATION|MB_DEFBUTTON1 "RhoMobile Suite is already installed. Please uninstall the previous version before installing this one."
     Quit 
     continueInstallation1:
 
@@ -89,12 +89,12 @@ section
     # create a shortcut named "new shortcut" in the start menu programs directory
     # point the new shortcut at the program uninstaller
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Uninstall RhoMobile Suite.lnk" "$INSTDIR\uninstall.exe"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe"
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio 32-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe"    
     createShortCut "$SMPROGRAMS\RhoMobile Suite\RhoStudio 64-bit.lnk" "$INSTDIR\rhostudio\win32.win32.x86_64\RhoStudio.exe" "" "$INSTDIR\rhostudio\win32.win32.x86\RhoStudio.exe" 0
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "http://launchpad.motorolasolutions.com" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "https://developer.zebra.com/welcome" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
     # added information in 'unistall programs' in contorol panel
@@ -217,13 +217,13 @@ Section "Rhoconnect-push service clients" rhoconnectpushSection
 
 SectionEnd
 
-Section "Printing service" printingserviceSection
+;Section "Printing service" printingserviceSection
 
-  SetOutPath $INSTDIR
+;  SetOutPath $INSTDIR
 
-  File /r "printing-service"
+;  File /r "printing-service"
 
-SectionEnd
+;SectionEnd
 
 Section "Samples" samplesSection
  
@@ -272,7 +272,7 @@ Section "Ruby, Rubygems, Rhodes, RhoConnect and adapters" rubySection
   ;File /r "RhoElements2"
 
   File "README.html"
-  File "RhoMobile End User License Agreement.docx"
+  ;File "RhoMobile End User License Agreement.docx"
   File "CREDITS"  
  
   ;add to path here

@@ -1,0 +1,2 @@
+Add rhoconnect-push-service for Android, WM/CE and Win32.
+Follow the docs available in http://github.com/rhomobile/rhoconnect-push-service.git repository to build for respective platform.

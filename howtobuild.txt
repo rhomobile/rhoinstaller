@@ -165,7 +165,7 @@ Contents
 2. Open new console (cmd.exe) and execute following commands:
     path <root>\ruby\bin;C:\Windows\system32
     cd /d <root>\rhoinstaller\script
-    rake installer:motorola
+    rake installer:symbol
 
 3. Wait while script finishes. New installer is created in <root> directory.
 
