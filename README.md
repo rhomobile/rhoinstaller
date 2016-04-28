@@ -6,7 +6,7 @@
  - Clone ```rhodes``` repository
  - Open version file and update the required rhodes version to be build
  - Open cmd and navigate to rhodes repository
- - Run command ```rake gem```
+ - Run command **```rake gem```**
  - This will generate **```rhodes```** gem in the rhodes repository
  
 ####**2.rhoconnect-client gem**
@@ -24,8 +24,8 @@
 ####**3.rhoconnect**
  NOTE:- Linux or Mac Machine is requied for building this gem
  - Clone ```rhoconnect``` repository(if not cloned) 
- - Run **'gem install bundler'**
- - Run **'bundle install'**
+ - Run **```gem install bundler```**
+ - Run **```bundle install```**
  - Open cmd and navigate to rhoconnect repository
  - Run **```rake build```**
  - This will generate **```rhoconnect```** gem in the rhoconnect repository
@@ -66,43 +66,45 @@ In case of getting **Gem::Builder** error on windows, run below command.
 
 ###Configuration sequence(strictly Follow steps as following)
 - Install JDK
-- Install git
+- Install Git
 - Install NSIS
 - Create a new Root directory which will contain all setups for build (e.g.-RhoInstaller_Build) and put all prerequisite downloaded file here.(***Note:*** Make sure that the below steps are done in the same ***Root Folder***.)
-- Clone rhostudio
-- Clone rhoinstaller
-- Clone rhodes-system-api-samples
-- Extract ruby-1.9.3-p551-i386 and rename it as "ruby" 
-- Install devkit.exe in devkit folder explicitly providing the folder name "devkit" while installing it(Note:- its mandatory to install, not to extract)
-- Extract eclipse 3.7.2 for rcp and rap developers
-- Extract deltapack 3.7.2 here such that it overwrites the eclipse
-- Create a folder called "files" and put all the gems that we have created by following above '**Prerequisite gems building'** instuctions.It will contains 
- - rhoconnect-x.y.z.gem
- - rhoconnect-adapters-x.y.z.gem
- - rhoconnect-client-x.y.z.v.gem
- - rhodes-x.y.z.v.gem
- - rhoconnect-push-x.y.z.tgz<br/>
-Note:- x.y.z.v represents the latest gem's version built. 
+- Clone ```rhostudio```
+- Clone ```rhoinstaller```
+- Clone ```rhodes-system-api-samples```
+- Extract ```ruby-1.9.3-p551-i386``` and rename it as ```ruby``` 
+- Install ```devkit.exe``` in ```devkit``` folder explicitly providing the folder name ```devkit``` while installing it
+  
+  Note: It is mandatory to install and not to extract.
+- Extract ```eclipse 3.7.2``` for rcp and rap developers
+- Extract ```deltapack 3.7.2``` here such that it overwrites the eclipse
+- Create a folder called ```files``` and put all the gems that we have created by following above ```Prerequisite gems building``` instuctions. It will contain as mentioned below:
+ - ```rhoconnect-x.y.z.gem```
+ - ```rhoconnect-adapters-x.y.z.gem```
+ - ```rhoconnect-client-x.y.z.v.gem```
+ - ```rhodes-x.y.z.v.gem```
+ - ```rhoconnect-push-x.y.z.tgz```
+ 
+  Note:- x.y.z.v represents the latest gem's version built. 
 
 ####**Package directory Setup**
- 1. Navigate to ***rhoinstaller -> package*** directory.
- 2. Create a folder named ***"redis-2.4.0"*** .
- 3. Now extract redis-2.4.0.zip in some other location.Navigate to 32bit and Copy all files and paste it outside (i.e. in extracted folder).Delete existing 32bit and 64bit folders. Now Copy all contents and paste it in folder created ***"redis-2.4.0"*** in package folder.
- 4. Create a folder named ***make-3.81*** .
- 5. Install make-3.81.exe .Choose Compact installation while installing it.
- 6. Navigate to C:\Program Files (x86)\GnuWin32 .
- 7. Copy all the folders except **uninstall**,**doc**,**info** and paste them to created folder ***make-3.81***
- 8. Navigate to **package** directory and put **node-v0.12.7-x64.msi** and **git.exe**
- 9. Navigate to **rhoconnect-push-service** folder present inside **package** folder.And follow to note.txt
- 10. Navigate to **rhoconnect-push** folder present inside **package** folder and put **node-v0.12.7-x64.msi** and **rhoconnect-push-x.y.z.tgz** in that folder
- 
-- Open eclipse and create workspace in same Root directory
-- Now install dltk to the eclipse using Help->Install New Software->Add->archive->attache dltk.zip file->Install
-- Import rhostudio to workspace
+ 1. Navigate to ***```rhoinstaller``` -> package*** directory.
+ 2. Create a folder named ***```redis-2.4.0```***.
+ 3. Now extract ```redis-2.4.0.zip``` in some other location. Navigate to 32bit and copy all files and paste it outside (i.e. in extracted folder). Delete existing 32bit and 64bit folders. Now copy all contents and paste it in folder created ***```redis-2.4.0```*** in package folder.
+ 4. Create a folder named ***```make-3.81```***.
+ 5. Install ```make-3.81.exe```. Choose compact installation while installing it.
+ 6. Navigate to ```C:\Program Files (x86)\GnuWin32```.
+ 7. Copy all the folders except **```uninstall```**,**```doc```**,**```info```** and paste them to created folder ***```make-3.81```***.
+ 8. Navigate to **```package```** directory and put **```node-v0.12.7-x64.msi```** and **```git.exe```**
+ 9. Navigate to **```rhoconnect-push-service```** folder present inside **```package```** folder. And follow to ```note.txt```.
+ 10. Navigate to **```rhoconnect-push```** folder present inside **```package```** folder and put **```node-v0.12.7-x64.msi```** and **```rhoconnect-push-x.y.z.tgz```** in that folder.
+- Open eclipse and create workspace in same ```root``` directory
+- Now install dltk to the eclipse using ```Help->Install New Software->Add->archive->attache dltk.zip file->Install```
+- Import ```rhostudio``` to workspace
 - If error is as red exclamation in imported project ,select the JRE as 1.7 in properties->Java Build Path
 - Close the eclipse
-- Navigate to **rhoinstaller->script** ,open **rhomobilesuite.nsi** and replace all occurances of **Git-1.7.6-preview20110708.exe** with your downloaded git version that has been put inside **package folder**. 
-- Open command promt. navigate to directory "rhoinstaller->Scripts"
+- Navigate to **```rhoinstaller->script```** ,open **```rhomobilesuite.nsi```** and replace all occurances of **Git-1.7.6-preview20110708.exe** with your downloaded git version that has been put inside **package folder**. 
+- Open command promt. Navigate to directory ```rhoinstaller->Scripts```
 
 ####Now run following commands together
 
