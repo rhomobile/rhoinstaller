@@ -14,7 +14,9 @@
  - Navigate to  RhoConnect-Client and rename **'config.yml.sample'** to **'config.yml'** 
  - Ensure that, the path for rhodes and rhoconnect is correctly set in **'config.yml'** 
  - Modified the version file with version number.
- - Installed **listen** and **rest-client** gem (if not installed)
+ - Install the below gems if not installed
+    - **```gem install listen --version 3.0.6```**  
+    - **```gem install rest-client```** 
  - Open cmd and navigate to rhoconnect-client repository
  - Run  **"rake gem:make_gem --trace"** command
  - This will generate **RhoConnect-Client** gem in the RhoConnect-Client repository
