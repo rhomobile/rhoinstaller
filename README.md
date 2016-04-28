@@ -1,16 +1,16 @@
 #**RhoInstaller Build**#
 ###Prerequisite gems building###
 
-####***1.rhodes gem***
- - For rhodes gem creation we need to build rhosimulator first. Follow [Windows RhoSimulator build ](https://github.com/rhomobile/rhodes/blob/master/doc/oss/RhoSimulator_Installation_And_Build_Guidelines_For_Windows_Desktop.md) and [Mac RhoSimulator build](https://github.com/rhomobile/rhodes/blob/master/doc/oss/RhoSimulator_Installation_And_Build_Guidelines_For_Mac_Machine.md)
- - Clone rhodes repository
+####**1.rhodes gem**
+ - For **```rhodes```** gem creation, we need to build **```rhosimulator```** first. Follow [Windows RhoSimulator Build Guidelines ](https://github.com/rhomobile/rhodes/blob/master/doc/oss/RhoSimulator_Installation_And_Build_Guidelines_For_Windows_Desktop.md) & [Mac RhoSimulator Build Guidelines](https://github.com/rhomobile/rhodes/blob/master/doc/oss/RhoSimulator_Installation_And_Build_Guidelines_For_Mac_Machine.md) for building **```rhosimulator```**.
+ - Clone ```rhodes``` repository
  - Open version file and update the required rhodes version to be build
  - Open cmd and navigate to rhodes repository
- - Run command **'rake gem'**
- - This will generate **rhodes** gem in the rhodes repository
+ - Run command ```rake gem```
+ - This will generate **```rhodes```** gem in the rhodes repository
  
-####***2.rhoconnect-client gem***
- - Clone rhoConnect-client repository(if not cloned) 
+####**2.rhoconnect-client gem**
+ - Clone ```rhoConnect-client``` repository(if not cloned) 
  - Navigate to  RhoConnect-Client and rename **'config.yml.sample'** to **'config.yml'** 
  - Ensure that, the path for rhodes and rhoconnect is correctly set in **'config.yml'** 
  - Modified the version file with version number.
@@ -18,28 +18,28 @@
     - **```gem install listen --version 3.0.6```**  
     - **```gem install rest-client```** 
  - Open cmd and navigate to rhoconnect-client repository
- - Run  **"rake gem:make_gem --trace"** command
- - This will generate **RhoConnect-Client** gem in the RhoConnect-Client repository
+ - Run  **```rake gem:make_gem --trace```** command
+ - This will generate **```rhoconnect-client```** gem in the RhoConnect-Client repository
 
-####***3.rhoconnect***
+####**3.rhoconnect**
  NOTE:- Linux or Mac Machine is requied for building this gem
- - Clone rhoconnect repository(if not cloned) 
+ - Clone ```rhoconnect``` repository(if not cloned) 
  - Run **'gem install bundler'**
  - Run **'bundle install'**
  - Open cmd and navigate to rhoconnect repository
- - Run **'rake build'**
- - This will generate **rhoconnect** gem in the rhoconnect repository
+ - Run **```rake build```**
+ - This will generate **```rhoconnect```** gem in the rhoconnect repository
 
-####***4.rhoconnect-push***
+####**4.rhoconnect-push**
  NOTE:- Linux or Mac Machine is requied for building this gem
- - Clone the rhoconnect-push repository
- - Open cmd and Navigate to rhoconnect-push repository
- - Run **'make clean'**
- - Run **'make all'**
+ - Clone ```rhoconnect-push``` repository
+ - Open cmd and navigate to rhoconnect-push repository
+ - Run **```make clean```**
+ - Run **```make all```**
  - This will generate **rhoconnect-push-x.y.z.tgz** in the rhoconnect-push repository
  
-####***5.rhoconnect-adaptor***
- - Get rhoconnect-adaptor [here](https://rubygems.org/gems/rhoconnect-adapters) 
+####**5.rhoconnect-adaptor**
+ - Get ```rhoconnect-adaptor``` [here](https://rubygems.org/gems/rhoconnect-adapters) 
  
 #### Note:- 
  In case of getting **Gem::Builder** error on mac, run below command.
@@ -84,7 +84,7 @@ In case of getting **Gem::Builder** error on windows, run below command.
  - rhoconnect-push-x.y.z.tgz<br/>
 Note:- x.y.z.v represents the latest gem's version built. 
 
-####***Package directory Setup***
+####**Package directory Setup**
  1. Navigate to ***rhoinstaller -> package*** directory.
  2. Create a folder named ***"redis-2.4.0"*** .
  3. Now extract redis-2.4.0.zip in some other location.Navigate to 32bit and Copy all files and paste it outside (i.e. in extracted folder).Delete existing 32bit and 64bit folders. Now Copy all contents and paste it in folder created ***"redis-2.4.0"*** in package folder.
@@ -104,12 +104,12 @@ Note:- x.y.z.v represents the latest gem's version built.
 - Navigate to **rhoinstaller->script** ,open **rhomobilesuite.nsi** and replace all occurances of **Git-1.7.6-preview20110708.exe** with your downloaded git version that has been put inside **package folder**. 
 - Open command promt. navigate to directory "rhoinstaller->Scripts"
 
-####Now Run following commands together
+####Now run following commands together
 
     set path <Full Qualified Path of Root Directory>\ruby\bin;C:\Windows\system32
     rake installer:symbol fullbuild_installer_version=0.2.9.16 --trace
    
-***Note:-*** you can specify your version accordingly    
+**Note:** you can specify your version accordingly    
  
 ##**Step for rhoinstaller build on MAC OSX**##
 
@@ -125,7 +125,7 @@ Note:- x.y.z.v represents the latest gem's version built.
 
 5. [DLTK SDK 4.0 for Eclipse](http://ftp.halifax.rwth-aachen.de/eclipse/technology/dltk/downloads/drops/R4.0/R-4.0-201206120903/dltk-sdk-R-4.0-201206120903.zip)
 
-###**Install and configure software**###
+###**Install & Configure Software**###
 
 1. Install JDK 1.7 (64-bit)
 
@@ -175,7 +175,7 @@ Note:- x.y.z.v represents the latest gem's version built.
     - Press "Finish".
     - Close Eclipse.
     
-###**Build installer**###
+###**Build Installer**###
 
 1. Edit ``` <root> ```\rhoinstaller\script\Rakefile file. You can tune following variables:
     ```
