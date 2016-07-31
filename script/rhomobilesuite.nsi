@@ -105,7 +105,7 @@ section
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayIcon" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
-                 "Publisher" "Symbol Technologies, Inc."
+                 "Publisher" "Tau Technologies, Inc."
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
                  "DisplayVersion" "%RHOMOBILE_SUITE_VER%"  
     WriteRegDWORD  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RhoMobile Suite" \
