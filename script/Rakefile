@@ -10,7 +10,7 @@ $nsisPath          = 'C:/Program Files (x86)/NSIS/makensis.exe'
 $version           = ENV['fullbuild_installer_version'] if ENV['fullbuild_installer_version']
 
 $base_dir          = File.expand_path File.join(File.dirname(__FILE__), '..', '..')
-$installer_dir     = File.join($base_dir, 'rhoinstaller')
+$installer_dir     = File.expand_path File.join(File.dirname(__FILE__), '..')
 $studio_dir        = File.join($base_dir, 'rhostudio')
 $workspace_dir     = File.join($base_dir, 'workspace')
 $script_dir        = File.join($installer_dir, 'script')
@@ -519,7 +519,7 @@ namespace "installer" do
     end
 
     def removeReadme
-      #rmGlob($package_dir, 'README.html')
+      rmGlob($package_dir, 'README.html')
       #rmGlob($package_dir, 'RhoMobile End User License Agreement.docx')
       rmGlob($package_dir, 'CREDITS')
     end
@@ -529,8 +529,8 @@ namespace "installer" do
     end
 
     def copyReadme
-      #readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'ReadMe.html')
-      #cp(readme, File.join($package_dir, 'README.html'))
+      readme = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'README.html')
+      cp(readme, $package_dir)
       #eula = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhoelements-*', 'RhoMobile End User License Agreement.docx')
       #cp(eula, $package_dir)
       credits = findOneItem($package_dir, 'ruby', 'lib', 'ruby', 'gems', '*', 'gems', 'rhodes-*', 'CREDITS')
@@ -547,6 +547,7 @@ namespace "installer" do
         rhoconnectgem         = findGemAndReport('rhoconnect'         )
         rhoconnectadaptersgem = findGemAndReport('rhoconnect-adapters')
         rhoconnectclientgem   = findGemAndReport('rhoconnect-client'  )
+        rhotauextensionsgem   = findGemAndReport('rho-tau-extensions' )
         #rhohubgem             = findGemAndReport('rhohub')
 
         # 'gem update --system' command have to be invoked. But it is batch that changes itself
@@ -554,6 +555,7 @@ namespace "installer" do
         # There is same action as 'gem update --system':
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
         run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
+        run("gem install activesupport -v 4.2.7", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
@@ -563,6 +565,7 @@ namespace "installer" do
         installGem "\"#{rhoconnectgem}\""
         installGem "\"#{rhoconnectadaptersgem}\""
         installGem "\"#{rhoconnectclientgem}\""
+        installGem "\"#{rhotauextensionsgem}\""
     end
 
     def removeRhoconnectPushTgz
@@ -665,6 +668,7 @@ namespace "installer" do
             # retrieve data from rhodes gem
             rhodesDir = unpackGem('rhodes', dir)
 
+            mv(File.join(rhodesDir, 'README.html'), File.join(mount, 'ReadMe.html'))
             mv(File.join(rhodesDir, 'CREDITS'), mount)
         end
 
@@ -681,7 +685,7 @@ namespace "installer" do
     end
 
     def copyGems(mount)
-        names = ['rhodes', 'rhoconnect', 'rhoconnect-adapters', 'rhoconnect-client']
+        names = ['rhodes', 'rhoconnect', 'rhoconnect-adapters', 'rhoconnect-client', 'rho-tau-extensions']
         files = names.map { |n| findGemAndReport(n) }
         files.each { |f| cp(f, File.join(mount, '.gems')) }
     end
