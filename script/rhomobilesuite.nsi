@@ -94,7 +94,7 @@ section
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Runtimes For Rhoconnect-push service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\rhoconnect-push-service"' 
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Printing service.lnk"  "$windir\explorer.exe" '/e,"$INSTDIR\printing-service"' 
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Readme.lnk" "$INSTDIR\README.html"
-    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "https://developer.zebra.com/welcome" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
+    createShortCut "$SMPROGRAMS\RhoMobile Suite\Developer Community.lnk" "https://forums.tau-technologies.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
     createShortCut "$SMPROGRAMS\RhoMobile Suite\Documentation.lnk" "http://docs.rhomobile.com/" "" "$PROGRAMFILES\Internet Explorer\IEXPLORE.EXE" 0
 
     # added information in 'unistall programs' in contorol panel
