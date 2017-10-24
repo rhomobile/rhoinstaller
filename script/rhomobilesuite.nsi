@@ -314,30 +314,44 @@ Section "Redis" redisSection
   
 SectionEnd
 
-Section "Git 1.7.6" gitSection
+Section "Git 2.14.3" gitSection
 
   SetOutPath $INSTDIR
   
-  File "Git-1.7.6-preview20110708.exe"
+  File "Git-2.14.3-preview20171024.exe"
  
   IfSilent +3
-    ExecWait "$INSTDIR\Git-1.7.6-preview20110708.exe"
+    ExecWait "$INSTDIR\Git-2.14.3-preview20171024.exe"
   Goto +2
-    ExecWait "$INSTDIR\Git-1.7.6-preview20110708.exe /silent"
+    ExecWait "$INSTDIR\Git-2.14.3-preview20171024.exe /silent"
 
-  delete "$INSTDIR\Git-1.7.6-preview20110708.exe"
+  delete "$INSTDIR\Git-2.14.3-preview20171024.exe"
 
 SectionEnd
 
+Section "MSVC 2015 Redistributable" msvcSection
 
-Section "Node JS 0.12.7" nodeSection
+  SetOutPath $INSTDIR
+  
+  File "msvc_redist_2015_x86.exe"
+ 
+  IfSilent +3
+    ExecWait "$INSTDIR\msvc_redist_2015_x86.exe"
+  Goto +2
+    ExecWait "$INSTDIR\msvc_redist_2015_x86.exe /install /passive /norestart"
+
+  delete "$INSTDIR\msvc_redist_2015_x86.exe"
+
+SectionEnd
+
+Section "Node JS 6.11.4" nodeSection
 
   SetOutPath $INSTDIR
  
   IfSilent +3
-    ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v0.12.7-x64.msi"
+    ExecWait "msiexec.exe /i $INSTDIR\rhoconnect-push\node-v6.11.4-x64.msi"
   Goto +2
-    ExecWait "msiexec.exe /passive /i $INSTDIR\rhoconnect-push\node-v0.12.7-x64.msi"
+    ExecWait "msiexec.exe /passive /i $INSTDIR\rhoconnect-push\node-v6.11.4-x64.msi"
 
   ReadRegStr $0 HKEY_LOCAL_MACHINE "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
 
@@ -357,6 +371,7 @@ SectionEnd
   LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
+  LangString DESC_InstallMSVC ${LANG_ENGLISH} "This installs MSVC 2015 redistributable x86."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallRhoapiModules ${LANG_ENGLISH} "This installs universal rhoapi-modules.js solution."
@@ -374,6 +389,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${rubySection} $(DESC_InstallRuby) 
   !insertmacro MUI_DESCRIPTION_TEXT ${redisSection} $(DESC_InstallRedis)
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
+  !insertmacro MUI_DESCRIPTION_TEXT ${msvcSection} $(DESC_InstallMSVC)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoapiModulesSection} $(DESC_InstallRhoapiModules)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
