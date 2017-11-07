@@ -335,10 +335,10 @@ Section "MSVC 2015 Redistributable" msvcSection
   
   File "msvc_redist_2015_x86.exe"
  
-  IfSilent +3
-    ExecWait "$INSTDIR\msvc_redist_2015_x86.exe"
-  Goto +2
-    ExecWait "$INSTDIR\msvc_redist_2015_x86.exe /install /passive /norestart"
+  #IfSilent +3
+  #  ExecWait "$INSTDIR\msvc_redist_2015_x86.exe"
+  #Goto +2
+  ExecWait "$INSTDIR\msvc_redist_2015_x86.exe /install /passive /norestart"
 
   delete "$INSTDIR\msvc_redist_2015_x86.exe"
 
@@ -368,7 +368,7 @@ SectionEnd
  
   ;Language strings
   LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio IDE."
-  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.8.7, rubygems 1.3.7, Rhodes, RhoConnect and adapters"
+  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.9.1, rubygems 1.8.25, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallMSVC ${LANG_ENGLISH} "This installs MSVC 2015 redistributable x86."
