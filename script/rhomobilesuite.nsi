@@ -329,7 +329,7 @@ Section "Git 2.14.3" gitSection
 
 SectionEnd
 
-Section "MSVC 2015 Redistributable" msvcSection
+Section "MSVC 2015 Redistributable" msvc2015Section
 
   SetOutPath $INSTDIR
   
@@ -341,6 +341,23 @@ Section "MSVC 2015 Redistributable" msvcSection
   ExecWait "$INSTDIR\msvc_redist_2015_x86.exe /install /passive /norestart"
 
   delete "$INSTDIR\msvc_redist_2015_x86.exe"
+
+SectionEnd
+
+
+Section "MSVC 2012 Redistributable" msvc2012Section
+
+  SetOutPath $INSTDIR
+  
+  File "msvc_redist_2012_x86.exe"
+ 
+  #IfSilent +3
+  #  ExecWait "$INSTDIR\msvc_redist_2012_x86.exe"
+  #Goto +2
+
+  ExecWait "$INSTDIR\msvc_redist_2012_x86.exe /install /q /passive /norestart"
+
+  delete "$INSTDIR\msvc_redist_2012_x86.exe"
 
 SectionEnd
 
@@ -371,7 +388,8 @@ SectionEnd
   LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.9.1, rubygems 1.8.25, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
-  LangString DESC_InstallMSVC ${LANG_ENGLISH} "This installs MSVC 2015 redistributable x86."
+  LangString DESC_InstallMSVC2015 ${LANG_ENGLISH} "This installs MSVC 2015 redistributable x86."
+  LangString DESC_InstallMSVC2012 ${LANG_ENGLISH} "This installs MSVC 2012 redistributable x86."
   LangString DESC_InstallGnuMake ${LANG_ENGLISH} "This installs GNU Make (sometimes required to update gems)."
   LangString DESC_InstallSamples ${LANG_ENGLISH} "This installs samples for Rhodes."
   LangString DESC_InstallRhoapiModules ${LANG_ENGLISH} "This installs universal rhoapi-modules.js solution."
@@ -389,7 +407,8 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${rubySection} $(DESC_InstallRuby) 
   !insertmacro MUI_DESCRIPTION_TEXT ${redisSection} $(DESC_InstallRedis)
   !insertmacro MUI_DESCRIPTION_TEXT ${gitSection} $(DESC_InstallGit)
-  !insertmacro MUI_DESCRIPTION_TEXT ${msvcSection} $(DESC_InstallMSVC)
+  !insertmacro MUI_DESCRIPTION_TEXT ${msvc2015Section} $(DESC_InstallMSVC2015)
+  !insertmacro MUI_DESCRIPTION_TEXT ${msvc2012Section} $(DESC_InstallMSVC2012)
   !insertmacro MUI_DESCRIPTION_TEXT ${samplesSection} $(DESC_InstallSamples)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoapiModulesSection} $(DESC_InstallRhoapiModules)
   !insertmacro MUI_DESCRIPTION_TEXT ${rhoconnectpushSection} $(DESC_InstallRhoconnectPush)
