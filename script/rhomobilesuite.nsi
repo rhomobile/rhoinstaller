@@ -385,7 +385,7 @@ SectionEnd
  
   ;Language strings
   LangString DESC_InstallRhostudio ${LANG_ENGLISH} "This installs Eclipse with RhoStudio IDE."
-  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs ruby 1.9.1, rubygems 1.8.25, Rhodes, RhoConnect and adapters"
+  LangString DESC_InstallRuby ${LANG_ENGLISH} "This installs Ruby, Rubygems, Rhodes, RhoConnect and adapters"
   LangString DESC_InstallRedis ${LANG_ENGLISH} "This installs redis 2.2.2 (required to run RhoConnect)."
   LangString DESC_InstallGit ${LANG_ENGLISH} "This installs Git (which includes the Git Bash)."
   LangString DESC_InstallMSVC2015 ${LANG_ENGLISH} "This installs MSVC 2015 redistributable x86."
