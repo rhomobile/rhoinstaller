@@ -314,18 +314,18 @@ Section "Redis" redisSection
   
 SectionEnd
 
-Section "Git 2.14.3" gitSection
+Section "Git 2.18.0" gitSection
 
   SetOutPath $INSTDIR
   
-  File "Git-2.14.3-preview20171024.exe"
+  File "Git-2.18.0-64-bit.exe"
  
   IfSilent +3
-    ExecWait "$INSTDIR\Git-2.14.3-preview20171024.exe"
+    ExecWait "$INSTDIR\Git-2.18.0-64-bit.exe"
   Goto +2
-    ExecWait "$INSTDIR\Git-2.14.3-preview20171024.exe /silent"
+    ExecWait "$INSTDIR\Git-2.18.0-64-bit.exe /silent"
 
-  delete "$INSTDIR\Git-2.14.3-preview20171024.exe"
+  delete "$INSTDIR\Git-2.18.0-64-bit.exe"
 
 SectionEnd
 
