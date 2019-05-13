@@ -556,6 +556,8 @@ namespace "installer" do
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
         run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
         run("gem install activesupport -v 4.2.7", nil, $ruby_env)
+        run("gem install bundler -v 1.13.7", nil, $ruby_env)
+        run("gem install rake -v 10.4.0", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
