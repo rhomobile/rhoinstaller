@@ -30,7 +30,15 @@ $ruby_env = {
         File.join($package_dir, 'devkit', 'bin'),
         File.join($package_dir, 'devkit', 'mingw', 'bin'),
         File.join($package_dir, 'make-3.81', 'bin')
-    ].join(File::PATH_SEPARATOR)
+    ].join(File::PATH_SEPARATOR),
+    'GEM CONFIGURATION' => {
+        :update_sources => true,
+        :verbose = > true,
+        :backtrace => false,
+        :bulk_threshold => 1000,
+        :sources => ["http://rubygems.org"]
+    },
+    'REMOTE SOURCES' => ['http://rubygems.org']
 }
 
 if not File.exists?($nsisPath)
@@ -556,13 +564,14 @@ namespace "installer" do
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
 
 
-        run("ruby \"#{gem}\" sources --remove https://rubygems.org/", nil, $ruby_env)
-        run("ruby \"#{gem}\" sources --add http://rubygems.org", nil, $ruby_env)
-        run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
-        run("ruby \"#{gem}\" sources --remove http://rubygems.org", nil, $ruby_env)
-        run("ruby \"#{gem}\" sources --add https://rubygems.org", nil, $ruby_env)
+        #run("ruby \"#{gem}\" sources --remove https://rubygems.org/", nil, $ruby_env)
+        #run("ruby \"#{gem}\" sources --add http://rubygems.org", nil, $ruby_env)
+        #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
+        #run("ruby \"#{gem}\" sources --remove http://rubygems.org", nil, $ruby_env)
+        #run("ruby \"#{gem}\" sources --add https://rubygems.org", nil, $ruby_env)
 
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
+        run("gem update --system 1.8.25", nil, $ruby_env)
 
         run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         run("gem install bundler -v 1.13.7", nil, $ruby_env)
