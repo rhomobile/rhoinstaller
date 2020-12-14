@@ -554,7 +554,16 @@ namespace "installer" do
         # leading to harmless error.
         # There is same action as 'gem update --system':
         gem = File.join($package_dir, 'ruby', 'bin', 'gem')
+
+
+        run("ruby \"#{gem}\" sources --remove https://rubygems.org/", nil, $ruby_env)
+        run("ruby \"#{gem}\" sources --add http://rubygems.org", nil, $ruby_env)
         run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
+        run("ruby \"#{gem}\" sources --remove http://rubygems.org", nil, $ruby_env)
+        run("ruby \"#{gem}\" sources --add https://rubygems.org", nil, $ruby_env)
+
+        #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
+
         run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         run("gem install bundler -v 1.13.7", nil, $ruby_env)
         run("gem install rake -v 10.4.0", nil, $ruby_env)
