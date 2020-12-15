@@ -571,17 +571,20 @@ namespace "installer" do
         #run("ruby \"#{gem}\" sources --add http://rubygems.org", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
         #run("ruby \"#{gem}\" sources --remove http://rubygems.org", nil, $ruby_env)
-        #run("ruby \"#{gem}\" sources --add https://rubygems.org", nil, $ruby_env)
+        run("gem sources", nil, $ruby_env)
+        run("gem sources --add https://rubygems.org", nil, $ruby_env)
+        run("gem sources", nil, $ruby_env)
 
         #run("ruby \"#{gem}\" update --system --source http://rubygems.org/", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
-        #run("gem install activesupport -v 4.2.7", nil, $ruby_env)
-        #run("gem install bundler -v 1.13.7", nil, $ruby_env)
-        #run("gem install rake -v 10.4.0", nil, $ruby_env)
-        #run("gem install signet -v 0.11.0", nil, $ruby_env)
-        #run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
+
+        run("gem install activesupport -v 4.2.7", nil, $ruby_env)
+        run("gem install bundler -v 1.13.7", nil, $ruby_env)
+        run("gem install rake -v 10.4.0", nil, $ruby_env)
+        run("gem install signet -v 0.11.0", nil, $ruby_env)
+        run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
