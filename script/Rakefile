@@ -587,9 +587,10 @@ namespace "installer" do
         run("gem install signet -v 0.11.0", nil, $ruby_env)
         run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
-        run("gem uninstall rdoc --force", nil, $ruby_env)
         run("gem list", nil, $ruby_env)
 
+        run("gem install rdoc -v 4.2.1", nil, $ruby_env)
+        run("gem uninstall rdoc -v 4.2.1 --force", nil, $ruby_env)
         run("gem install rdoc -v 4.2.2", nil, $ruby_env)
 
         run("gem list", nil, $ruby_env)
