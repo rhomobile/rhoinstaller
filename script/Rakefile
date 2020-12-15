@@ -33,15 +33,15 @@ $ruby_env = {
         File.join($package_dir, 'devkit', 'mingw', 'bin'),
         File.join($package_dir, 'make-3.81', 'bin')
     ].join(File::PATH_SEPARATOR),
-    'SSL_CERT_FILE' => $certfile,
-    'GEM CONFIGURATION' => {
+    'SSL_CERT_FILE' => $certfile
+#    'GEM CONFIGURATION' => {
 #        :update_sources => true,
 #        :verbose => true,
 #        :backtrace => false,
 #        :bulk_threshold => 1000,
-        :sources => ["https://rubygems.org"]
-    },
-    'REMOTE SOURCES' => ['https://rubygems.org']
+#        :sources => ["https://rubygems.org"]
+#    },
+#    'REMOTE SOURCES' => ['https://rubygems.org']
 }
 
 if not File.exists?($nsisPath)
@@ -577,11 +577,11 @@ namespace "installer" do
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
-        run("gem install activesupport -v 4.2.7", nil, $ruby_env)
-        run("gem install bundler -v 1.13.7", nil, $ruby_env)
-        run("gem install rake -v 10.4.0", nil, $ruby_env)
-        run("gem install signet -v 0.11.0", nil, $ruby_env)
-        run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
+        #run("gem install activesupport -v 4.2.7", nil, $ruby_env)
+        #run("gem install bundler -v 1.13.7", nil, $ruby_env)
+        #run("gem install rake -v 10.4.0", nil, $ruby_env)
+        #run("gem install signet -v 0.11.0", nil, $ruby_env)
+        #run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
