@@ -22,6 +22,8 @@ $config            = Jake.config(File.open("installer.yml"))
 $eclipse           = File.join($base_dir, 'eclipse', 'eclipse')
 $eclipse           += 'c' if File.exists?($eclipse + 'c.exe')
 
+$certfile = File.join($script_dir, 'cacert.pem')
+
 $ruby_env = {
     'RDOCOPT' => '--encoding=UTF-8',
     'Path' => [
@@ -30,7 +32,8 @@ $ruby_env = {
         File.join($package_dir, 'devkit', 'bin'),
         File.join($package_dir, 'devkit', 'mingw', 'bin'),
         File.join($package_dir, 'make-3.81', 'bin')
-    ].join(File::PATH_SEPARATOR)
+    ].join(File::PATH_SEPARATOR),
+    'SSL_CERT_FILE' => $certfile
     #'GEM CONFIGURATION' => {
     #    :update_sources => true,
     #    :verbose => true,
@@ -570,9 +573,9 @@ namespace "installer" do
         #run("ruby \"#{gem}\" sources --remove http://rubygems.org", nil, $ruby_env)
         #run("ruby \"#{gem}\" sources --add https://rubygems.org", nil, $ruby_env)
 
-        run("ruby \"#{gem}\" update --system --source http://rubygems.org/", nil, $ruby_env)
+        #run("ruby \"#{gem}\" update --system --source http://rubygems.org/", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
-        #run("gem update --system", nil, $ruby_env)
+        run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
         run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         run("gem install bundler -v 1.13.7", nil, $ruby_env)
