@@ -579,6 +579,7 @@ namespace "installer" do
         #run("ruby \"#{gem}\" update --system 1.8.25", nil, $ruby_env)
         #run("ruby \"#{gem}\" update --system", nil, $ruby_env)
 
+        run("gem list", nil, $ruby_env)
 
         run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         run("gem install bundler -v 1.13.7", nil, $ruby_env)
@@ -586,9 +587,21 @@ namespace "installer" do
         run("gem install signet -v 0.11.0", nil, $ruby_env)
         run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
+        run("gem list", nil, $ruby_env)
+
+
+        run("gem install rdoc -v 4.2.2", nil, $ruby_env)
+
+        run("gem list", nil, $ruby_env)
+
+
         installGem 'rhomobile-debug'
         installGem 'rhodes-translator'
         installGem 'mspec'
+
+        run("gem list", nil, $ruby_env)
+
+
         installGem "\"#{rhodesgem}\""
         installGem 'eventmachine'
         installGem "\"#{rhoconnectgem}\""
