@@ -576,10 +576,7 @@ namespace "installer" do
         #run("gem sources --add https://rubygems.org", nil, $ruby_env)
         #run("gem sources", nil, $ruby_env)
 
-        run("gem uninstall --all --force --executables", nil, $ruby_env)
-
-        run("gem uninstall rdoc --force --executables", nil, $ruby_env)
-        run("gem install rdoc -v 4.2.2 --force --executables", nil, $ruby_env)
+        run("gem install rdoc -v 4.2.2 --force", nil, $ruby_env)
 
         #run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         #run("gem install bundler -v 1.13.7", nil, $ruby_env)
