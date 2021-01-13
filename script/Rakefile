@@ -500,7 +500,7 @@ namespace "installer" do
             f.puts("- #{ruby_dir}")
         end
 
-        run('ruby dk.rb install', devkit_dir, {:Path => File.join(ruby_dir, 'bin')})
+        #run('ruby dk.rb install', devkit_dir, {:Path => File.join(ruby_dir, 'bin')})
     end
 
     def removeRhoElements2
