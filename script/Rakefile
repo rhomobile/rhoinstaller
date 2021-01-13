@@ -578,6 +578,9 @@ namespace "installer" do
 
         run("gem uninstall --all --force --executables", nil, $ruby_env)
 
+        run("gem uninstall rdoc --force --executables", nil, $ruby_env)
+        run("gem install rdoc -v 4.2.2 --force --executables", nil, $ruby_env)
+
         #run("gem install activesupport -v 4.2.7", nil, $ruby_env)
         #run("gem install bundler -v 1.13.7", nil, $ruby_env)
         #run("gem install rake -v 10.4.0", nil, $ruby_env)
