@@ -550,6 +550,7 @@ namespace "installer" do
       cp(credits, File.join($package_dir, 'CREDITS'))
     end
 
+
     def installGems
         def installGem(gem, pre = false)
             run("gem install #{gem}#{pre ? ' --pre' : ''}", nil, $ruby_env)
@@ -558,6 +559,33 @@ namespace "installer" do
             command = "\"#{gembin}\""
             command = command + " install #{gem}#{pre ? ' --pre' : ''}"
             run(command, nil, $ruby_env)
+        end
+
+        def ruby_path_fix_file(full_file_path)
+            buf = ""
+            real_changes = false
+            File.new(full_file_path,"r").read.each_line do |line|
+                orifinal_line_length = line.length
+                line.gsub!("C:\\workspaces\\dev_rhoinstaller_win\\ri\\package\\ruby\\bin\\","")
+                line.gsub!("C:/workspaces/dev_rhoinstaller_win/ri/package/ruby/bin/","")
+                if orifinal_line_length != line.length
+                    real_changes = true
+                end
+                buf << line
+            end
+            if real_changes
+                File.open(full_file_path,"w") { |f| f.write(buf) }
+            end
+        end
+
+
+
+        def ruby_path_fix_folder(full_folder_path)
+            Dir.glob(File.join(full_folder_path,'*.bat')).each do |artefact|
+               if (File.file? artefact)
+                   ruby_path_fix_file(artefact)
+               end
+            end
         end
 
         rhodesgem             = findGemAndReport('rhodes'             )
@@ -608,6 +636,10 @@ namespace "installer" do
         installGem "\"#{rhotauextensionsgem}\""
 
         run("gem list", nil, $ruby_env)
+
+        bin_folder = File.join($package_dir, 'ruby', 'bin')
+        ruby_path_fix_folder(bin_folder)
+
     end
 
     def removeRhoconnectPushTgz
