@@ -618,6 +618,7 @@ namespace "installer" do
         #run("gem install rake -v 10.4.0", nil, $ruby_env)
         #run("gem install signet -v 0.11.0", nil, $ruby_env)
         #run("gem install faraday -v 1.0.0", nil, $ruby_env)
+        run("gem install signet -v 0.16.1 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
         run("gem list", nil, $ruby_env)
