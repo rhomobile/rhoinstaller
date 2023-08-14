@@ -621,6 +621,7 @@ namespace "installer" do
         run("gem install faraday -v 1.10.0 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install public_suffix -v 4.0.7 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install signet -v 0.16.1 --no-rdoc --no-ri", nil, $ruby_env)
+        run("gem install mini_mime -v 1.1.2 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
 
         run("gem list", nil, $ruby_env)
