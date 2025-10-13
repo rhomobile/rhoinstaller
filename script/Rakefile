@@ -626,6 +626,8 @@ namespace "installer" do
         run("gem install google-api-client -v 0.31.0 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install domain_name -v 0.5.20190701 --no-rdoc --no-ri", nil, $ruby_env)
         run("gem install highline -v 2.1.0 --no-rdoc --no-ri", nil, $ruby_env)
+        run("gem install typhoeus -v 1.4.0 --no-rdoc --no-ri", nil, $ruby_env)
+
 
         run("gem list", nil, $ruby_env)
 
